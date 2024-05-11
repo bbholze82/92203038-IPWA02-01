@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+ 
+ <!-- Begin of snippet_header.xhtml -->
+ <h:head>
+	<link rel="stylesheet" type="text/css" media="screen" href="./assets/bootstrap/css/bootstrap.min.css"/>
+	<script src="./assets/bootstrap/js/bootstrap.min.js"></script>
+	<link rel="apple-touch-icon" sizes="180x180" href=""/>
+	<link rel="icon" type="image/png" sizes="32x32" href=""/>
+	<link rel="icon" type="image/png" sizes="16x16" href=""/>
+	<link rel="manifest" href=""/>
+	<title>GhostNetFishing</title>
+</h:head>
+<!--  -->	
+
+<h:body>
+
+<div class="alert alert-primary" role="alert">
+#{serverBean.setRequestCounterUpByOne()}
+Starttime: #{serverBean.startTime} <br/>
+Requests: #{serverBean.requestCounter} <br/>
+Entries in DB: #{serverBean.countEntriesinDB()} <br/>
+<h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/>
+<h:outputText value="#{loginBean.username}, You are logged in." rendered="#{loginBean.isLoggedIn}"/>
+</div>
+
+
+<div class="container">
+<div class="row">
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="./index.xhtml">
+    Shea Sepherd
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="./view.xhtml">View data</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./submit.xhtml">Submit data</a>
+        </li>
+        
+        <h:panelGroup rendered="#{loginBean.isLoggedIn}">
+        <li class="nav-item">
+          <a class="nav-link" href="./hunter.xhtml">Hunters overview</a>
+        </li>
+        </h:panelGroup>
+        
+        <h:form>
+        <h:panelGroup rendered="#{loginBean.isLoggedIn}">
+        <li class="nav-item">
+           <h:commandLink class="nav-link" value="Logout" action="#{loginBean.logout()}"/>
+        </li>
+        </h:panelGroup>
+        </h:form>
+        
+        <h:panelGroup rendered="#{not loginBean.isLoggedIn}">
+        <li class="nav-item">
+          <a class="nav-link" href="./login.xhtml">Login</a>
+        </li>
+        </h:panelGroup>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+</div>
+</div>
+
+
+<div class="container mt-4">
+<div class="row">
+<div class="col-12">
+	<h1>Was ist ein Geisternetz?</h1>
+</div><!-- /.col -->
+
+<div class="col-6">
+	<p>Als Geisternetz wird ein Fischernetz bezeichnet, das beim Fischfang (z. B. im Sturm, in Notsituation, bei Netzhakern) verlorenging oder absichtlich im Meer entsorgt wurde und seitdem dort herumtreibt oder sich am Meeresgrund verfangen hat. Hierbei kann es sich um kleinere Netze aus der küstennahen Stellnetzfischerei oder Reusenfischerei handeln, aber auch um große Schleppnetze oder Treibnetze, die in der Hochseefischerei eingesetzt werden. Zusätzlich gehen zu den eigentlichen Netzen auch noch die dazugehörigen Leinen, Scherbretter und andere Teile verloren und können dann sehr lange Zeit, oft auch für Jahrzehnte im Meer treiben. </p>
+</div><!-- /.col -->
+
+<div class="col-6">
+	<h:graphicImage class="img-fluid rounded float-start" url="./assets/static/images/ghostnet01.jpg"/> 
+</div><!-- /.col -->
+
+</div>
+</div>
+
+
+<footer class="text-white bg-primary fixed-bottom">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12 text-center mt-2">
+        <p>2024 Shea Sepherd Foundation. All Rights Reserved.</p>
+        <p>We respect your privacy. This is a cookie-free domain that does not collect any personal data.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</h:body>
+
+</html>
