@@ -135,10 +135,10 @@ var greenIcon = new L.Icon({
 <div class="container mt-4">
 <div class="row">
 <div class="col-12">
-	<h1>Hunter</h1>
+	<h1>Reported Ghost Nets</h1>
 	
 
-    <h:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(0)}" var="ghostNet" rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 2)}">
+    <h:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(2)}" var="ghostNet" rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 2)}">
         <h:column>
             <f:facet name="header">ID</f:facet>
             #{ghostNet.id}
@@ -183,7 +183,7 @@ var greenIcon = new L.Icon({
          </h:column>
         
         <h:column>
-            <f:facet name="header">Action</f:facet>
+            <f:facet name="header">Actions</f:facet>
             <h:form>
             <h:commandButton class="btn btn-primary mt-2" value="Claim salvage" action="#{ghostNet.claimSalvage(loginBean.id)}" rendered="#{ghostNet.statusCode eq 1}" />            
             <h:commandButton class="btn btn-danger mt-2" value="Cancel salvage" action="#{ghostNet.cancelSalvage(loginBean.id)}" rendered="#{(ghostNet.statusCode eq 2) and (ghostNet.salvageClaimedByUserId eq loginBean.id)}" />
@@ -203,6 +203,55 @@ var greenIcon = new L.Icon({
 </div><!-- /.col -->
 </div>
 </div>
+
+
+<div class="container mt-4">
+<div class="row">
+<div class="col-12">
+	<h1>Recovered Ghost Nets</h1>
+	
+	<h:form>
+    <h:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(3)}" var="ghostNet" rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 2)}">
+        <h:column>
+            <f:facet name="header">ID</f:facet>
+            #{ghostNet.id}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Latitude</f:facet>
+            #{ghostNet.posLatitude}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Longitude</f:facet>
+            #{ghostNet.posLongitude}
+        </h:column>
+        
+         <h:column>
+            <f:facet name="header">Size</f:facet>
+            #{ghostNet.size}
+        </h:column>
+        
+        <h:column>
+            <f:facet name="header">Status code</f:facet>
+            #{ghostNet.statusCode}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Reported by UserId</f:facet>
+            #{ghostNet.reportedByUserId}
+        </h:column>
+        
+         <h:column>
+            <f:facet name="header">Reported by Username</f:facet>
+            #{ghostNet.reportedByUsername}
+        </h:column>
+                                
+    	</h:dataTable>
+    	 </h:form>
+    	
+</div><!-- /.col -->
+</div>
+</div>
+
 
 
 <div class="row mt-4">

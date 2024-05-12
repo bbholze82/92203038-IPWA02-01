@@ -76,7 +76,18 @@ public class DataService {
             	statement = connection.prepareStatement(query);
                 statement.setString(1, "1");
             	break;
-            }
+        	case 2:
+        		query = "SELECT * FROM ghostnets WHERE statuscode = ? OR statuscode = ?";
+        		statement = connection.prepareStatement(query);
+        		statement.setString(1, "1");
+        		statement.setString(2, "2");
+        		break;
+    		case 3:
+    			query = "SELECT * FROM ghostnets WHERE statuscode = ?";
+    			statement = connection.prepareStatement(query);
+    			statement.setString(1, "3");
+    			break;
+    	}
             
             resultSet = statement.executeQuery();
             
