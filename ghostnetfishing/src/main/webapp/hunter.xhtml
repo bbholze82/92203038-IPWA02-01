@@ -88,6 +88,18 @@ Phone number: #{loginBean.phonenumber}
 </div>
 </div>
 
+<h:panelGroup rendered="#{not loginBean.isLoggedIn}">
+<div class="container mt-4">
+<div class="alert alert-warning" role="alert">
+  
+  Please <a href="./login.xhtml">Login</a> to get access.
+</div>
+</div>
+</h:panelGroup>
+
+
+<h:panelGroup rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 2)}">
+
 <div class="container mt-4">
 <div class="row">
 <div class="col-12">
@@ -151,10 +163,9 @@ var greyIcon = new L.Icon({
 </script>
 
 
-</div><!-- /.col -->
 </div>
 </div>
-
+</div>
 
 
 
@@ -164,7 +175,7 @@ var greyIcon = new L.Icon({
 	<h1>Reported Ghost Nets</h1>
 	
 
-    <h:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(2)}" var="ghostNet" rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 2)}">
+    <h:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(2)}" var="ghostNet">
         <h:column>
             <f:facet name="header">ID</f:facet>
             #{ghostNet.id}
@@ -226,7 +237,7 @@ var greyIcon = new L.Icon({
         
     </h:dataTable>
 
-</div><!-- /.col -->
+</div>
 </div>
 </div>
 
@@ -237,7 +248,7 @@ var greyIcon = new L.Icon({
 	<h1>Recovered Ghost Nets</h1>
 	
 	<h:form>
-    <h:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(3)}" var="ghostNet" rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 2)}">
+    <h:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(3)}" var="ghostNet">
         <h:column>
             <f:facet name="header">ID</f:facet>
             #{ghostNet.id}
@@ -274,9 +285,11 @@ var greyIcon = new L.Icon({
     	</h:dataTable>
     	 </h:form>
     	
-</div><!-- /.col -->
 </div>
 </div>
+</div>
+
+</h:panelGroup>
 
 <div class="container mt-4">
 <div class="row">
@@ -285,7 +298,7 @@ var greyIcon = new L.Icon({
     <p class="text-center mt-2">2024 Shea Sepherd Foundation. All Rights Reserved.</p>
     <p class="text-center mb-2">We respect your privacy. This is a cookie-free domain that does not collect any personal data.</p>
   </footer>
-</div><!-- /.col -->
+</div>
 </div>
 </div>
 

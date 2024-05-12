@@ -93,8 +93,12 @@ Phone number: #{loginBean.phonenumber}
 
 	<h:form>
 	<p:outputPanel>
-    <p:inputText class="form-control mt-2" type="text" id="username-input" required="true" placeholder="Username" value="#{loginBean.username}"/>
-    <p:password class="form-control mt-2" id="password-input" required="true" placeholder="Password" value="#{loginBean.password}"/>
+    <label for="username-input">Username</label>
+    <p:inputText class="form-control mt-2" type="text" id="username-input" required="true" value="#{loginBean.username}"/>
+    
+    <label for="password-input">Password</label>  
+    <p:password class="form-control mt-2" id="password-input" required="true" value="#{loginBean.password}"/>
+    
     <p:commandButton class="btn btn-primary mt-2" type="submit" id="submit-button" value="Login" action="#{loginBean.login()}" update="username-input, password-input"/>
     </p:outputPanel>
     </h:form>
