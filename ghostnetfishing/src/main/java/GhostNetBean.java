@@ -71,13 +71,13 @@ public class GhostNetBean implements Serializable {
     	switch (this.statusCode) {
     		
     	case 1:
-    		markerColor = "greenIcon";
+    		markerColor = "redIcon";
     		break;
     	case 2:
     		markerColor = "yellowIcon";
     		break;
     	case 3:
-    		markerColor = "redIcon";
+    		markerColor = "greenIcon";
     		break;
     	case 4:
     		markerColor = "greyIcon";
