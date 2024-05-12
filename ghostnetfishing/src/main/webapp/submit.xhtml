@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
@@ -96,7 +97,15 @@ Phone number: #{loginBean.phonenumber}
     <p:inputText class="form-control mt-2" id="latitude" value="#{ghostNetBean.posLatitude}" />
     
     <label for="longitude">Longitude</label>    	
-    <p:inputText class="form-control mt-2" id="longitude"  value="#{ghostNetBean.posLongitude}" />
+    <p:inputText class="form-control mt-2" id="longitude" value="#{ghostNetBean.posLongitude}" />
+    
+    <label for="longitude">Size</label>    	    
+     <h:selectOneMenu class="form-select" id="Size" value="#{ghostNetBean.size}">
+        <f:selectItem itemLabel="Small" itemValue="1" />
+        <f:selectItem itemLabel="Medium" itemValue="2" />
+        <f:selectItem itemLabel="Huge" itemValue="3" />
+    </h:selectOneMenu>
+    
     
     <p:outputPanel rendered="#{loginBean.isLoggedIn}">
     <input type="text" class="form-control-plaintext" value="Submit as known user: #{loginBean.username}" />
@@ -117,16 +126,12 @@ Phone number: #{loginBean.phonenumber}
 
 
 
-<footer class="text-white bg-primary fixed-bottom">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12 text-center mt-2">
-        <p>2024 Shea Sepherd Foundation. All Rights Reserved.</p>
-        <p>We respect your privacy. This is a cookie-free domain that does not collect any personal data.</p>
-      </div>
-    </div>
-  </div>
-</footer>
+<div class="row mt-4">
+  <footer class="text-white bg-primary">
+    <p class="text-center mt-2">2024 Shea Sepherd Foundation. All Rights Reserved.</p>
+    <p class="text-center mb-2">We respect your privacy. This is a cookie-free domain that does not collect any personal data.</p>
+  </footer>
+</div><!-- /.row -->
 
 <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 

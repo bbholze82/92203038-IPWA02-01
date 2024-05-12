@@ -151,6 +151,12 @@ var greenIcon = new L.Icon({
             <f:facet name="header">Longitude</f:facet>
             #{ghostNet.posLongitude}
         </h:column>
+        
+         <h:column>
+            <f:facet name="header">Size</f:facet>
+            #{ghostNet.size}
+        </h:column>
+        
         <h:column>
             <f:facet name="header">Status code</f:facet>
             #{ghostNet.statusCode}
@@ -180,7 +186,14 @@ var greenIcon = new L.Icon({
             <f:facet name="header">Action</f:facet>
             <h:form>
             <h:commandButton class="btn btn-primary mt-2" value="Claim salvage" action="#{ghostNet.claimSalvage(loginBean.id)}" rendered="#{ghostNet.statusCode eq 1}" />            
-            <h:commandButton class="btn btn-warning mt-2" value="Cancel salvage" action="#{ghostNet.cancelSalvage(loginBean.id)}" rendered="#{(ghostNet.statusCode eq 2) and (ghostNet.salvageClaimedByUserId eq loginBean.id)}" />
+            <h:commandButton class="btn btn-danger mt-2" value="Cancel salvage" action="#{ghostNet.cancelSalvage(loginBean.id)}" rendered="#{(ghostNet.statusCode eq 2) and (ghostNet.salvageClaimedByUserId eq loginBean.id)}" />
+            <h:commandButton class="btn btn-success mt-2" value="Mark as recovered" action="#{ghostNet.markAsRecovered(loginBean.id)}" rendered="#{(ghostNet.statusCode eq 2) and (ghostNet.salvageClaimedByUserId eq loginBean.id)}" />
+            <h:panelGroup rendered="#{ghostNet.statusCode eq 3}">
+            	<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+  				<path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+				</svg>
+            </h:panelGroup>
+            
             </h:form>
             
         </h:column>
@@ -192,17 +205,12 @@ var greenIcon = new L.Icon({
 </div>
 
 
-
-<footer class="text-white bg-primary fixed-bottom">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12 text-center mt-2">
-        <p>2024 Shea Sepherd Foundation. All Rights Reserved.</p>
-        <p>We respect your privacy. This is a cookie-free domain that does not collect any personal data.</p>
-      </div>
-    </div>
-  </div>
-</footer>
+<div class="row mt-4">
+  <footer class="text-white bg-primary">
+    <p class="text-center mt-2">2024 Shea Sepherd Foundation. All Rights Reserved.</p>
+    <p class="text-center mb-2">We respect your privacy. This is a cookie-free domain that does not collect any personal data.</p>
+  </footer>
+</div><!-- /.row -->
 
 <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 

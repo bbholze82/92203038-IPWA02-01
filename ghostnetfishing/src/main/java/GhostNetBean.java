@@ -12,6 +12,7 @@ public class GhostNetBean implements Serializable {
     private Integer id;
     private String posLongitude;
     private String posLatitude;
+    private Integer size; 
     private String author;
     private Integer statusCode;
     private Integer reportedByUserId;
@@ -105,7 +106,7 @@ public class GhostNetBean implements Serializable {
  
     
     public String submitData(String inputUserId) throws ClassNotFoundException { 
-      	dataController.sendNewGhostNetData(this.posLatitude, this.posLongitude, Integer.valueOf(inputUserId));
+      	dataController.sendNewGhostNetData(this.posLatitude, this.posLongitude, this.size, Integer.valueOf(inputUserId));
     	return "view.xhtml?faces-redirect=true";
     }
     
@@ -133,6 +134,12 @@ public class GhostNetBean implements Serializable {
     
     public String cancelSalvage(Integer userId) throws ClassNotFoundException {
     	dataController.editSalvageStatusOfGhostNet(this, userId, 2);
+    	return "hunter.xhtml?faces-redirect=true";
+    }
+
+    
+    public String markAsRecovered(Integer userId) throws ClassNotFoundException {
+    	dataController.editSalvageStatusOfGhostNet(this, userId, 3);
     	return "hunter.xhtml?faces-redirect=true";
     }
     
@@ -180,5 +187,13 @@ public class GhostNetBean implements Serializable {
     	}
     }
    
+    
+    public Integer getSize() {
+    	return this.size;
+    }
+    
+    public void setSize(Integer sizeVal) {
+    	this.size = sizeVal;
+    }
    
 }

@@ -90,7 +90,9 @@ public class DataService {
                 String longitude =  resultSet.getString("longitude");
                 //String author = resultSet.getString("author");
                 String statusCode = resultSet.getString("statuscode");
-               
+            	Integer size = Integer.valueOf(resultSet.getString("size"));
+
+                
                 Integer reportedByUserId;
                 try {
                 	 reportedByUserId = Integer.valueOf(resultSet.getString("reportedby"));
@@ -115,6 +117,7 @@ public class DataService {
                 workGhostNet.setId(id);
                 workGhostNet.setPosLatitude(latitude);
                 workGhostNet.setPosLongitude(longitude);
+                workGhostNet.setSize(size);
                 workGhostNet.setStatusCode(Integer.valueOf(statusCode));
          
                 results.add(workGhostNet);
@@ -146,7 +149,13 @@ public class DataService {
                 updateStatement.setString(2, "1");
                 updateStatement.setString(3, inputGhostNet.getId().toString());
             	break;
-            }
+            
+        	case 3:
+        		updateStatement.setString(1, null);
+        		updateStatement.setString(2, "3");
+        		updateStatement.setString(3, inputGhostNet.getId().toString());
+        		break;
+        	}
             
             updateStatement.executeUpdate();
             updateStatement.close();
@@ -156,20 +165,21 @@ public class DataService {
         }
     }
     
-    public void sendNewGhostNetData(String inputLatitude, String inputLongitude, Integer reportedByUserId) throws ClassNotFoundException {
+    public void sendNewGhostNetData(String inputLatitude, String inputLongitude, Integer inputSize, Integer reportedByUserId) throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            String query = "INSERT INTO ghostnets (latitude, longitude, statuscode, reportedBy) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO ghostnets (latitude, longitude, size, statuscode, reportedBy) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             
             statement.setString(1, inputLatitude);
             statement.setString(2, inputLongitude);
-            statement.setString(3, "1");
+            statement.setString(3, inputSize.toString());
+            statement.setString(4, "1");
             
             if (reportedByUserId == 0) {
-            	statement.setString(4, null);
+            	statement.setString(5, null);
             } else {
-                statement.setString(4, reportedByUserId.toString());
+                statement.setString(5, reportedByUserId.toString());
             }
             
             statement.executeUpdate();
