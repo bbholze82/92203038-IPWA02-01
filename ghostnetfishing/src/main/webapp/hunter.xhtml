@@ -23,6 +23,7 @@
 
 <h:body>
 
+<h:panelGroup rendered="#{serverBean.debugMode}">
 <div class="alert alert-primary" role="alert">
 #{serverBean.setRequestCounterUpByOne()}
 Starttime: #{serverBean.startTime} <br/>
@@ -39,6 +40,7 @@ Last name: #{loginBean.lastname} <br/>
 Phone number: #{loginBean.phonenumber}
 </h:panelGroup>
 </div>
+</h:panelGroup>
 
 <div class="container">
 <div class="row">
@@ -101,9 +103,16 @@ Phone number: #{loginBean.phonenumber}
 <h:panelGroup rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 2)}">
 
 <div class="container mt-4">
+
 <div class="row">
 <div class="col-12">
-	<div id="map"></div>
+<h1>Hunters view</h1>
+</div>
+</div>
+
+<div class="row">
+<div class="col-12">
+<div id="map"></div>
 
 <script>
 
@@ -170,9 +179,16 @@ var greyIcon = new L.Icon({
 
 
 <div class="container mt-4">
+
 <div class="row">
 <div class="col-12">
-	<h1>Reported Ghost Nets</h1>
+<h1>Reported Ghost Nets</h1>
+</div>
+</div>
+
+<div class="row">
+<div class="col-12">
+	
 	
 
     <h:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(2)}" var="ghostNet">

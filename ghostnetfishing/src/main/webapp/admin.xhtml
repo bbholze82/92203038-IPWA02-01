@@ -19,6 +19,7 @@
 
 <h:body>
 
+<h:panelGroup rendered="#{serverBean.debugMode}">
 <div class="alert alert-primary" role="alert">
 #{serverBean.setRequestCounterUpByOne()}
 Starttime: #{serverBean.startTime} <br/>
@@ -35,7 +36,7 @@ Last name: #{loginBean.lastname} <br/>
 Phone number: #{loginBean.phonenumber}
 </h:panelGroup>
 </div>
-
+</h:panelGroup>
 
 <div class="container">
 <div class="row">
@@ -89,15 +90,22 @@ Phone number: #{loginBean.phonenumber}
 
 
 <div class="container mt-4">
+
 <div class="row">
 <div class="col-12">
-	<h1>Admin</h1>
+<h1>Admin</h1>
+</div>
+</div>
+
+<div class="row">
+<div class="col-12">
+	
 
  <h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/>
  <h:outputText value="You are logged in." rendered="#{loginBean.isLoggedIn}"/>
 
 
-</div><!-- /.col -->
+</div>
 </div>
 </div>
 
@@ -110,7 +118,7 @@ Phone number: #{loginBean.phonenumber}
     <p class="text-center mt-2">2024 Shea Sepherd Foundation. All Rights Reserved.</p>
     <p class="text-center mb-2">We respect your privacy. This is a cookie-free domain that does not collect any personal data.</p>
   </footer>
-</div><!-- /.col -->
+</div>
 </div>
 </div>
 

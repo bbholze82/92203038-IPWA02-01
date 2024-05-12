@@ -13,13 +13,15 @@ public class ServerBean {
     private LocalDateTime startTime;
     private Integer requestCounter;
     private Integer entriesinDB;
+    Boolean debugMode;
     
     private final DataController dataController = new DataController();
     
 	public ServerBean() {
-        startTime = LocalDateTime.now();
-        requestCounter = 0;
-        entriesinDB = 0;
+        this.startTime = LocalDateTime.now();
+        this.requestCounter = 0;
+        this.entriesinDB = 0;
+        this.debugMode = false;
 	}
 	
 	public String getStartTime() {
@@ -40,6 +42,14 @@ public class ServerBean {
 	public Integer countEntriesinDB() throws ClassNotFoundException {
 		entriesinDB = dataController.getSumofGhostNetEntriesInDB();
 		return entriesinDB;
+	}
+	
+	public Boolean getDebugMode() {
+		return this.debugMode;
+	}
+	
+	public void setDebugMode(Boolean inputVal) {
+		this.debugMode = inputVal;
 	}
 	
 }

@@ -17,6 +17,7 @@
 
 <h:body>
 
+<h:panelGroup rendered="#{serverBean.debugMode}">
 <div class="alert alert-primary" role="alert">
 #{serverBean.setRequestCounterUpByOne()}
 Starttime: #{serverBean.startTime} <br/>
@@ -33,6 +34,7 @@ Last name: #{loginBean.lastname} <br/>
 Phone number: #{loginBean.phonenumber}
 </h:panelGroup>
 </div>
+</h:panelGroup>
 
 <div class="container">
 <div class="row">
@@ -84,11 +86,14 @@ Phone number: #{loginBean.phonenumber}
 
 
 <div class="container mt-4">
+
 <div class="row">
 <div class="col-12">
-	<h1>Was ist ein Geisternetz?</h1>
+<h1>Was ist ein Geisternetz?</h1>
+</div>
+</div>
 
-
+<div class="row">
 <div class="col-6">
 	<p>Als Geisternetz wird ein Fischernetz bezeichnet, das beim Fischfang (z. B. im Sturm, in Notsituation, bei Netzhakern) verlorenging oder absichtlich im Meer entsorgt wurde und seitdem dort herumtreibt oder sich am Meeresgrund verfangen hat. Hierbei kann es sich um kleinere Netze aus der küstennahen Stellnetzfischerei oder Reusenfischerei handeln, aber auch um große Schleppnetze oder Treibnetze, die in der Hochseefischerei eingesetzt werden. Zusätzlich gehen zu den eigentlichen Netzen auch noch die dazugehörigen Leinen, Scherbretter und andere Teile verloren und können dann sehr lange Zeit, oft auch für Jahrzehnte im Meer treiben. </p>
 </div>
@@ -96,9 +101,8 @@ Phone number: #{loginBean.phonenumber}
 <div class="col-6">
 	<h:graphicImage class="img-fluid rounded float-start" url="./assets/static/images/ghostnet01.jpg"/> 
 </div>
+</div>
 
-</div>
-</div>
 </div>
 
 
@@ -109,7 +113,7 @@ Phone number: #{loginBean.phonenumber}
     <p class="text-center mt-2">2024 Shea Sepherd Foundation. All Rights Reserved.</p>
     <p class="text-center mb-2">We respect your privacy. This is a cookie-free domain that does not collect any personal data.</p>
   </footer>
-</div><!-- /.col -->
+</div>
 </div>
 </div>
 
