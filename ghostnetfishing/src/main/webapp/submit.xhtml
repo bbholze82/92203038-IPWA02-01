@@ -17,7 +17,7 @@
 </div>
 
 <div class="row">
-<div class="col-12">
+<div class="col-8">
 
 	
 	<h:form>
@@ -37,12 +37,10 @@
     
     
     <p:outputPanel rendered="#{loginBean.isLoggedIn}">
-    <input type="text" class="form-control-plaintext" value="Submit as known user: #{loginBean.username}" />
     <p:commandButton class="btn btn-primary mt-2" value="Submit" action="#{ghostNetBean.submitData(loginBean.id)}" />
     </p:outputPanel>
     
     <p:outputPanel rendered="#{not loginBean.isLoggedIn}">
-    <input type="text" class="form-control-plaintext" value="Submit as unknown user"/>
     <p:commandButton class="btn btn-primary mt-2" value="Submit" action="#{ghostNetBean.submitData(0)}" />
     </p:outputPanel>
     
@@ -50,6 +48,24 @@
 	</h:form>
 
 </div>
+
+
+<div class="col-4">
+
+<p:outputPanel rendered="#{loginBean.isLoggedIn}">
+<div class="alert alert-success" role="alert">
+Submit as known user: #{loginBean.username}
+</div>
+</p:outputPanel>
+
+<p:outputPanel rendered="#{not loginBean.isLoggedIn}">
+<div class="alert alert-secondary" role="alert">
+Submit as unknown user
+</div>
+</p:outputPanel>
+
+</div>
+
 </div>
 </div>
 
