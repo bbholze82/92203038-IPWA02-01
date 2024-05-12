@@ -24,10 +24,17 @@
 Starttime: #{serverBean.startTime} <br/>
 Requests: #{serverBean.requestCounter} <br/>
 Entries in DB: #{serverBean.countEntriesinDB()} <br/>
-<h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/>
-<h:outputText value="#{loginBean.username}, You are logged in." rendered="#{loginBean.isLoggedIn}"/>
+<h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/> <br/>
+<h:panelGroup rendered="#{loginBean.isLoggedIn}">
+You are logged in. <br/>
+ID: #{loginBean.id} <br/>
+Role: #{loginBean.role} <br/>
+User name: #{loginBean.username} <br/>
+First name: #{loginBean.firstname} <br/>
+Last name: #{loginBean.lastname} <br/>
+Phone number: #{loginBean.phonenumber}
+</h:panelGroup>
 </div>
-
 
 
 <div class="container">

@@ -5,18 +5,21 @@ import java.io.Serializable;
 @Named
 @SessionScoped
 public class LoginBean implements Serializable {
-	private String id;
+	private Integer id;
+    private Integer role;
     private String username;
     private String password;
     private String firstname;
-    private String surname;
-    private Integer role;
+    private String lastname;
+    private String phonenumber;
+
+    
+    //
     private String errorMessage;
     private String isLoggedInAs;
     private Boolean isLoggedIn;
 
     public LoginBean() {
-    	this.id = "3";
     }
 
     public String getUsername() {
@@ -58,34 +61,40 @@ public class LoginBean implements Serializable {
     
     public String login() throws ClassNotFoundException {
         DataController dataController = new DataController();
-        String status = dataController.loginUser(username, password);
-        if (status.equals("admin")){
-            isLoggedInAs = status;
-            this.setIsLoggedIn(true);
-            return "admin";
-        } else if (status.equals("hunter")) {
-            isLoggedInAs = status;
-            this.setIsLoggedIn(true);
-            return "hunter";
+        Boolean loginSuccessfully = dataController.loginUser(this);
+        
+        if (loginSuccessfully) {
+        	this.setIsLoggedIn(true);
+        	
+        	if (this.role == 1) 
+        		return "admin.xhtml?faces-redirect=true";
+        	
+        	if (this.role == 2) 
+        		return "hunter.xhtml?faces-redirect=true";
+        	
+        	return "login.xhtml?faces-redirect=true";
         } else {
-            username = null;
-            password = null;
-            isLoggedInAs = null;
-            errorMessage = status;
+        	return "login.xhtml?faces-redirect=true";
         }
-        return status;
     }
 
     public String logout() {
 
-        username = null;
-        password = null;
-        errorMessage = null;
-        isLoggedInAs = null;
+    	this.id = null;
+        this.role = null;
+        this.username = null;
+        this.password = null;
+        this.firstname = null;
+        this.lastname = null;
+        
+        //
+        this.errorMessage = null;
+        this.isLoggedInAs = null;
+        this.isLoggedIn = null;
 
         this.setIsLoggedIn(false);
         
-        return "index";
+    	return "index.xhtml?faces-redirect=true";
     }
     
     
@@ -97,28 +106,36 @@ public class LoginBean implements Serializable {
     	this.role = role;
     }
     
-    public String getFristName() {
+    public String getFirstname() {
     	return this.firstname;
     }
     
-    public void setFristName(String firstname) {
+    public void setFirstname(String firstname) {
     	this.firstname = firstname;
     }
     
-    public String getSurName() {
-    	return this.surname;
+    public String getLastname() {
+    	return this.lastname;
     }
     
-    public void setSurName(String surname) {
-    	this.surname = surname;
+    public void setLastname(String lastname) {
+    	this.lastname = lastname;
     }
     
-    public String getId() {
+    public Integer getId() {
     	return this.id;
     }
     
-    public void setId(String id) {
+    public void setId(Integer id) {
     	this.id = id;
+    }
+    
+    public String getPhonenumber() {
+    	return this.phonenumber;
+    }
+    
+    public void setPhonenumber(String phonenumber) {
+    	this.phonenumber = phonenumber;
     }
     
 }

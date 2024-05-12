@@ -24,10 +24,17 @@
 Starttime: #{serverBean.startTime} <br/>
 Requests: #{serverBean.requestCounter} <br/>
 Entries in DB: #{serverBean.countEntriesinDB()} <br/>
-<h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/>
-<h:outputText value="#{loginBean.username}, You are logged in." rendered="#{loginBean.isLoggedIn}"/>
+<h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/> <br/>
+<h:panelGroup rendered="#{loginBean.isLoggedIn}">
+You are logged in. <br/>
+ID: #{loginBean.id} <br/>
+Role: #{loginBean.role} <br/>
+User name: #{loginBean.username} <br/>
+First name: #{loginBean.firstname} <br/>
+Last name: #{loginBean.lastname} <br/>
+Phone number: #{loginBean.phonenumber}
+</h:panelGroup>
 </div>
-
 
 <div class="container">
 <div class="row">
@@ -84,14 +91,24 @@ Entries in DB: #{serverBean.countEntriesinDB()} <br/>
 	<h1>Submit data</h1>
 	
 	<h:form>
-	<p:outputPanel>
+	<p:outputPanel rendered="#{loginBean.isLoggedIn}">
     <p:inputText class="form-control mt-2" id="latitude" placeholder="Latitude" value="#{ghostNetBean.posLatitude}" />
     <p:inputText class="form-control mt-2" id="longitude" placeholder="Longitude" value="#{ghostNetBean.posLongitude}" />
-    <p:inputText class="form-control mt-2" id="reportedBy" placeholder="Your Name" value="#{loginBean.username}" rendered="#{loginBean.isLoggedIn}" />  
-      
+    <p:inputText class="form-control mt-2" id="reportedBy" value="#{loginBean.username}" readonly="true"/>
     <p:commandButton class="btn btn-primary mt-2" value="Submit" action="#{ghostNetBean.submitData()}" />
 	</p:outputPanel>
 	</h:form>
+	
+	<h:form>
+	<p:outputPanel rendered="#{not loginBean.isLoggedIn}">
+    <p:inputText class="form-control mt-2" id="latitude" placeholder="Latitude" value="#{ghostNetBean.posLatitude}" />
+    <p:inputText class="form-control mt-2" id="longitude" placeholder="Longitude" value="#{ghostNetBean.posLongitude}" />
+    <p:inputText class="form-control mt-2" id="reportedBy" value="Anonymous" readonly="true"/> 
+    <p:commandButton class="btn btn-primary mt-2" value="Submit" action="#{ghostNetBean.submitData()}" />
+	</p:outputPanel>
+	</h:form>
+	
+	
 
 </div><!-- /.col -->
 </div>

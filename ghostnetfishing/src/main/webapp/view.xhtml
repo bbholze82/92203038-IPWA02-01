@@ -29,8 +29,16 @@
 Starttime: #{serverBean.startTime} <br/>
 Requests: #{serverBean.requestCounter} <br/>
 Entries in DB: #{serverBean.countEntriesinDB()} <br/>
-<h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/>
-<h:outputText value="#{loginBean.username}, You are logged in." rendered="#{loginBean.isLoggedIn}"/>
+<h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/> <br/>
+<h:panelGroup rendered="#{loginBean.isLoggedIn}">
+You are logged in. <br/>
+ID: #{loginBean.id} <br/>
+Role: #{loginBean.role} <br/>
+User name: #{loginBean.username} <br/>
+First name: #{loginBean.firstname} <br/>
+Last name: #{loginBean.lastname} <br/>
+Phone number: #{loginBean.phonenumber}
+</h:panelGroup>
 </div>
 
 <div class="container">
@@ -146,7 +154,7 @@ var greyIcon = new L.Icon({
 });
 
 
-<ui:repeat value="#{ghostNetBean.allGhostNets}" var="ghostnet">
+<ui:repeat value="#{ghostNetBean.getAllGhostNets(0)}" var="ghostnet">
      var marker = L.marker([<h:outputText value="#{ghostnet.posLatitude}"/>, <h:outputText value="#{ghostnet.posLongitude}"/>], <h:outputText value="#{ghostnet.codeForMarker}"/>).addTo(map); 
 </ui:repeat>
 

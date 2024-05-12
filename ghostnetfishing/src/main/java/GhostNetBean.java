@@ -9,23 +9,23 @@ import java.util.List;
 @Named
 @RequestScoped
 public class GhostNetBean implements Serializable {
-    private String id;
+    private Integer id;
     private String posLongitude;
     private String posLatitude;
     private String author;
     private Integer statusCode;
-    private Integer reportedBy;
-    private String earmarkedBy;
+    private Integer reportedByUserId;
+    private Integer salvageClaimedByUserId;
     private String reportTimestamp;
     
     private final DataController dataController = new DataController();
 
     
-    public String getId() {
+    public Integer getId() {
         return this.id;
     }
     
-    public void setId(String id) {
+    public void setId(Integer id) {
     	this.id = id;
     }
     
@@ -88,29 +88,31 @@ public class GhostNetBean implements Serializable {
     	return markerCode;
     }
     
-    public List<GhostNetBean> getAllGhostNets() throws ClassNotFoundException {
-    	return dataController.getAllGhostNets();
-    }
-    
-    public String getEarmarkedBy() {
-    	return this.earmarkedBy;
+    public List<GhostNetBean> getAllGhostNets(int modeswitch) throws ClassNotFoundException {
+    	return dataController.getAllGhostNets(modeswitch);
     }
 
-    public void setEarmarkedBy(String username) {
-    	this.earmarkedBy = username;
+    
+    public Integer getSalvageClaimedByUserId() {
+    	return this.salvageClaimedByUserId;
     }
+
+    public void setSalvageClaimedByUserId(Integer salvageClaimedByUserId) {
+    	this.salvageClaimedByUserId = salvageClaimedByUserId;
+    }
+ 
     
     public String submitData() throws ClassNotFoundException { 
     	dataController.sendNewGhostNetData(this.posLatitude, this.posLongitude);	
     	return "view.xhtml?faces-redirect=true";
     }
     
-    public Integer getReportedBy() {
-    	return this.reportedBy;
+    public Integer getReportedByUserId() {
+    	return this.reportedByUserId;
     }
     
-    public void setReportedBy(Integer hunterBean) {
-    	this.reportedBy = hunterBean;
+    public void setReportedByUserId(Integer reportedByUserId) {
+    	this.reportedByUserId = reportedByUserId;
     }
     
     public String getReportTimestamp() {
@@ -121,10 +123,34 @@ public class GhostNetBean implements Serializable {
     	this.reportTimestamp = reportTimestamp;
     }
     
-    public String earmarkIt(String userId) throws ClassNotFoundException {
-    	this.setStatusCode(2);
-    	dataController.earmarkGhostNet(this.id, userId);
+    public String claimSalvage(Integer userId) throws ClassNotFoundException {
+    	this.salvageClaimedByUserId = userId;
+    	dataController.editSalvageStatusOfGhostNet(this, userId, 1);
     	return "hunter.xhtml?faces-redirect=true";
+    }
+    
+    public String cancelSalvage(Integer userId) throws ClassNotFoundException {
+    	dataController.editSalvageStatusOfGhostNet(this, userId, 2);
+    	return "hunter.xhtml?faces-redirect=true";
+    }
+    
+    
+    public String getSalvageClaimedByUsername() throws ClassNotFoundException {
+    	String result = "N.N.";
+    	if (this.salvageClaimedByUserId >= 0) {
+    		return dataController.getAttributesFromDBUsers(this.salvageClaimedByUserId, 1);
+    	} else {
+    		return result;
+    	}
+    }
+    
+    public String getReportedByUsername() throws ClassNotFoundException {
+    	String result = "N.N.";
+    	if (this.salvageClaimedByUserId >= 0) {
+    		return dataController.getAttributesFromDBUsers(this.reportedByUserId , 1);
+    	} else {
+    		return result;
+    	}
     }
    
    
