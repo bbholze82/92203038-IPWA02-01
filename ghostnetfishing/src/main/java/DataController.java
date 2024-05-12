@@ -14,8 +14,8 @@ public class DataController {
         return dataService.login(inputBean);
     }
     
-    public void sendNewGhostNetData(String inputLatitude, String inputLongitude) throws ClassNotFoundException {
-    	dataService.sendNewGhostNetData(inputLatitude, inputLongitude);
+    public void sendNewGhostNetData(String inputLatitude, String inputLongitude, Integer reportedByUserId) throws ClassNotFoundException {
+    	dataService.sendNewGhostNetData(inputLatitude, inputLongitude, reportedByUserId);
     }
     
     public Integer getSumofGhostNetEntriesInDB() throws ClassNotFoundException {

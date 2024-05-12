@@ -168,13 +168,13 @@ var greenIcon = new L.Icon({
         
         <h:column>
             <f:facet name="header">Salvage claimed by UserId</f:facet>
-            #{ghostNet.salvageClaimedByUserId}
+            <h:outputText value="#{ghostNet.salvageClaimedByUserId}" rendered="#{ghostNet.salvageIsClaimed}"/>
         </h:column>
         
          <h:column>
             <f:facet name="header">Salvage claimed by Username</f:facet>
-            #{ghostNet.salvageClaimedByUsername}
-        </h:column>
+            <h:outputText value="#{ghostNet.salvageClaimedByUsername}" rendered="#{ghostNet.salvageIsClaimed}"/>
+         </h:column>
         
         <h:column>
             <f:facet name="header">Action</f:facet>

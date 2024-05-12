@@ -15,8 +15,10 @@ public class GhostNetBean implements Serializable {
     private String author;
     private Integer statusCode;
     private Integer reportedByUserId;
-    private Integer salvageClaimedByUserId;
     private String reportTimestamp;
+    private Boolean reportedByKnownUser;
+    private Integer salvageClaimedByUserId;
+    private Boolean salvageIsClaimed;
     
     private final DataController dataController = new DataController();
 
@@ -102,8 +104,8 @@ public class GhostNetBean implements Serializable {
     }
  
     
-    public String submitData() throws ClassNotFoundException { 
-    	dataController.sendNewGhostNetData(this.posLatitude, this.posLongitude);	
+    public String submitData(String inputUserId) throws ClassNotFoundException { 
+      	dataController.sendNewGhostNetData(this.posLatitude, this.posLongitude, Integer.valueOf(inputUserId));
     	return "view.xhtml?faces-redirect=true";
     }
     
@@ -134,10 +136,30 @@ public class GhostNetBean implements Serializable {
     	return "hunter.xhtml?faces-redirect=true";
     }
     
+    public Boolean getSalvageIsClaimed() {
+    	return this.salvageIsClaimed;
+    }
+    
+    public void setSalvageIsClaimed(Boolean inputVal) {
+    	this.salvageIsClaimed = inputVal;
+    }
+    
+    public Boolean getReportedByKnowUser() {
+    	return this.reportedByKnownUser;
+    }
+    
+    public void setReportedByKnowUser(Boolean inputVal) {
+    	this.reportedByKnownUser = inputVal;
+    }
     
     public String getSalvageClaimedByUsername() throws ClassNotFoundException {
     	String result = "N.N.";
-    	if (this.salvageClaimedByUserId >= 0) {
+    	
+    	if (!this.salvageIsClaimed) {
+    		return result;
+    	}
+    	
+    	if (this.salvageClaimedByUserId >= 1) {
     		return dataController.getAttributesFromDBUsers(this.salvageClaimedByUserId, 1);
     	} else {
     		return result;
@@ -146,7 +168,12 @@ public class GhostNetBean implements Serializable {
     
     public String getReportedByUsername() throws ClassNotFoundException {
     	String result = "N.N.";
-    	if (this.salvageClaimedByUserId >= 0) {
+    	
+    	if (!this.reportedByKnownUser) {
+    		return result;
+    	}
+    	
+    	if (this.reportedByUserId >= 1) {
     		return dataController.getAttributesFromDBUsers(this.reportedByUserId , 1);
     	} else {
     		return result;

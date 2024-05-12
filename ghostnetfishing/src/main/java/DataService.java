@@ -81,6 +81,10 @@ public class DataService {
             resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
+            	
+                GhostNetBean workGhostNet = new GhostNetBean();
+
+            	
                 Integer id = Integer.valueOf(resultSet.getString("id"));
                 String latitude =  resultSet.getString("latitude");
                 String longitude =  resultSet.getString("longitude");
@@ -90,32 +94,29 @@ public class DataService {
                 Integer reportedByUserId;
                 try {
                 	 reportedByUserId = Integer.valueOf(resultSet.getString("reportedby"));
+                     workGhostNet.setReportedByUserId(reportedByUserId);
+                     workGhostNet.setReportedByKnowUser(true);
                 } catch (Exception e) {
-                	reportedByUserId = 2;
+                    workGhostNet.setReportedByKnowUser(false);
                 }
                 
                 Integer salvageClaimedByUserId;
                 try {
                 	salvageClaimedByUserId = Integer.valueOf(resultSet.getString("claimedby"));
+                    workGhostNet.setSalvageClaimedByUserId(salvageClaimedByUserId);
+                    workGhostNet.setSalvageIsClaimed(true);
                 } catch (Exception e) {
-                	salvageClaimedByUserId = 2;
+                	workGhostNet.setSalvageIsClaimed(false);
                 }
                 
                 String reportTimestamp = resultSet.getString("reportts");
 
-
-                GhostNetBean workGhostNet = new GhostNetBean();
                 
                 workGhostNet.setId(id);
                 workGhostNet.setPosLatitude(latitude);
                 workGhostNet.setPosLongitude(longitude);
                 workGhostNet.setStatusCode(Integer.valueOf(statusCode));
-                workGhostNet.setReportTimestamp(reportTimestamp);
-                workGhostNet.setReportedByUserId(reportedByUserId);
-                workGhostNet.setSalvageClaimedByUserId(salvageClaimedByUserId);
-
-                
-                
+         
                 results.add(workGhostNet);
         }
 
@@ -155,20 +156,23 @@ public class DataService {
         }
     }
     
-    public void sendNewGhostNetData(String inputLatitude, String inputLongitude) throws ClassNotFoundException {
+    public void sendNewGhostNetData(String inputLatitude, String inputLongitude, Integer reportedByUserId) throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            String query = "INSERT INTO ghostnets (latitude, longitude, statuscode) VALUES (?, ?, ?)";
+            String query = "INSERT INTO ghostnets (latitude, longitude, statuscode, reportedBy) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
+            
             statement.setString(1, inputLatitude);
             statement.setString(2, inputLongitude);
             statement.setString(3, "1");
-            if (statement.executeUpdate() == 0){
-                //pendingStatus = "Request failed";
-            }else{
-                //pendingStatus = "Request sent successfully";
+            
+            if (reportedByUserId == 0) {
+            	statement.setString(4, null);
+            } else {
+                statement.setString(4, reportedByUserId.toString());
             }
-
+            
+            statement.executeUpdate();
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();

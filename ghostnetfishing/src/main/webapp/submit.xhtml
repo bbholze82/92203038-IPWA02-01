@@ -91,24 +91,25 @@ Phone number: #{loginBean.phonenumber}
 	<h1>Submit data</h1>
 	
 	<h:form>
-	<p:outputPanel rendered="#{loginBean.isLoggedIn}">
-    <p:inputText class="form-control mt-2" id="latitude" placeholder="Latitude" value="#{ghostNetBean.posLatitude}" />
-    <p:inputText class="form-control mt-2" id="longitude" placeholder="Longitude" value="#{ghostNetBean.posLongitude}" />
-    <p:inputText class="form-control mt-2" id="reportedBy" value="#{loginBean.username}" readonly="true"/>
-    <p:commandButton class="btn btn-primary mt-2" value="Submit" action="#{ghostNetBean.submitData()}" />
+	<p:outputPanel>
+    <label for="latitude">Latitude</label>    	
+    <p:inputText class="form-control mt-2" id="latitude" value="#{ghostNetBean.posLatitude}" />
+    
+    <label for="longitude">Longitude</label>    	
+    <p:inputText class="form-control mt-2" id="longitude"  value="#{ghostNetBean.posLongitude}" />
+    
+    <p:outputPanel rendered="#{loginBean.isLoggedIn}">
+    <input type="text" class="form-control-plaintext" value="Submit as known user: #{loginBean.username}" />
+    <p:commandButton class="btn btn-primary mt-2" value="Submit" action="#{ghostNetBean.submitData(loginBean.id)}" />
+    </p:outputPanel>
+    
+    <p:outputPanel rendered="#{not loginBean.isLoggedIn}">
+    <input type="text" class="form-control-plaintext" value="Submit as unknown user"/>
+    <p:commandButton class="btn btn-primary mt-2" value="Submit" action="#{ghostNetBean.submitData(0)}" />
+    </p:outputPanel>
+    
 	</p:outputPanel>
 	</h:form>
-	
-	<h:form>
-	<p:outputPanel rendered="#{not loginBean.isLoggedIn}">
-    <p:inputText class="form-control mt-2" id="latitude" placeholder="Latitude" value="#{ghostNetBean.posLatitude}" />
-    <p:inputText class="form-control mt-2" id="longitude" placeholder="Longitude" value="#{ghostNetBean.posLongitude}" />
-    <p:inputText class="form-control mt-2" id="reportedBy" value="Anonymous" readonly="true"/> 
-    <p:commandButton class="btn btn-primary mt-2" value="Submit" action="#{ghostNetBean.submitData()}" />
-	</p:outputPanel>
-	</h:form>
-	
-	
 
 </div><!-- /.col -->
 </div>
