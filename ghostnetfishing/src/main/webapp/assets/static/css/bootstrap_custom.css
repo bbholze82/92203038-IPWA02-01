@@ -1,0 +1,35 @@
+ html, body {
+ display: flex;
+ flex-direction: column;
+ height: 100%;
+ margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+}
+
+.navbar-expand-full {
+	width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 0;
+}
+
+footer {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 0;
+}
