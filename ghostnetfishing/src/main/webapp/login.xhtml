@@ -19,17 +19,16 @@
 <div class="col-12">
 	
 
-	<h:form>
-	<p:outputPanel>
-    <label for="username-input">Username</label>
-    <p:inputText class="form-control mt-2" type="text" id="username-input" required="true" value="#{loginBean.username}"/>
-    
-    <label for="password-input">Password</label>  
-    <p:password class="form-control mt-2" id="password-input" required="true" value="#{loginBean.password}"/>
-    
-    <p:commandButton class="btn btn-primary mt-2" type="submit" id="submit-button" value="Login" action="#{loginBean.login()}" update="username-input, password-input"/>
-    </p:outputPanel>
-    </h:form>
+<h:form>
+<p:outputLabel for="username-input" value="Username" />
+<p:inputText class="form-control mt-2" id="username-input" required="true" value="#{loginBean.username}" />
+
+<p:outputLabel for="password-input" value="Password" />
+<p:password class="form-control mt-2" id="password-input" required="true" value="#{loginBean.password}" />
+
+<p:commandButton class="btn btn-primary mt-2" id="submit-button" value="Login" action="#{loginBean.login()}" update="username-input, password-input" />
+</h:form>
+
 
 </div>
 </div>
