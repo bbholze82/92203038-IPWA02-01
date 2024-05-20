@@ -20,12 +20,17 @@ body {
     flex: 1;
 }
 
-.navbar-expand-full {
-	width: 100%;
-    background-color: #007bff;
-    color: white;
-    padding: 10px 0;
-}
+ .navbar-custom {
+     background-color: #007bff;
+ }
+ .navbar-custom .navbar-brand,
+ .navbar-custom .nav-link,
+ .navbar-custom .navbar-toggler-icon {
+     color: white;
+ }
+ .navbar-custom .navbar-toggler {
+     border-color: rgba(255, 255, 255, 0.1);
+ }
 
 footer {
     width: 100%;
