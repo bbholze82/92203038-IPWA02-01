@@ -30,7 +30,6 @@ public class DataController {
     	dataService.editSalvageStatusOfGhostNet(inputGhostNet, inputUserid, modeSwitch);
     }
         
-    
     public String getAttributesFromDBUsers(Integer inputUserId, int modeSwitch) throws ClassNotFoundException {
     	return dataService.getAttributesFromDBUsers(inputUserId, modeSwitch);
     }

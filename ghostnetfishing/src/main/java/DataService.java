@@ -1,5 +1,8 @@
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class DataService {
@@ -12,51 +15,79 @@ public class DataService {
     public Boolean login(LoginBean inputBean) throws ClassNotFoundException {
         Boolean loginSuccessfully = false;
         String workUsername = inputBean.getUsername();
-        String workPassword = inputBean.getPassword();
-        
+        String workInputPassword = inputBean.getUsedPassword();
+        inputBean.cleanUpUsedPassword();
         
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            String query = "SELECT * FROM users WHERE BINARY username = ? AND BINARY password = ?";
+            String query = "SELECT * FROM users WHERE BINARY username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, workUsername);
-            statement.setString(2, workPassword);
 
             ResultSet resultSet = statement.executeQuery();
             
-            // Benutzername und Passwort stimmen überein
+            // Benutzername gefunden
             if (resultSet.next()) {
             	
-            	Integer id = Integer.valueOf(resultSet.getString("id"));
-            	Integer role = Integer.valueOf(resultSet.getString("role"));
-            	String firstname = resultSet.getString("firstname");
-            	String lastname = resultSet.getString("lastname");
-            	String phonenumber = resultSet.getString("phonenumber");
+            	String workSalt =  resultSet.getString("salt");
+            	String workDBHashedPassword = resultSet.getString("hashedpassword");
+            	
+            	Boolean passwordCheckSuccessfully = verifyPassword(workInputPassword, workSalt, workDBHashedPassword);
+            	
+            	if (passwordCheckSuccessfully) {
+            		Integer id = Integer.valueOf(resultSet.getString("id"));
+                	Integer role = Integer.valueOf(resultSet.getString("role"));
+                	String firstname = resultSet.getString("firstname");
+                	String lastname = resultSet.getString("lastname");
+                	String phonenumber = resultSet.getString("phonenumber");
+                	String hashedpassword = resultSet.getString("hashedpassword");
+                	String salt = resultSet.getString("salt");
+                	
+                	inputBean.setId(id);
+                	inputBean.setRole(role);
+                	inputBean.setFirstname(firstname);
+                	inputBean.setLastname(lastname);
+                	inputBean.setPhonenumber(phonenumber);
+                	inputBean.setHashedPassword(hashedpassword);
+                	inputBean.setSalt(salt);
 
-            	
-            	inputBean.setId(id);
-            	inputBean.setRole(role);
-            	inputBean.setFirstname(firstname);
-            	inputBean.setLastname(lastname);
-            	inputBean.setPhonenumber(phonenumber);
-            	
-                // Login von Usern der Systemrolle (3) blockieren
-                if (inputBean.getRole() == 3) {
-                	return loginSuccessfully;
-                } else {
-                	loginSuccessfully = true;                   
-                }
-            	
+                    // Login von Usern der Systemrolle (3) blockieren
+                    if (inputBean.getRole() == 3) {
+                    	return loginSuccessfully;
+                    } else {
+                    	loginSuccessfully = true;                   
+                    }
+            	}
             }
             
             statement.close();
+        
+        //
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-
+        //
+        } catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return loginSuccessfully;
     }
 
+    
+    // Methode zum Hashen des Passworts mit der Salt
+    public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(salt.getBytes());
+        byte[] hashedPassword = md.digest(password.getBytes());
+        return Base64.getEncoder().encodeToString(hashedPassword);
+    }
+
+    // Methode zur Überprüfung des Passworts
+    public static boolean verifyPassword(String enteredPassword, String storedSalt, String storedHash) throws NoSuchAlgorithmException {
+        String hashedEnteredPassword = hashPassword(enteredPassword, storedSalt);
+        return hashedEnteredPassword.equals(storedHash);
+    }
+    
     
     public List<GhostNetBean> getAllGhostNets(int modeSwitch) throws ClassNotFoundException {
 
@@ -95,7 +126,6 @@ public class DataService {
             	
                 GhostNetBean workGhostNet = new GhostNetBean();
 
-            	
                 Integer id = Integer.valueOf(resultSet.getString("id"));
                 String latitude =  resultSet.getString("latitude");
                 String longitude =  resultSet.getString("longitude");
@@ -213,16 +243,13 @@ public class DataService {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-
             	String username = resultSet.getString("username");
-
                 switch (modeSwitch) {
                 	case 1:
                 		result = username;
                 		break;
                 }
             }
-            
             statement.close();
 
         } catch (SQLException e) {

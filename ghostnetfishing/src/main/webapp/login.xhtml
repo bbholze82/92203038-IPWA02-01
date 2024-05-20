@@ -24,7 +24,7 @@
 <p:inputText class="form-control mt-2" id="username-input" required="true" value="#{loginBean.username}" />
 
 <p:outputLabel for="password-input" value="Password" />
-<p:password class="form-control mt-2" id="password-input" required="true" value="#{loginBean.password}" />
+<p:password class="form-control mt-2" id="password-input" required="true" value="#{loginBean.usedPassword}" />
 
 <p:commandButton class="btn btn-primary mt-2" id="submit-button" value="Login" action="#{loginBean.login()}" update="username-input, password-input" />
 </h:form>

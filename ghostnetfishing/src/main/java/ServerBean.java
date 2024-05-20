@@ -21,7 +21,7 @@ public class ServerBean {
         this.startTime = LocalDateTime.now();
         this.requestCounter = 0;
         this.entriesinDB = 0;
-        this.debugMode = false;
+        this.debugMode = true;
 	}
 	
 	public String getStartTime() {

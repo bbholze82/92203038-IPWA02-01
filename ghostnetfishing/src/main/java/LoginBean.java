@@ -8,7 +8,9 @@ public class LoginBean implements Serializable {
 	private Integer id;
     private Integer role;
     private String username;
-    private String password;
+    private String usedPassword;
+    private String hashedpassword;
+    private String salt;
     private String firstname;
     private String lastname;
     private String phonenumber;
@@ -28,14 +30,6 @@ public class LoginBean implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getErrorMessage() {
@@ -83,7 +77,9 @@ public class LoginBean implements Serializable {
     	this.id = null;
         this.role = null;
         this.username = null;
-        this.password = null;
+        this.usedPassword = null;
+        this.hashedpassword = null;
+        this.salt = null;
         this.firstname = null;
         this.lastname = null;
         
@@ -137,5 +133,34 @@ public class LoginBean implements Serializable {
     public void setPhonenumber(String phonenumber) {
     	this.phonenumber = phonenumber;
     }
+    
+    public void setHashedPassword(String hashedpassword) {
+    	this.hashedpassword = hashedpassword;
+    }
+    
+    public String getHashedPassword() {
+    	return this.hashedpassword;
+    }
+    
+    public void setSalt(String salt) {
+    	this.salt = salt;
+    }
+    
+    public String getSalt() {
+    	return this.salt;
+    }
+    
+    public void setUsedPassword(String password) {
+    	this.usedPassword = password;
+    }
+    
+    public String getUsedPassword() {
+    	return this.usedPassword;
+    }
+    
+    public void cleanUpUsedPassword() {
+    	this.usedPassword = null;
+    }
+    
     
 }
