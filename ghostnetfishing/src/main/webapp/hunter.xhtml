@@ -120,14 +120,17 @@ var greyIcon = new L.Icon({
  <p:column headerText="Size">
 <h:outputText value="#{ghostNet.sizeLabel}" />
 </p:column>
- <p:column headerText="Status code">
+ <p:column headerText="Status Code">
 <h:outputText value="#{ghostNet.statusCodeLabel}" />
 </p:column>
- <p:column headerText="Reported by Username">
+ <p:column headerText="Reported By Username">
 <h:outputText value="#{ghostNet.reportedByUsername}" />
 </p:column>
- <p:column headerText="Salvage claimed by Username">
+ <p:column headerText="Salvage Claimed By Username">
 <h:outputText value="#{ghostNet.salvageClaimedByUsername}" rendered="#{ghostNet.salvageIsClaimed}" />
+</p:column>
+ <p:column headerText="Salvage Claimed Timestamp">
+<h:outputText value="#{ghostNet.lastEditTimestamp}"/>
 </p:column>
  <p:column headerText="Last Edit Timestamp">
 <h:outputText value="#{ghostNet.lastEditTimestamp}"/>
@@ -171,11 +174,14 @@ var greyIcon = new L.Icon({
 <p:column headerText="Size">
 <h:outputText value="#{ghostNet.size}" />
 </p:column>
-<p:column headerText="Status code">
+<p:column headerText="Status Code">
 <h:outputText value="#{ghostNet.statusCode}" />
 </p:column>
-<p:column headerText="Reported by Username">
+<p:column headerText="Reported By Username">
 <h:outputText value="#{ghostNet.reportedByUsername}" />
+</p:column>
+ <p:column headerText="Recovered Timestampp">
+<h:outputText value="#{ghostNet.lastEditTimestamp}"/>
 </p:column>
 </p:dataTable>
 </h:form>
