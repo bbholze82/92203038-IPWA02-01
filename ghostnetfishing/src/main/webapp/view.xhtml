@@ -71,11 +71,58 @@ var greyIcon = new L.Icon({
 
 
 <ui:repeat value="#{ghostNetBean.getAllGhostNets(0)}" var="ghostnet">
-     var marker = L.marker([<h:outputText value="#{ghostnet.posLatitude}"/>, <h:outputText value="#{ghostnet.posLongitude}"/>], <h:outputText value="#{ghostnet.codeForMarker}"/>).addTo(map); 
-</ui:repeat>
+   
+     var marker = L.marker([<h:outputText value="#{ghostnet.posLatitude}"/>, <h:outputText value="#{ghostnet.posLongitude}"/>], <h:outputText value="#{ghostnet.codeForMarker}"/>); 
+
+     marker.bindPopup("<h:outputText value="#{ghostnet.reportTimestamp}"/>").openPopup();
+     
+     marker.addTo(map);
+     </ui:repeat>
 
 
 </script>
+
+</div>
+</div>
+
+<div class="row mt-2">
+<div class="col-6">
+
+<table class="table">
+
+<tr>
+<td>
+<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-red.png"/>
+</td>
+<td>#{serverBean.sumEntriesinDBByStatus(1)}</td>
+<td>Reported</td>
+</tr>
+
+<tr>
+<td>
+<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-yellow.png"/>
+</td>
+<td>#{serverBean.sumEntriesinDBByStatus(2)}</td>
+<td>Salvage pending</td>
+</tr>
+
+<tr>
+<td>
+<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-green.png"/>
+</td>
+<td>#{serverBean.sumEntriesinDBByStatus(3)}</td>
+<td>Recovered</td>
+</tr>
+
+<tr>
+<td>
+<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-grey.png"/>
+</td>
+<td>#{serverBean.sumEntriesinDBByStatus(4)}</td>
+<td>Missing</td>
+</tr>
+
+</table>
 
 </div>
 </div>

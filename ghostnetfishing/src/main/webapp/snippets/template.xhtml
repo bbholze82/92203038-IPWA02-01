@@ -27,7 +27,7 @@
 #{serverBean.setRequestCounterUpByOne()}
 Starttime: #{serverBean.startTime} <br/>
 Requests: #{serverBean.requestCounter} <br/>
-Entries in DB: #{serverBean.countEntriesinDB()} <br/>
+Entries in DB: #{serverBean.sumEntriesinDBByStatus(0)} <br/>
 <h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/> <br/>
 <h:panelGroup rendered="#{loginBean.isLoggedIn}">
 You are logged in. <br/>

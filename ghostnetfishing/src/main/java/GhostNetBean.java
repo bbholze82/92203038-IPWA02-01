@@ -4,7 +4,10 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.TimeZone;
 
 @Named
 @RequestScoped
@@ -20,6 +23,8 @@ public class GhostNetBean implements Serializable {
     private Boolean reportedByKnownUser;
     private Integer salvageClaimedByUserId;
     private Boolean salvageIsClaimed;
+    private String claimedTimestamp;
+    private String lastEditTimestamp;
     
     private final DataController dataController = new DataController();
 
@@ -63,6 +68,21 @@ public class GhostNetBean implements Serializable {
     
     public Integer getStatusCode() {
     	return this.statusCode;
+    }
+    
+    public String getStatusCodeLabel() {
+    	
+    	// Label-Text sollte aus der Datenbank ausgelesen. Dies ist nur eine provisorische Loesung.
+    	switch (this.size) {
+    	case 1:
+    		return "Reported";
+		case 2:
+    		return "Salvage pending";
+		case 3:
+    		return "Recovered";
+		default:
+    		return "Missing";
+    	}
     }
     
     public String getCodeForMarker() {
@@ -119,7 +139,22 @@ public class GhostNetBean implements Serializable {
     }
     
     public String getReportTimestamp() {
-    	return this.reportTimestamp;
+        // Parse the Unixzeit string into a long value
+       long unixSeconds = Long.parseLong(this.reportTimestamp);
+        
+       // Create a Date object from the Unix seconds
+       Date date = new Date(unixSeconds * 1000L);
+         
+       // Define the desired date format
+       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+            
+       // Optionally set the timezone if needed, here using UTC
+       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+         
+       // Format the date into the desired format and return the string
+        String resultTxt = sdf.format(date);
+        
+    	return resultTxt;
     }
     
     public void setReportTimestamp(String reportTimestamp) {
@@ -186,14 +221,67 @@ public class GhostNetBean implements Serializable {
     		return result;
     	}
     }
-   
-    
+       
     public Integer getSize() {
     	return this.size;
+    }
+    
+    public String getSizeLabel() {
+    	
+    	// Label-Text sollte aus der Datenbank ausgelesen. Dies ist nur eine provisorische Loesung.
+    	switch (this.size) {
+    	case 1:
+    		return "Small";
+		case 2:
+    		return "Middle";
+		case 3:
+    		return "Huge";
+		default:
+    		return "Unknown";
+    	}
     }
     
     public void setSize(Integer sizeVal) {
     	this.size = sizeVal;
     }
-   
+    
+    public String getClaimedTimestamp() {
+    	return this.claimedTimestamp;
+    }
+
+    public void setClaimedTimestamp() {
+    	long currentTimeMillis = System.currentTimeMillis();
+        long unixTimeSeconds = currentTimeMillis / 1000L;    	
+    	this.claimedTimestamp =  Long.toString(unixTimeSeconds);
+    }
+    
+    public void setClaimedTimestamp(String timestamp) {    	
+    	this.claimedTimestamp = timestamp;
+    }
+    
+    public void removeClaimedTimestamp() {    	
+    	this.claimedTimestamp = null;
+    }
+    
+    
+    public String getLastEditTimestamp() {
+       long unixSeconds = Long.parseLong(this.lastEditTimestamp);
+       Date date = new Date(unixSeconds * 1000L);
+       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+       String resultTxt = sdf.format(date);
+       return resultTxt;
+    }
+    
+    public void setLastEditTimestamp() {
+    	long currentTimeMillis = System.currentTimeMillis();
+        long unixTimeSeconds = currentTimeMillis / 1000L;    	
+    	this.lastEditTimestamp =  Long.toString(unixTimeSeconds);
+    }
+    
+    public void setLastEditTimestamp(String timestamp) {  	
+    	this.lastEditTimestamp = timestamp;
+    }
+    
+    
 }

@@ -21,7 +21,7 @@ public class ServerBean {
         this.startTime = LocalDateTime.now();
         this.requestCounter = 0;
         this.entriesinDB = 0;
-        this.debugMode = true;
+        this.debugMode = false;
 	}
 	
 	public String getStartTime() {
@@ -38,9 +38,9 @@ public class ServerBean {
 	public Integer getRequestCounter() {
 		return requestCounter;
 	}
-	
-	public Integer countEntriesinDB() throws ClassNotFoundException {
-		entriesinDB = dataController.getSumofGhostNetEntriesInDB();
+		
+	public Integer sumEntriesinDBByStatus(Integer statusValue) throws ClassNotFoundException {
+		entriesinDB = dataController.sumEntriesInDBByStatus(statusValue);
 		return entriesinDB;
 	}
 	

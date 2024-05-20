@@ -18,10 +18,10 @@ public class DataController {
     	dataService.sendNewGhostNetData(inputLatitude, inputLongitude, inputSize, reportedByUserId);
     }
     
-    public Integer getSumofGhostNetEntriesInDB() throws ClassNotFoundException {
-    	return dataService.getSumofGhostNetEntriesInDB();
+    public Integer sumEntriesInDBByStatus(Integer statusValue) throws ClassNotFoundException {
+    	return dataService.sumEntriesInDBByStatus(statusValue);
     }
-
+    
     public List<GhostNetBean> getAllGhostNets(int modeSwitch) throws ClassNotFoundException {
     	return dataService.getAllGhostNets(modeSwitch);
     }

@@ -130,8 +130,10 @@ public class DataService {
                 String latitude =  resultSet.getString("latitude");
                 String longitude =  resultSet.getString("longitude");
                 //String author = resultSet.getString("author");
+                
                 String statusCode = resultSet.getString("statuscode");
             	Integer size = Integer.valueOf(resultSet.getString("size"));
+            	String reportts = resultSet.getString("reportts");
 
                 
                 Integer reportedByUserId;
@@ -153,6 +155,8 @@ public class DataService {
                 }
                 
                 String reportTimestamp = resultSet.getString("reportts");
+                String claimedTimestamp = resultSet.getString("claimedts");
+                String lastEditTimestamp = resultSet.getString("lasteditts");
 
                 
                 workGhostNet.setId(id);
@@ -160,7 +164,9 @@ public class DataService {
                 workGhostNet.setPosLongitude(longitude);
                 workGhostNet.setSize(size);
                 workGhostNet.setStatusCode(Integer.valueOf(statusCode));
-         
+                workGhostNet.setReportTimestamp(reportts);
+                workGhostNet.setClaimedTimestamp(claimedTimestamp);
+                workGhostNet.setLastEditTimestamp(lastEditTimestamp);
                 results.add(workGhostNet);
         }
 
@@ -177,24 +183,32 @@ public class DataService {
     public void editSalvageStatusOfGhostNet(GhostNetBean inputGhostNet, Integer inputUserId, int modeSwitch) throws ClassNotFoundException {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
         	
-            PreparedStatement updateStatement = connection.prepareStatement("UPDATE ghostnets SET  claimedby = ?, statuscode = ? WHERE id = ?");
+            PreparedStatement updateStatement = connection.prepareStatement("UPDATE ghostnets SET claimedby = ?, statuscode = ?, claimedts = ?, lasteditts = ? WHERE id = ?");
            
             switch (modeSwitch)  {
             case 1:
                 updateStatement.setString(1, inputUserId.toString());
                 updateStatement.setString(2, "2");
-                updateStatement.setString(3, inputGhostNet.getId().toString());
+                updateStatement.setString(3, getCurrentUnixTime());
+                updateStatement.setString(4, getCurrentUnixTime());
+                updateStatement.setString(5, inputGhostNet.getId().toString());
+
             	break;
             case 2:
                 updateStatement.setString(1, null);
                 updateStatement.setString(2, "1");
-                updateStatement.setString(3, inputGhostNet.getId().toString());
+                updateStatement.setString(3, null);
+                updateStatement.setString(4, getCurrentUnixTime());
+                updateStatement.setString(5, inputGhostNet.getId().toString());
             	break;
             
         	case 3:
         		updateStatement.setString(1, null);
         		updateStatement.setString(2, "3");
-        		updateStatement.setString(3, inputGhostNet.getId().toString());
+                updateStatement.setString(3, getCurrentUnixTime());
+                updateStatement.setString(4, getCurrentUnixTime());
+        		updateStatement.setString(5, inputGhostNet.getId().toString());
+
         		break;
         	}
             
@@ -209,7 +223,7 @@ public class DataService {
     public void sendNewGhostNetData(String inputLatitude, String inputLongitude, Integer inputSize, Integer reportedByUserId) throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            String query = "INSERT INTO ghostnets (latitude, longitude, size, statuscode, reportedBy) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO ghostnets (latitude, longitude, size, statuscode, reportedBy, reportts, lasteditts) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             
             statement.setString(1, inputLatitude);
@@ -223,6 +237,9 @@ public class DataService {
                 statement.setString(5, reportedByUserId.toString());
             }
             
+            statement.setString(6, getCurrentUnixTime());
+            statement.setString(7, getCurrentUnixTime());
+
             statement.executeUpdate();
             statement.close();
         } catch (SQLException e) {
@@ -260,11 +277,31 @@ public class DataService {
     }
     
     
-    public Integer getSumofGhostNetEntriesInDB() throws ClassNotFoundException {
+    public Integer sumEntriesInDBByStatus(Integer statusValue) throws ClassNotFoundException {
     	Integer result = 0;
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            String query = "SELECT * FROM ghostnets";
+            String query = "";
+            
+            switch (statusValue) {
+            
+            case 0:
+            	query= "SELECT * FROM ghostnets";
+            	break;
+            case 1:
+            	query= "SELECT * FROM ghostnets WHERE statuscode=1";
+            	break;
+            case 2:
+            	query= "SELECT * FROM ghostnets WHERE statuscode=2";
+            	break;
+            case 3:
+            	query= "SELECT * FROM ghostnets WHERE statuscode=3";
+            	break;
+            case 4:
+            	query= "SELECT * FROM ghostnets WHERE statuscode=4";
+            	break;
+            }
+            
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             
@@ -276,8 +313,18 @@ public class DataService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        
         return result;
     }
     
+    
+    public static String getCurrentUnixTime() {
+        // System.currentTimeMillis() gibt die aktuelle Zeit in Millisekunden zurück
+        long currentTimeMillis = System.currentTimeMillis();
+        // Unixzeit in Sekunden berechnen
+        long unixTimeSeconds = currentTimeMillis / 1000L;
+        // Unixzeit als String zurückgeben
+        return Long.toString(unixTimeSeconds);
+    }
 
 }
