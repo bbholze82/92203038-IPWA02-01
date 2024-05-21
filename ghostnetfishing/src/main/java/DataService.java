@@ -51,6 +51,13 @@ public class DataService {
                 	inputBean.setHashedPassword(hashedpassword);
                 	inputBean.setSalt(salt);
 
+                	
+                	if (role == 1) {
+                        inputBean.setAdminPrivileges(true);
+                	} else {
+                        inputBean.setAdminPrivileges(false);
+                	}
+                	
                     // Login von Usern der Systemrolle (3) blockieren
                     if (inputBean.getRole() == 3) {
                     	return loginSuccessfully;

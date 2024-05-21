@@ -17,15 +17,15 @@
 </h:head>
 
 <h:body>
-    <!-- Debug Information -->
-    <h:panelGroup rendered="#{serverBean.debugMode}">
+
+<h:panelGroup rendered="#{serverBean.debugMode and loginBean.adminPrivileges}"> <h:panelGroup id="debugInfo">
+            <h2>Debug Information</h2>
+ <!-- Debug Information -->
         <div class="alert alert-primary" role="alert">
             #{serverBean.setRequestCounterUpByOne()}
             Starttime: #{serverBean.startTime} <br/>
             Requests: #{serverBean.requestCounter} <br/>
             Entries in DB: #{serverBean.sumEntriesinDBByStatus(0)} <br/>
-            <h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/> <br/>
-            <h:panelGroup rendered="#{loginBean.isLoggedIn}">
                 You are logged in. <br/>
                 ID: #{loginBean.id} <br/>
                 Role: #{loginBean.role} <br/>
@@ -35,10 +35,11 @@
                 First name: #{loginBean.firstname} <br/>
                 Last name: #{loginBean.lastname} <br/>
                 Phone number: #{loginBean.phonenumber}
-            </h:panelGroup>
         </div>
     </h:panelGroup>
     <!-- End Debug Information -->
+ </h:panelGroup>
+   
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light navbar-custom">

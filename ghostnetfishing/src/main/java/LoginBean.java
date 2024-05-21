@@ -14,6 +14,7 @@ public class LoginBean implements Serializable {
     private String firstname;
     private String lastname;
     private String phonenumber;
+    private Boolean adminPrivileges;
 
     
     //
@@ -87,8 +88,7 @@ public class LoginBean implements Serializable {
         this.errorMessage = null;
         this.isLoggedInAs = null;
         this.isLoggedIn = null;
-
-        this.setIsLoggedIn(false);
+        this.adminPrivileges = null;
         
     	return "index.xhtml?faces-redirect=true";
     }
@@ -162,5 +162,11 @@ public class LoginBean implements Serializable {
     	this.usedPassword = null;
     }
     
+    public Boolean getAdminPrivileges() {
+    	return this.adminPrivileges;
+    }
     
+    public void setAdminPrivileges(Boolean adminPrivileges) {
+    	this.adminPrivileges = adminPrivileges;
+    }
 }
