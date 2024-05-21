@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 21. Mai 2024 um 18:09
+-- Erstellungszeit: 21. Mai 2024 um 20:20
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.0.30
 
@@ -14,6 +14,8 @@ SET time_zone = "+00:00";
 --
 -- Datenbank: `ghostnetdata`
 --
+CREATE DATABASE IF NOT EXISTS `ghostnetdata` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `ghostnetdata`;
 
 -- --------------------------------------------------------
 
@@ -21,6 +23,7 @@ SET time_zone = "+00:00";
 -- Tabellenstruktur für Tabelle `ghostnets`
 --
 
+DROP TABLE IF EXISTS `ghostnets`;
 CREATE TABLE `ghostnets` (
   `id` int(11) NOT NULL,
   `latitude` varchar(255) DEFAULT NULL,
@@ -69,6 +72,7 @@ INSERT INTO `ghostnets` (`id`, `latitude`, `longitude`, `size`, `statuscode`, `r
 -- Tabellenstruktur für Tabelle `statuscodes`
 --
 
+DROP TABLE IF EXISTS `statuscodes`;
 CREATE TABLE `statuscodes` (
   `id` int(11) NOT NULL,
   `label` varchar(255) DEFAULT NULL
@@ -90,6 +94,7 @@ INSERT INTO `statuscodes` (`id`, `label`) VALUES
 -- Tabellenstruktur für Tabelle `userroles`
 --
 
+DROP TABLE IF EXISTS `userroles`;
 CREATE TABLE `userroles` (
   `id` int(11) NOT NULL,
   `role` int(11) NOT NULL,
@@ -111,6 +116,7 @@ INSERT INTO `userroles` (`id`, `role`, `label`) VALUES
 -- Tabellenstruktur für Tabelle `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `role` int(11) DEFAULT NULL,
