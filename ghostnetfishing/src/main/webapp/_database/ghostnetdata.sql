@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 20. Mai 2024 um 23:23
+-- Erstellungszeit: 21. Mai 2024 um 18:09
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.0.30
 
@@ -60,7 +60,8 @@ INSERT INTO `ghostnets` (`id`, `latitude`, `longitude`, `size`, `statuscode`, `r
 (44, '58.6373', '-2.6779', 2, 2, 4, 1704063600, 3, 1716239781, 1716239781),
 (45, '54.845', '-10.217', 3, 2, 4, 1704063600, 3, 1716239785, 1716239785),
 (46, '54.2307', '7.6657', 1, 2, NULL, 1716237849, 3, 1716239788, 1716239788),
-(47, '50.7764', '0.8624', 1, 1, 4, 1716239694, NULL, NULL, 1716239724);
+(47, '50.7764', '0.8624', 1, 1, 4, 1716239694, NULL, NULL, 1716239724),
+(48, 'johndoe', 'john123', 1, 1, NULL, 1716244269, NULL, NULL, 1716244269);
 
 -- --------------------------------------------------------
 
@@ -142,7 +143,8 @@ INSERT INTO `users` (`id`, `role`, `username`, `comment`, `hashedpassword`, `sal
 ALTER TABLE `ghostnets`
   ADD PRIMARY KEY (`id`),
   ADD KEY `reportedby` (`reportedby`),
-  ADD KEY `earmarkedby` (`claimedby`);
+  ADD KEY `earmarkedby` (`claimedby`),
+  ADD KEY `statuscode` (`statuscode`);
 
 --
 -- Indizes für die Tabelle `statuscodes`
@@ -171,7 +173,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT für Tabelle `ghostnets`
 --
 ALTER TABLE `ghostnets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT für Tabelle `statuscodes`
@@ -200,7 +202,8 @@ ALTER TABLE `users`
 --
 ALTER TABLE `ghostnets`
   ADD CONSTRAINT `ghostnets_ibfk_1` FOREIGN KEY (`reportedby`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `ghostnets_ibfk_2` FOREIGN KEY (`claimedby`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `ghostnets_ibfk_2` FOREIGN KEY (`claimedby`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `ghostnets_ibfk_3` FOREIGN KEY (`statuscode`) REFERENCES `statuscodes` (`id`);
 
 --
 -- Constraints der Tabelle `users`

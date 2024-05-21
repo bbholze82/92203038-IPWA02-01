@@ -64,7 +64,7 @@ public class LoginBean implements Serializable {
         		return "admin.xhtml?faces-redirect=true";
         	
         	if (this.role == 2) 
-        		return "hunter.xhtml?faces-redirect=true";
+        		return "hunt.xhtml?faces-redirect=true";
         	
         	return "login.xhtml?faces-redirect=true";
         } else {

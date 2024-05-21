@@ -164,18 +164,18 @@ public class GhostNetBean implements Serializable {
     public String claimSalvage(Integer userId) throws ClassNotFoundException {
     	this.salvageClaimedByUserId = userId;
     	dataController.editSalvageStatusOfGhostNet(this, userId, 1);
-    	return "hunter.xhtml?faces-redirect=true";
+    	return "hunt.xhtml?faces-redirect=true";
     }
     
     public String cancelSalvage(Integer userId) throws ClassNotFoundException {
     	dataController.editSalvageStatusOfGhostNet(this, userId, 2);
-    	return "hunter.xhtml?faces-redirect=true";
+    	return "hunt.xhtml?faces-redirect=true";
     }
 
     
     public String markAsRecovered(Integer userId) throws ClassNotFoundException {
     	dataController.editSalvageStatusOfGhostNet(this, userId, 3);
-    	return "hunter.xhtml?faces-redirect=true";
+    	return "hunt.xhtml?faces-redirect=true";
     }
     
     public Boolean getSalvageIsClaimed() {
