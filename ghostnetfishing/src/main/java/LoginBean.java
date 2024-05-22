@@ -61,11 +61,17 @@ public class LoginBean implements Serializable {
         if (loginSuccessfully) {
         	this.setIsLoggedIn(true);
         	
+        	// admin
         	if (this.role == 1) 
         		return "admin.xhtml?faces-redirect=true";
         	
+        	// hunter
         	if (this.role == 2) 
         		return "hunt.xhtml?faces-redirect=true";
+        	
+        	// reporter
+        	if (this.role == 4) 
+        		return "submit.xhtml?faces-redirect=true";
         	
         	return "login.xhtml?faces-redirect=true";
         } else {
@@ -96,6 +102,30 @@ public class LoginBean implements Serializable {
     
     public Integer getRole() {
     	return this.role;
+    }
+    
+    public String getRoleLabel() {
+    	
+    	String labelTxt = "Unknown";
+    	
+    	// provisorische Implementierung, sollte aus der Datenbank kommen
+    	switch (this.role) {
+    	
+    	// admin
+    	case 1:
+    		labelTxt = "Admin";
+    		break;
+        // hunter
+    	case 2:
+    		labelTxt = "Hunter";
+    		break;
+        // reporter
+    	case 4:
+    		labelTxt = "Reporter";
+    		break;
+    	}
+    	
+    	return labelTxt;
     }
     
     public void setRole(Integer role) {

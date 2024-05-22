@@ -74,27 +74,32 @@ public class GhostNetBean implements Serializable {
     }
     
     public String getStatusCodeLabel() {
-    	
+    	String labelTxt = "Unknown";
     	// Label-Text sollte aus der Datenbank ausgelesen. Dies ist nur eine provisorische Loesung.
-    	switch (this.size) {
+    	switch (this.statusCode) {
     	case 1:
-    		return "Reported";
+    		labelTxt = "Reported";
+    		break;
 		case 2:
-    		return "Salvage pending";
+			labelTxt = "Salvage pending";
+    		break;
 		case 3:
-    		return "Recovered";
+			labelTxt = "Recovered";
+    		break;
 		case 4:
-    		return "Premarked as missing";
+			labelTxt = "Premarked as missing";
+    		break;
 		case 5:
-    		return "Missing";
-		default:
-    		return "Unknown";
+			labelTxt =  "Missing";
+    		break;
     	}
+    	
+    	return labelTxt;
     }
     
     public String getCodeForMarker() {
     	
-    	String markerColor = "";
+    	String markerColor = "blackIcon";
     	switch (this.statusCode) {
     		
     	case 1:
@@ -110,9 +115,6 @@ public class GhostNetBean implements Serializable {
     		markerColor = "greyIcon";
     		break;
     	case 5:
-    		markerColor = "blackIcon";
-    		break;
-    	default:
     		markerColor = "blackIcon";
     		break;
     	}
@@ -262,18 +264,20 @@ public class GhostNetBean implements Serializable {
     }
     
     public String getSizeLabel() {
-    	
+    	String labelTxt = "Unknown";
     	// Label-Text sollte aus der Datenbank ausgelesen. Dies ist nur eine provisorische Loesung.
     	switch (this.size) {
     	case 1:
-    		return "Small";
+    		labelTxt = "Small";
+    		break;
 		case 2:
-    		return "Middle";
+			labelTxt = "Middle";
+    		break;
 		case 3:
-    		return "Huge";
-		default:
-    		return "Unknown";
+			labelTxt = "Huge";
+    		break;
     	}
+    	return labelTxt;
     }
     
     public void setSize(Integer sizeVal) {

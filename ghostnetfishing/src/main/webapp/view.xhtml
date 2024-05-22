@@ -142,7 +142,7 @@ var blackIcon = new L.Icon({
 </div>
 </div>
 
-<p:outputPanel rendered="#{loginBean.isLoggedIn}">
+<p:outputPanel rendered="#{loginBean.role eq 1 or loginBean.role eq 2 or loginBean.role eq 4}">
 <div class="container mt-3 mb-3">
 <div class="row mt-5">
 <div class="col-12">
