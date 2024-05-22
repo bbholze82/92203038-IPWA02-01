@@ -21,7 +21,7 @@ body {
 }
 
  .navbar-custom {
-     background-color: #007bff;
+    background-color:#2563eb;
  }
  
  .navbar-custom .navbar-brand,
@@ -35,7 +35,7 @@ body {
  }
 
 .footer {
-    background-color: #007bff;
+    background-color:#2563eb;
     color: white;
 }
 
