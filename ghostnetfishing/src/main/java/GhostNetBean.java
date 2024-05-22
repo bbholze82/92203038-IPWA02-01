@@ -6,6 +6,9 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -80,8 +83,12 @@ public class GhostNetBean implements Serializable {
     		return "Salvage pending";
 		case 3:
     		return "Recovered";
-		default:
+		case 4:
+    		return "Premarked as missing";
+		case 5:
     		return "Missing";
+		default:
+    		return "Unknown";
     	}
     }
     
@@ -102,8 +109,11 @@ public class GhostNetBean implements Serializable {
     	case 4:
     		markerColor = "greyIcon";
     		break;
+    	case 5:
+    		markerColor = "blackIcon";
+    		break;
     	default:
-    		markerColor = "greyIcon";
+    		markerColor = "blackIcon";
     		break;
     	}
     	
@@ -155,6 +165,31 @@ public class GhostNetBean implements Serializable {
         String resultTxt = sdf.format(date);
         
     	return resultTxt;
+    }
+    
+    public String getTimeLeftSinceReportTimestamp() {
+        try {
+            long unixTimestamp = Long.parseLong(this.reportTimestamp);
+            LocalDateTime dateTime = LocalDateTime.ofEpochSecond(unixTimestamp, 0, ZoneOffset.UTC);
+            LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+            Duration duration = Duration.between(dateTime, now);
+
+            long days = duration.toDays();
+            long hours = duration.toHours() % 24;
+            long minutes = duration.toMinutes() % 60;
+
+            if (days > 0) {
+                return days + " day(s)";
+            } else if (hours > 0) {
+                return hours + " hour(s) and " + minutes + " minute(s)";
+            } else {
+                return minutes + " minute(s)";
+            }
+        //
+        } catch (NumberFormatException e) {
+            return "Invalid format";
+        }
     }
     
     public void setReportTimestamp(String reportTimestamp) {
@@ -262,7 +297,11 @@ public class GhostNetBean implements Serializable {
     public void removeClaimedTimestamp() {    	
     	this.claimedTimestamp = null;
     }
-    
+
+    public String setStatusToPremarkedAsMissing() throws ClassNotFoundException {
+    	dataController.setStatusOfGhostnetToPremarkedAsMissing(this);
+    	return "view.xhtml?faces-redirect=true";
+    }
     
     public String getLastEditTimestamp() {
        long unixSeconds = Long.parseLong(this.lastEditTimestamp);

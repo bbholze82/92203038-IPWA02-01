@@ -125,6 +125,12 @@ public class DataService {
     			statement = connection.prepareStatement(query);
     			statement.setString(1, "3");
     			break;
+    		case 10:
+    			query = "SELECT * FROM ghostnets WHERE statuscode = ? OR ?";
+    			statement = connection.prepareStatement(query);
+    			statement.setString(1, "1");
+    			statement.setString(2, "2");
+    			break;
     	}
             
             resultSet = statement.executeQuery();
@@ -307,6 +313,9 @@ public class DataService {
             case 4:
             	query= "SELECT * FROM ghostnets WHERE statuscode=4";
             	break;
+            case 5:
+            	query= "SELECT * FROM ghostnets WHERE statuscode=5";
+            	break;
             }
             
             PreparedStatement statement = connection.prepareStatement(query);
@@ -322,6 +331,25 @@ public class DataService {
         }
         
         return result;
+    }
+    
+    public void setStatusOfGhostnetToPremarkedAsMissing(GhostNetBean inputGhostNet) throws ClassNotFoundException {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        	
+            PreparedStatement updateStatement = connection.prepareStatement("UPDATE ghostnets SET claimedby = ?, statuscode = ?, claimedts = ?, lasteditts = ? WHERE id = ?");
+           
+            updateStatement.setString(1, null);
+            updateStatement.setString(2, "4");
+            updateStatement.setString(3, null);
+            updateStatement.setString(4, getCurrentUnixTime());
+            updateStatement.setString(5, inputGhostNet.getId().toString());
+            
+            updateStatement.executeUpdate();
+            updateStatement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     
     

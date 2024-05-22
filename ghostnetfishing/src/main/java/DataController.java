@@ -34,4 +34,8 @@ public class DataController {
     	return dataService.getAttributesFromDBUsers(inputUserId, modeSwitch);
     }
     
+    public void setStatusOfGhostnetToPremarkedAsMissing(GhostNetBean inputGhostNet) throws ClassNotFoundException {
+    	dataService.setStatusOfGhostnetToPremarkedAsMissing(inputGhostNet);
+    }
+    
 }

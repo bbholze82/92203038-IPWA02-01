@@ -12,12 +12,12 @@
 
 <div class="row">
 <div class="col-12">
-<h1>See Ghost Nets</h1>
+<h2>See Ghost Nets</h2>
 </div>
 </div>
 
 <div class="row">
-<div class="col-12">
+<div class="col-9">
 	<div id="map"></div>
 
 <script>
@@ -69,24 +69,30 @@ var greyIcon = new L.Icon({
 	  shadowSize: [41, 41]
 });
 
+var blackIcon = new L.Icon({
+	  iconUrl: './assets/leaflet-color-markers/img/marker-icon-2x-black.png',
+	  shadowUrl: './assets/leaflet-color-markers/img//marker-shadow.png',
+	  iconSize: [25, 41],
+	  iconAnchor: [12, 41],
+	  popupAnchor: [1, -34],
+	  shadowSize: [41, 41]
+});
+
 
 <ui:repeat value="#{ghostNetBean.getAllGhostNets(0)}" var="ghostnet">
    
      var marker = L.marker([<h:outputText value="#{ghostnet.posLatitude}"/>, <h:outputText value="#{ghostnet.posLongitude}"/>], <h:outputText value="#{ghostnet.codeForMarker}"/>); 
 
-     marker.bindPopup("<h:outputText value="#{ghostnet.reportTimestamp}"/>").openPopup();
+     marker.bindPopup("<h:outputText value="PLATZHALTER"/>").openPopup();
      
      marker.addTo(map);
-     </ui:repeat>
+</ui:repeat>
 
 
 </script>
-
-</div>
 </div>
 
-<div class="row mt-2">
-<div class="col-6">
+<div class="col-3">
 
 <table class="table">
 
@@ -119,12 +125,58 @@ var greyIcon = new L.Icon({
 <img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-grey.png"/>
 </td>
 <td>#{serverBean.sumEntriesinDBByStatus(4)}</td>
+<td>Premarked as missing</td>
+</tr>
+
+<tr>
+<td>
+<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-black.png"/>
+</td>
+<td>#{serverBean.sumEntriesinDBByStatus(5)}</td>
 <td>Missing</td>
 </tr>
 
 </table>
 
 </div>
+</div>
+</div>
+
+<div class="row mt-5">
+<div class="col-12">
+<h2>Mark a ghost net as missing</h2>
+</div>
+</div>
+
+<div class="row">
+<div class="col-12">
+
+<p:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(2)}" var="ghostNet">
+<p:column headerText="ID">
+<h:outputText value="#{ghostNet.id}" />
+</p:column>
+ <p:column headerText="Latitude">
+<h:outputText value="#{ghostNet.posLatitude}" />
+</p:column>
+ <p:column headerText="Longitude">
+<h:outputText value="#{ghostNet.posLongitude}" />
+</p:column>
+ <p:column headerText="Size">
+<h:outputText value="#{ghostNet.sizeLabel}" />
+</p:column>
+ <p:column headerText="Status">
+<h:outputText value="#{ghostNet.statusCodeLabel}" />
+</p:column>
+ <p:column headerText="Reported">
+<h:outputText value="#{ghostNet.timeLeftSinceReportTimestamp} ago" />
+</p:column>
+<p:column headerText="Actions">
+<h:form>
+<h:commandButton class="btn btn-secondary mt-2" value="Mark as missing" action="#{ghostNet.setStatusToPremarkedAsMissing}" rendered="#{ghostNet.statusCode ne 4 and ghostNet.statusCode ne 5}" />
+</h:form>
+</p:column>
+</p:dataTable>
+
 </div>
 </div>
 

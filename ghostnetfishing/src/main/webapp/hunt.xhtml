@@ -96,11 +96,11 @@ var greyIcon = new L.Icon({
 
 
 
-<div class="container mt-4">
+<div class="container mt-5">
 
 <div class="row">
 <div class="col-12">
-<h1>Reported Ghost Nets</h1>
+<h2>Reported Ghost Nets</h2>
 </div>
 </div>
 
@@ -120,17 +120,8 @@ var greyIcon = new L.Icon({
  <p:column headerText="Size">
 <h:outputText value="#{ghostNet.sizeLabel}" />
 </p:column>
- <p:column headerText="Status Code">
+ <p:column headerText="Status">
 <h:outputText value="#{ghostNet.statusCodeLabel}" />
-</p:column>
- <p:column headerText="Reported By Username">
-<h:outputText value="#{ghostNet.reportedByUsername}" />
-</p:column>
- <p:column headerText="Salvage Claimed By Username">
-<h:outputText value="#{ghostNet.salvageClaimedByUsername}" rendered="#{ghostNet.salvageIsClaimed}" />
-</p:column>
- <p:column headerText="Salvage Claimed Timestamp">
-<h:outputText value="#{ghostNet.lastEditTimestamp}"/>
 </p:column>
  <p:column headerText="Last Edit Timestamp">
 <h:outputText value="#{ghostNet.lastEditTimestamp}"/>
@@ -149,16 +140,14 @@ var greyIcon = new L.Icon({
  </p:column>
 </p:dataTable>
 
-
 </div>
 </div>
 </div>
 
 
-<div class="container mt-4">
 <div class="row">
 <div class="col-12">
-	<h1>Recovered Ghost Nets</h1>
+	<h2>Recovered Ghost Nets</h2>
 	
 <h:form>
 <p:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(3)}" var="ghostNet">
@@ -186,7 +175,6 @@ var greyIcon = new L.Icon({
 </p:dataTable>
 </h:form>
     	
-</div>
 </div>
 </div>
 
