@@ -24,7 +24,7 @@
 
 <div class="row">
 <div class="col-12">
-<h1>Hunt Ghost Nets</h1>
+<h2>Hunt Ghost Nets</h2>
 </div>
 </div>
 
@@ -96,7 +96,7 @@ var greyIcon = new L.Icon({
 
 
 
-<div class="container mt-5">
+<div class="container mt-4">
 
 <div class="row">
 <div class="col-12">
@@ -123,6 +123,12 @@ var greyIcon = new L.Icon({
  <p:column headerText="Status">
 <h:outputText value="#{ghostNet.statusCodeLabel}" />
 </p:column>
+ <p:column headerText="Salvage Claimed By Username">
+<h:outputText value="#{ghostNet.salvageClaimedByUsername}" rendered="#{ghostNet.salvageIsClaimed}" />
+</p:column>
+ <p:column headerText="Salvage Claimed Timestamp">
+<h:outputText value="#{ghostNet.lastEditTimestamp}"/>
+</p:column>
  <p:column headerText="Last Edit Timestamp">
 <h:outputText value="#{ghostNet.lastEditTimestamp}"/>
 </p:column>
@@ -145,6 +151,7 @@ var greyIcon = new L.Icon({
 </div>
 
 
+<div class="container mt-5">
 <div class="row">
 <div class="col-12">
 	<h2>Recovered Ghost Nets</h2>
@@ -163,7 +170,7 @@ var greyIcon = new L.Icon({
 <p:column headerText="Size">
 <h:outputText value="#{ghostNet.sizeLabel}" />
 </p:column>
-<p:column headerText="Status Code">
+<p:column headerText="Status">
 <h:outputText value="#{ghostNet.statusCodeLabel}" />
 </p:column>
 <p:column headerText="Reported By Username">
@@ -175,6 +182,7 @@ var greyIcon = new L.Icon({
 </p:dataTable>
 </h:form>
     	
+</div>
 </div>
 </div>
 
