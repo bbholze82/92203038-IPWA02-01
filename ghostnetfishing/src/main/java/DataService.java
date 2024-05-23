@@ -125,11 +125,10 @@ public class DataService {
     			statement = connection.prepareStatement(query);
     			statement.setString(1, "3");
     			break;
-    		case 10:
-    			query = "SELECT * FROM ghostnets WHERE statuscode = ? OR ?";
+    		case 4:
+    			query = "SELECT * FROM ghostnets WHERE statuscode = ?";
     			statement = connection.prepareStatement(query);
-    			statement.setString(1, "1");
-    			statement.setString(2, "2");
+    			statement.setString(1, "4");
     			break;
     	}
             

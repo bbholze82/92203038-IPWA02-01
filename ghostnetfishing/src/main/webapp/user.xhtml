@@ -7,14 +7,43 @@
 
 <ui:define name="content">
 
+
 <div class="container mt-3 mb-3">
 
 <div class="row">
 <div class="col-9">
-
 <h2>User backend</h2>
-<h:outputText value="You are not logged in." rendered="#{not loginBean.isLoggedIn}"/>
-<h:outputText value="You are logged in." rendered="#{loginBean.isLoggedIn}"/>
+
+<p:outputPanel rendered="#{loginBean.role eq 1}">
+<h2>Marked as missing</h2>
+
+<p:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(4)}" var="ghostNet">
+<p:column headerText="ID">
+<h:outputText value="#{ghostNet.id}" />
+</p:column>
+ <p:column headerText="Latitude">
+<h:outputText value="#{ghostNet.posLatitude}" />
+</p:column>
+ <p:column headerText="Longitude">
+<h:outputText value="#{ghostNet.posLongitude}" />
+</p:column>
+ <p:column headerText="Size">
+<h:outputText value="#{ghostNet.sizeLabel}" />
+</p:column>
+ <p:column headerText="Status">
+<h:outputText value="#{ghostNet.statusCodeLabel}" />
+</p:column>
+ <p:column headerText="Reported">
+<h:outputText value="#{ghostNet.timeLeftSinceReportTimestamp} ago" />
+</p:column>
+<p:column headerText="Actions">
+<h:form>
+<h:commandButton class="btn btn-secondary mt-2" value="Mark as missing" action="#{ghostNet.setStatusToPremarkedAsMissing}" rendered="#{ghostNet.statusCode ne 4 and ghostNet.statusCode ne 5}" />
+</h:form>
+</p:column>
+</p:dataTable>
+</p:outputPanel>
+
 </div>
 
 <div class="col-3">
