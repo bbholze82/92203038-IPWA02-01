@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 26. Mai 2024 um 06:53
+-- Erstellungszeit: 26. Mai 2024 um 19:23
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.0.30
 
@@ -56,7 +56,9 @@ INSERT INTO `geonamescache` (`ghostnetid`, `name`, `timestamp`) VALUES
 (46, 'North Sea', 1716687411),
 (47, 'English Channel', 1716687411),
 (51, 'Celtic Sea', 1716687411),
-(52, 'Skagerrak', 1716689408);
+(52, 'Skagerrak', 1716689408),
+(53, 'North Sea', 1716734574),
+(54, 'Skagerrak', 1716743966);
 
 -- --------------------------------------------------------
 
@@ -99,7 +101,9 @@ INSERT INTO `ghostnets` (`id`, `latitude`, `longitude`, `size`) VALUES
 (46, '54.2307', '7.6657', 1),
 (47, '50.7764', '0.8624', 1),
 (51, '49.522', '-6.306', 2),
-(52, '56.21343', '11.86523', 1);
+(52, '56.21343', '11.86523', 1),
+(53, '53.96643', '7.99805', 1),
+(54, '57.37631', '11.11816', 1);
 
 -- --------------------------------------------------------
 
@@ -140,72 +144,57 @@ CREATE TABLE IF NOT EXISTS `reports` (
   KEY `user` (`user`),
   KEY `ghostnet` (`ghostnet`),
   KEY `status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=276 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=328 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `reports`
 --
 
 INSERT INTO `reports` (`id`, `user`, `ghostnet`, `status`, `timestamp`) VALUES
-(213, 3, 25, 1, 1716687121),
-(214, 3, 26, 1, 1716687124),
-(215, 3, 27, 1, 1716687125),
-(216, 3, 28, 1, 1716687127),
-(217, 3, 29, 1, 1716687128),
-(218, 3, 30, 1, 1716687132),
-(219, 3, 31, 1, 1716687135),
-(220, 3, 33, 1, 1716687138),
-(221, 3, 34, 1, 1716687142),
-(222, 3, 35, 1, 1716687146),
-(223, 3, 36, 1, 1716687149),
-(224, 3, 37, 1, 1716687153),
-(225, 3, 38, 1, 1716687156),
-(226, 3, 40, 1, 1716687159),
-(228, 3, 42, 1, 1716687165),
-(229, 3, 43, 1, 1716687168),
-(230, 3, 44, 1, 1716687171),
-(232, 3, 46, 1, 1716687180),
-(233, 3, 47, 1, 1716687183),
-(234, 3, 51, 1, 1716687186),
-(237, 3, 38, 4, 1716687460),
-(238, 3, 46, 2, 1716687485),
-(239, 3, 27, 2, 1716687492),
-(240, 4, 47, 2, 1716687561),
-(241, 4, 33, 2, 1716687569),
-(242, 2, 52, 1, 1716689381),
-(243, 1, 38, 1, 1716697803),
-(244, 1, 38, 1, 1716697806),
-(245, 1, 38, 1, 1716697809),
-(246, 1, 38, 1, 1716697820),
-(247, 1, 38, 5, 1716697828),
-(248, 1, 38, 5, 1716697840),
-(249, 1, 38, 5, 1716697840),
-(250, 1, 38, 5, 1716697841),
-(251, 1, 38, 5, 1716697844),
-(252, 1, 38, 5, 1716697895),
-(253, 1, 38, 5, 1716697990),
-(254, 1, 38, 1, 1716698021),
-(255, 1, 38, 5, 1716698035),
-(256, 1, 38, 1, 1716698036),
-(257, 1, 38, 5, 1716698038),
-(258, 1, 38, 1, 1716698041),
-(259, 1, 25, 4, 1716698082),
-(260, 1, 26, 4, 1716698085),
-(261, 1, 26, 5, 1716698093),
-(262, 1, 26, 5, 1716698098),
-(263, 1, 38, 5, 1716698100),
-(264, 1, 25, 5, 1716698101),
-(265, 1, 25, 1, 1716698103),
-(266, 1, 26, 1, 1716698104),
-(267, 1, 38, 1, 1716698105),
-(268, 1, 25, 4, 1716698390),
-(269, 1, 26, 4, 1716698394),
-(270, 1, 25, 5, 1716698618),
-(271, 1, 26, 5, 1716698619),
-(272, 1, 25, 1, 1716698626),
-(273, 1, 26, 1, 1716698628),
-(274, 4, 52, 4, 1716699111),
-(275, 4, 25, 4, 1716699126);
+(284, 3, 25, 1, 1716743200),
+(285, 3, 26, 1, 1716743202),
+(286, 3, 27, 1, 1716743203),
+(287, 3, 28, 1, 1716743205),
+(288, 3, 29, 1, 1716743206),
+(289, 3, 30, 1, 1716743208),
+(290, 3, 31, 1, 1716743209),
+(291, 3, 33, 1, 1716743212),
+(292, 3, 34, 1, 1716743215),
+(293, 3, 35, 1, 1716743218),
+(294, 3, 36, 1, 1716743221),
+(295, 3, 37, 1, 1716743224),
+(296, 3, 38, 1, 1716743229),
+(297, 3, 40, 1, 1716743231),
+(298, 3, 42, 1, 1716743234),
+(299, 3, 43, 1, 1716743237),
+(300, 3, 44, 1, 1716743239),
+(301, 3, 46, 1, 1716743242),
+(302, 3, 47, 1, 1716743244),
+(303, 3, 51, 1, 1716743246),
+(304, 3, 52, 1, 1716743248),
+(305, 3, 53, 1, 1716743250),
+(306, 3, 42, 2, 1716743383),
+(307, 3, 46, 2, 1716743414),
+(308, 3, 46, 3, 1716743420),
+(309, 3, 52, 2, 1716743469),
+(310, 4, 47, 2, 1716743500),
+(311, 4, 33, 2, 1716743505),
+(312, 4, 51, 2, 1716743511),
+(313, 4, 51, 3, 1716743517),
+(314, 4, 33, 3, 1716743523),
+(315, 4, 33, 1, 1716743538),
+(316, 4, 33, 2, 1716743545),
+(317, 4, 47, 3, 1716743550),
+(318, 4, 38, 4, 1716743569),
+(319, 4, 34, 4, 1716743583),
+(320, 4, 35, 4, 1716743588),
+(321, 1, 38, 5, 1716743922),
+(322, 1, 34, 5, 1716743925),
+(323, 1, 35, 1, 1716743927),
+(324, 2, 54, 1, 1716743950),
+(325, 3, 54, 2, 1716743985),
+(326, 3, 54, 3, 1716743993),
+(327, 3, 53, 4, 1716744037);
 
 -- --------------------------------------------------------
 
@@ -230,6 +219,31 @@ INSERT INTO `statuscodes` (`id`, `label`) VALUES
 (3, 'Recovered'),
 (4, 'Reported missing'),
 (5, 'Missing');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `userdetails`
+--
+
+DROP TABLE IF EXISTS `userdetails`;
+CREATE TABLE IF NOT EXISTS `userdetails` (
+  `userid` int(11) NOT NULL,
+  `firstname` varchar(255) DEFAULT NULL,
+  `lastname` varchar(255) DEFAULT NULL,
+  `phonenumber` varchar(255) DEFAULT NULL,
+  KEY `userid` (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `userdetails`
+--
+
+INSERT INTO `userdetails` (`userid`, `firstname`, `lastname`, `phonenumber`) VALUES
+(1, 'admin', 'admin', '555-1000'),
+(2, '', '', ''),
+(3, 'John', 'Doe', '555-3030'),
+(4, 'Jane', 'Doe', '555-4034');
 
 -- --------------------------------------------------------
 
@@ -269,9 +283,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `comment` varchar(255) DEFAULT NULL,
   `hashedpassword` varchar(255) DEFAULT NULL,
   `salt` varchar(255) DEFAULT NULL,
-  `firstname` varchar(255) DEFAULT NULL,
-  `lastname` varchar(255) DEFAULT NULL,
-  `phonenumber` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `role` (`role`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -280,11 +291,11 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Daten für Tabelle `users`
 --
 
-INSERT INTO `users` (`id`, `role`, `username`, `comment`, `hashedpassword`, `salt`, `firstname`, `lastname`, `phonenumber`) VALUES
-(1, 1, 'admin', 'admin', 'OqW/jtPxVf20pkBtco0re0cMnBmLNmnLwLybqWpbck0=', 'V04Pi7srsEdHxgvGrOVLzA==', 'admin', 'admin', '555 1000'),
-(2, 2, 'Anonymous', NULL, NULL, NULL, '', '', ''),
-(3, 3, 'johndoe', 'john123', 'xoiwdOGPB54D87Z1BdwpDDviPaOYEnBKxUJKHTftrEM=', 'qwWnhK5AInx3HCcIl2PHlw==', 'John', 'Doe', '555 3033'),
-(4, 4, 'janedoe', 'jane123', 'JNlFKNTLGSm+aBfFco463t5WYz4cMGN3bbq6rhpDRnY=', 'NwkEIZ3kAfeBfSxx8NaIqQ==', 'Jane', 'Doe', '555 4044');
+INSERT INTO `users` (`id`, `role`, `username`, `comment`, `hashedpassword`, `salt`) VALUES
+(1, 1, 'admin', 'admin', 'OqW/jtPxVf20pkBtco0re0cMnBmLNmnLwLybqWpbck0=', 'V04Pi7srsEdHxgvGrOVLzA=='),
+(2, 2, 'Anonymous', NULL, NULL, NULL),
+(3, 3, 'johndoe', 'john123', 'xoiwdOGPB54D87Z1BdwpDDviPaOYEnBKxUJKHTftrEM=', 'qwWnhK5AInx3HCcIl2PHlw=='),
+(4, 4, 'janedoe', 'jane123', 'JNlFKNTLGSm+aBfFco463t5WYz4cMGN3bbq6rhpDRnY=', 'NwkEIZ3kAfeBfSxx8NaIqQ==');
 
 --
 -- Constraints der exportierten Tabellen
@@ -309,6 +320,12 @@ ALTER TABLE `reports`
   ADD CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `reports_ibfk_2` FOREIGN KEY (`ghostnet`) REFERENCES `ghostnets` (`id`),
   ADD CONSTRAINT `reports_ibfk_3` FOREIGN KEY (`status`) REFERENCES `statuscodes` (`id`);
+
+--
+-- Constraints der Tabelle `userdetails`
+--
+ALTER TABLE `userdetails`
+  ADD CONSTRAINT `userdetails_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`id`);
 
 --
 -- Constraints der Tabelle `users`
