@@ -1,6 +1,11 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -22,7 +27,7 @@ public class DataService {
         String workUsername = inputBean.getUsername();
         String workInputPassword = inputBean.getUsedPassword();
         inputBean.cleanUpUsedPassword();
-        
+
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
             String query = "SELECT * FROM users WHERE BINARY username = ?";
@@ -30,21 +35,21 @@ public class DataService {
             statement.setString(1, workUsername);
 
             ResultSet resultSet = statement.executeQuery();
-            
+
             // Benutzername gefunden
             if (resultSet.next()) {
-            	
+
             	String workSalt =  resultSet.getString("salt");
             	String workDBHashedPassword = resultSet.getString("hashedpassword");
-            	
+
             	Boolean passwordCheckSuccessfully = verifyPassword(workInputPassword, workSalt, workDBHashedPassword);
-            	
+
             	if (passwordCheckSuccessfully) {
             		Integer id = Integer.valueOf(resultSet.getString("id"));
                 	Integer role = Integer.valueOf(resultSet.getString("role"));
                 	String hashedpassword = resultSet.getString("hashedpassword");
                 	String salt = resultSet.getString("salt");
-                	
+
                 	inputBean.setId(id);
                 	inputBean.setRole(role);
                 	inputBean.setFirstname(getAttributesFromDBUsers(id, 2));
@@ -53,18 +58,18 @@ public class DataService {
                 	inputBean.setHashedPassword(hashedpassword);
                 	inputBean.setSalt(salt);
 
-                	
+
                 	if (role == 1) {
                         inputBean.setAdminPrivileges(true);
                 	} else {
                         inputBean.setAdminPrivileges(false);
                 	}
-                	
+
                     // Login von Usern der Systemrolle (2) blockieren
                     if (inputBean.getRole() == 2) {
                     	loginCase = "failed";
                     	return loginCase;
-                    	
+
                     } else {
                     	loginCase = "backend";
                     	inputBean.setIsLoggedIn(true);
@@ -72,9 +77,9 @@ public class DataService {
                     }
             	}
             }
-            
+
             statement.close();
-        
+
         //
         } catch (SQLException e) {
             e.printStackTrace();
@@ -83,11 +88,11 @@ public class DataService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
+
         return loginCase;
     }
-    
-    
+
+
     // Methode zum Hashen des Passworts mit der Salt
     public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -101,11 +106,11 @@ public class DataService {
         String hashedEnteredPassword = hashPassword(enteredPassword, storedSalt);
         return hashedEnteredPassword.equals(storedHash);
     }
-    
+
     public GhostNetBean getGhostNetBeanById(int inputId) throws ClassNotFoundException {
 
         GhostNetBean workGhostNetBean = new GhostNetBean();
-        
+
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
             String query = null;
@@ -115,9 +120,9 @@ public class DataService {
             statement = connection.prepareStatement(query);
             statement.setInt(1, inputId);
             resultSet = statement.executeQuery();
-            
+
             if (resultSet.next()) {
-            	
+
             	GhostNetBean workGhostNet = new GhostNetBean();
 
                 Integer id = Integer.valueOf(resultSet.getString("id"));
@@ -129,10 +134,10 @@ public class DataService {
                 workGhostNet.setPosLatitude(latitude);
                 workGhostNet.setPosLongitude(longitude);
                 workGhostNet.setSize(size);
-                
+
                 workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
-                workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));  
-                
+                workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));
+
         }
 
             statement.close();
@@ -142,10 +147,10 @@ public class DataService {
 
         return workGhostNetBean;
     }
-    
-    
+
+
     public List<GhostNetBean> getAllRecoveredGhostNetsByUserId(Integer inputUserId) throws ClassNotFoundException {
-    	
+
     	String defaultQuery = "SELECT gn.id, gn.latitude, gn.longitude, gn.size" + " " +
           		 "FROM ghostnets gn" + " " +
           		 "JOIN (" + " " +
@@ -155,7 +160,7 @@ public class DataService {
           		 ") latest_reports ON gn.id = latest_reports.ghostnet" + " " +
           		 "JOIN reports rep ON rep.ghostnet = gn.id AND rep.timestamp = latest_reports.max_timestamp" + " " +
           		 "WHERE rep.status = 3 AND rep.user = ?;";
-       	
+
        	String workQuery;
       	workQuery = defaultQuery;
       	List<GhostNetBean> results = new ArrayList<>();
@@ -167,39 +172,39 @@ public class DataService {
         statement.setInt(1, inputUserId);
 
         ResultSet resultSet = statement.executeQuery();
-                
+
         while (resultSet.next()) {
-                	
+
 	    	GhostNetBean workGhostNet = new GhostNetBean();
-	
+
 	        Integer id = Integer.valueOf(resultSet.getString("id"));
 	        String latitude =  resultSet.getString("latitude");
 	        String longitude =  resultSet.getString("longitude");
 	        Integer size =  resultSet.getInt("size");
-	
+
 	        workGhostNet.setId(id);
 	        workGhostNet.setPosLatitude(latitude);
 	        workGhostNet.setPosLongitude(longitude);
 	        workGhostNet.setSize(size);
-	        
+
 	        workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
-	        workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));    
-	        
-	        results.add(workGhostNet);          
+	        workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));
+
+	        results.add(workGhostNet);
         	}
 
         	statement.close();
-        	
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
-       return results;	
+
+       return results;
     }
-    
-    
+
+
     public List<GhostNetBean> getGhostNetsByStatusId(int inputStatusId) throws ClassNotFoundException {
-    	
+
     	String defaultQuery = "SELECT gn.id, gn.latitude, gn.longitude, gn.size" + " " +
        		 "FROM ghostnets gn" + " " +
        		 "JOIN (" + " " +
@@ -219,16 +224,16 @@ public class DataService {
            		 ") latest_reports ON gn.id = latest_reports.ghostnet" + " " +
            		 "JOIN reports rep ON rep.ghostnet = gn.id AND rep.timestamp = latest_reports.max_timestamp" + " " +
            		 "WHERE rep.status = ? OR rep.status = ?;";
-    	
+
     	String workQuery;
-    	
+
     	List<GhostNetBean> results = new ArrayList<>();
          Class.forName("com.mysql.cj.jdbc.Driver");
          try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
              String query = null;
              PreparedStatement statement = null;
              ResultSet resultSet = null;
-             
+
              switch (inputStatusId) {
              case 12:
             	 workQuery = allActive12;
@@ -239,7 +244,7 @@ public class DataService {
              }
 
              statement = connection.prepareStatement(workQuery);
-             
+
              switch (inputStatusId) {
              case 12:
             	 Integer value1 = Integer.valueOf(String.valueOf(inputStatusId).substring(0,1));
@@ -251,11 +256,11 @@ public class DataService {
                  statement.setInt(1, inputStatusId);
                  break;
              }
-             
+
              resultSet = statement.executeQuery();
-             
+
              while (resultSet.next()) {
-             	
+
              	GhostNetBean workGhostNet = new GhostNetBean();
 
                 Integer id = Integer.valueOf(resultSet.getString("id"));
@@ -267,12 +272,12 @@ public class DataService {
                 workGhostNet.setPosLatitude(latitude);
                 workGhostNet.setPosLongitude(longitude);
                 workGhostNet.setSize(size);
-                 
+
                 workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
-                workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));    
-                 
+                workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));
+
                 results.add(workGhostNet);
-                 
+
          }
 
              statement.close();
@@ -282,8 +287,8 @@ public class DataService {
 
          return results;
     }
-    
-    
+
+
     public List<GhostNetBean> getAllGhostNets() throws ClassNotFoundException {
 
         List<GhostNetBean> results = new ArrayList<>();
@@ -294,27 +299,27 @@ public class DataService {
             ResultSet resultSet = null;
             query = "SELECT * FROM ghostnets";
             statement = connection.prepareStatement(query);
-            
+
             resultSet = statement.executeQuery();
-            
+
             while (resultSet.next()) {
-            	
+
             	GhostNetBean workGhostNet = new GhostNetBean();
 
                 Integer id = Integer.valueOf(resultSet.getString("id"));
                 String latitude =  resultSet.getString("latitude");
                 String longitude =  resultSet.getString("longitude");
                 Integer size =  resultSet.getInt("size");
-                
+
                 workGhostNet.setId(id);
                 workGhostNet.setPosLatitude(latitude);
                 workGhostNet.setPosLongitude(longitude);
                 workGhostNet.setSize(size);
-                
+
                 workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
                 workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));
-                		
-        		results.add(workGhostNet);                
+
+        		results.add(workGhostNet);
         }
 
             statement.close();
@@ -323,17 +328,17 @@ public class DataService {
         }
 
         return results;
-    	
+
     }
-     
+
     public ReportBean getReportBeanForGhostNet(Integer ghostNetId, Integer modeswitch) throws ClassNotFoundException {
     	ReportBean workReportBean = new ReportBean();
-    	
+
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-        	
+
             String query = "SELECT * FROM reports";
-            
+
             switch (modeswitch) {
             case 1:
                 query = "SELECT * FROM reports WHERE ghostnet=? ORDER BY timestamp ASC LIMIT 1";
@@ -342,7 +347,7 @@ public class DataService {
                 query = "SELECT * FROM reports WHERE ghostnet=? ORDER BY timestamp DESC LIMIT 1";
             	break;
             }
-            
+
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, ghostNetId.toString());
             ResultSet resultSet = statement.executeQuery();
@@ -350,11 +355,11 @@ public class DataService {
             if (resultSet.next()) {
             	Integer workReportId = Integer.valueOf(resultSet.getString("id"));
             	Integer workUserId = Integer.valueOf(resultSet.getString("user"));
-            	Integer workGhostNetId = Integer.valueOf(resultSet.getString("ghostnet"));
+            	int workGhostNetId = Integer.parseInt(resultSet.getString("ghostnet"));
             	Integer workStatusId = Integer.valueOf(resultSet.getString("status"));
             	Integer workTimestamp = Integer.valueOf(resultSet.getString("timestamp"));
             	String workTimestampLabel = encodeUnixTimestampHumanReadable(workTimestamp.toString());
-            	
+
             	workReportBean.setId(workReportId);
             	workReportBean.setUserId(workUserId);
             	workReportBean.setStatusId(workStatusId);
@@ -366,10 +371,10 @@ public class DataService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    	
+
     	return workReportBean;
-    } 
-    
+    }
+
     public void createReportForGhostNet(Integer inputUserId, Integer inputGhostNetId, Integer inputStatusId) throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
@@ -388,7 +393,7 @@ public class DataService {
         }
 
     }
-    
+
     public void sendNewGhostNetData(Integer inputNewId, String inputLatitude, String inputLongitude, Integer inputSize) throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
@@ -407,14 +412,14 @@ public class DataService {
         }
 
     }
-    
+
     public String getAttributesFromDBUsers(Integer inputUserId, int modeSwitch) throws ClassNotFoundException {
     	String resultTxt = "";
-    	
+
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
             String query = "";
-            
+
             switch(modeSwitch) {
             case 1:
        		     query = "SELECT * FROM users WHERE id = ?";
@@ -427,13 +432,13 @@ public class DataService {
             	break;
             case 4:
         		query = "SELECT * FROM userdetails WHERE userid = ?";
-            	break;	
+            	break;
             }
-            
+
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, inputUserId.toString());
             ResultSet resultSet = statement.executeQuery();
-            
+
             if (resultSet.next()) {
                 switch (modeSwitch) {
                 	case 1:
@@ -451,16 +456,16 @@ public class DataService {
 
                 }
             }
-            
+
             statement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    	
+
     	return resultTxt;
-    }    
-    
+    }
+
     public Integer sumEntriesInDBByStatus(Integer statusValue) throws ClassNotFoundException {
     	Integer result = 0;
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -477,7 +482,7 @@ public class DataService {
             		"WHERE r.status = ?;";
 
             PreparedStatement statement;
-            
+
             if (statusValue == 0) {
                statement = connection.prepareStatement(simpleQuery);
 
@@ -485,21 +490,21 @@ public class DataService {
                 statement = connection.prepareStatement(extendedQuery);
                 statement.setInt(1, statusValue);
             }
-            
+
 			ResultSet resultSet = statement.executeQuery();
-            
-            while (resultSet.next()) {              
+
+            while (resultSet.next()) {
                 result = resultSet.getInt("result");
             }
-            
+
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return result;
     }
-    
+
 
     public String getDurationHumanReadable(Integer timestampA, Integer timestampB) {
         try {
@@ -527,7 +532,7 @@ public class DataService {
             return "Invalid format";
         }
     }
-    
+
     public List<ReportBean> getReportsByUserId(Integer inputUserId) throws ClassNotFoundException {
         List<ReportBean> results = new ArrayList<>();
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -539,9 +544,9 @@ public class DataService {
             statement = connection.prepareStatement(query);
             statement.setInt(1, inputUserId);
             resultSet = statement.executeQuery();
-            
+
             while (resultSet.next()) {
-            	
+
             	ReportBean workReportBean = new ReportBean();
 
                 Integer id = Integer.valueOf(resultSet.getString("id"));
@@ -553,7 +558,7 @@ public class DataService {
                 workReportBean.setGhostNetId(ghostnet);
                 workReportBean.setStatusId(status);
                 workReportBean.setTimestamp(timestamp);
-                
+
                 results.add(workReportBean);
         }
             statement.close();
@@ -563,8 +568,8 @@ public class DataService {
 
         return results;
     }
-    
-    
+
+
     public Integer getLatestGhostNetId() throws ClassNotFoundException {
     	Integer lastestId = 0;
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -572,23 +577,23 @@ public class DataService {
             String query= "SELECT id FROM ghostnets ORDER BY id DESC LIMIT 1";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {              
+            if (resultSet.next()) {
             	lastestId = resultSet.getInt("id");
             }
-            
+
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return lastestId;
     }
-    
+
     public String getLabelById(int modeswitch, int inputId) throws ClassNotFoundException {
         String labelTxt = "";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
             String query = "";
-            
+
             switch(modeswitch) {
                 case 1:
                     query= "SELECT label FROM ghostnetsizes WHERE id=?";
@@ -602,15 +607,15 @@ public class DataService {
                 default:
                     throw new IllegalArgumentException("Invalid mode switch value");
             }
-            
+
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, inputId);
             ResultSet resultSet = statement.executeQuery();
-   
-            if (resultSet.next()) {              
+
+            if (resultSet.next()) {
                 labelTxt = resultSet.getString("label");
             }
-            
+
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -618,43 +623,43 @@ public class DataService {
 
         return labelTxt;
     }
-    
+
     //
     // helper
     //
     public String encodeUnixTimestampHumanReadable(String unixTimestamp) {
         // Parse the Unixzeit string into a long value
        long unixSeconds = Long.parseLong(unixTimestamp);
-        
+
        // Create a Date object from the Unix seconds
        Date date = new Date(unixSeconds * 1000L);
-         
+
        // Define the desired date format
        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-            
+
        // Optionally set the timezone if needed, here using UTC
        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-         
+
        // Format the date into the desired format and return the string
         String resultTxt = sdf.format(date);
-        
+
     	return resultTxt;
     }
-    
+
     public Integer getCurrentUnixTime() {
         // System.currentTimeMillis() gibt die aktuelle Zeit in Millisekunden zurück
         long currentTimeMillis = System.currentTimeMillis();
         // Unixzeit in Sekunden berechnen
         long unixTimeSeconds = currentTimeMillis / 1000L;
         // Unixzeit als String zurückgeben
-        Integer unixTime = (int) unixTimeSeconds;
+        int unixTime = (int) unixTimeSeconds;
         return unixTime;
     }
-    
+
     public String getSnippetForMapMarker(Integer inputStatusId) {
     	String markerColor = "blackIcon";
     	switch (inputStatusId) {
-    	//	
+    	//
     	case 1:
     		markerColor = "redIcon";
     		break;
@@ -674,8 +679,8 @@ public class DataService {
     	String markerCode = "{icon: " + markerColor + "}";
     	return markerCode;
     }
-    
 
 
-    
-}    
+
+
+}
