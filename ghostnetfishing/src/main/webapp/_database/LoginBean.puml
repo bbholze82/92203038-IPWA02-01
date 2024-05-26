@@ -1,0 +1,34 @@
+
+    @startuml
+    class LoginBean {
+        +getUsername()
+        +setUsername()
+        +getErrorMessage()
+        +setErrorMessage()
+        +getIsLoggedIn()
+        +setIsLoggedIn()
+        +login()
+        +logout()
+        +getRole()
+        +getRoleLabel()
+        +setRole()
+        +getFirstname()
+        +setFirstname()
+        +getLastname()
+        +setLastname()
+        +getId()
+        +setId()
+        +getPhonenumber()
+        +setPhonenumber()
+        +setHashedPassword()
+        +getHashedPassword()
+        +setSalt()
+        +getSalt()
+        +setUsedPassword()
+        +getUsedPassword()
+        +cleanUpUsedPassword()
+        +getAdminPrivileges()
+        +setAdminPrivileges()
+    }
+    @enduml
+    

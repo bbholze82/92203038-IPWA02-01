@@ -1,0 +1,22 @@
+
+    @startuml
+    class ReportBean {
+        +getId()
+        +setId()
+        +getUserId()
+        +setUserId()
+        +getUserNameLabel()
+        +setUserNameLabel()
+        +getGhostNetId()
+        +setGhostNetId()
+        +getStatusId()
+        +setStatusId()
+        +getTimestamp()
+        +setTimestamp()
+        +getTimestampLabel()
+        +setTimestampLabel()
+        +getStatusLabel()
+        +getAgeOfReport()
+    }
+    @enduml
+    

@@ -1,0 +1,23 @@
+
+    @startuml
+    class DataService {
+        +login()
+        +getGhostNetBeanById()
+        +getAllRecoveredGhostNetsByUserId()
+        +getGhostNetsByStatusId()
+        +getAllGhostNets()
+        +getReportBeanForGhostNet()
+        +createReportForGhostNet()
+        +sendNewGhostNetData()
+        +getAttributesFromDBUsers()
+        +sumEntriesInDBByStatus()
+        +getDurationHumanReadable()
+        +getReportsByUserId()
+        +getLatestGhostNetId()
+        +getLabelById()
+        +encodeUnixTimestampHumanReadable()
+        +getCurrentUnixTime()
+        +getSnippetForMapMarker()
+    }
+    @enduml
+    

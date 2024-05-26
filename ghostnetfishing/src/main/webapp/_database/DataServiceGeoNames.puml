@@ -1,0 +1,10 @@
+
+    @startuml
+    class DataServiceGeoNames {
+        +getPositionLabelFromService()
+        +getLabelForPositionFromCache()
+        +saveGeoNameResultToCache()
+        +getCurrentUnixTime()
+    }
+    @enduml
+    
