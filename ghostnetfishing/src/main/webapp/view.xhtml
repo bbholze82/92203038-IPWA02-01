@@ -75,9 +75,9 @@ var blackIcon = new L.Icon({
 });
 
 
-<ui:repeat value="#{ghostNetBean.getAllGhostNets(0)}" var="ghostnet">
+<ui:repeat value="#{ghostNetBean.allGhostNets}" var="ghostnet">
      var marker = L.marker([<h:outputText value="#{ghostnet.posLatitude}"/>, <h:outputText value="#{ghostnet.posLongitude}"/>], <h:outputText value="#{ghostnet.snippetForMapMarker}"/>); 
-     marker.bindPopup("<h:outputText value="#{ghostNetBean.shortDetails}"/>").openPopup();
+     marker.bindPopup("<h:outputText value="#{ghostnet.detailsForMapMarker}"/>").openPopup();
      marker.addTo(map);
 </ui:repeat>
 

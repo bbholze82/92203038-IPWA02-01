@@ -132,6 +132,7 @@ public class DataService {
                 
                 workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
                 workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));  
+                
         }
 
             statement.close();
@@ -143,27 +144,114 @@ public class DataService {
     }
     
     
+    public List<GhostNetBean> getAllRecoveredGhostNetsByUserId(Integer inputUserId) throws ClassNotFoundException {
+    	
+    	String defaultQuery = "SELECT gn.id, gn.latitude, gn.longitude, gn.size" + " " +
+          		 "FROM ghostnets gn" + " " +
+          		 "JOIN (" + " " +
+          		 "    SELECT ghostnet, MAX(timestamp) AS max_timestamp" + " " +
+          		 "    FROM reports" + " " +
+          		 "    GROUP BY ghostnet" + " " +
+          		 ") latest_reports ON gn.id = latest_reports.ghostnet" + " " +
+          		 "JOIN reports rep ON rep.ghostnet = gn.id AND rep.timestamp = latest_reports.max_timestamp" + " " +
+          		 "WHERE rep.status = 3 AND rep.user = ?;";
+       	
+       	String workQuery;
+      	workQuery = defaultQuery;
+      	List<GhostNetBean> results = new ArrayList<>();
+
+      	Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        PreparedStatement statement = connection.prepareStatement(workQuery);
+        statement = connection.prepareStatement(workQuery);
+        statement.setInt(1, inputUserId);
+
+        ResultSet resultSet = statement.executeQuery();
+                
+        while (resultSet.next()) {
+                	
+	    	GhostNetBean workGhostNet = new GhostNetBean();
+	
+	        Integer id = Integer.valueOf(resultSet.getString("id"));
+	        String latitude =  resultSet.getString("latitude");
+	        String longitude =  resultSet.getString("longitude");
+	        Integer size =  resultSet.getInt("size");
+	
+	        workGhostNet.setId(id);
+	        workGhostNet.setPosLatitude(latitude);
+	        workGhostNet.setPosLongitude(longitude);
+	        workGhostNet.setSize(size);
+	        
+	        workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
+	        workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));    
+	        
+	        results.add(workGhostNet);          
+        	}
+
+        	statement.close();
+        	
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+       return results;	
+    }
+    
+    
     public List<GhostNetBean> getGhostNetsByStatusId(int inputStatusId) throws ClassNotFoundException {
-    	 List<GhostNetBean> results = new ArrayList<>();
+    	
+    	String defaultQuery = "SELECT gn.id, gn.latitude, gn.longitude, gn.size" + " " +
+       		 "FROM ghostnets gn" + " " +
+       		 "JOIN (" + " " +
+       		 "    SELECT ghostnet, MAX(timestamp) AS max_timestamp" + " " +
+       		 "    FROM reports" + " " +
+       		 "    GROUP BY ghostnet" + " " +
+       		 ") latest_reports ON gn.id = latest_reports.ghostnet" + " " +
+       		 "JOIN reports rep ON rep.ghostnet = gn.id AND rep.timestamp = latest_reports.max_timestamp" + " " +
+       		 "WHERE rep.status = ?;";
+
+    	String allActive12 = "SELECT gn.id, gn.latitude, gn.longitude, gn.size" + " " +
+          		 "FROM ghostnets gn" + " " +
+           		 "JOIN (" + " " +
+           		 "    SELECT ghostnet, MAX(timestamp) AS max_timestamp" + " " +
+           		 "    FROM reports" + " " +
+           		 "    GROUP BY ghostnet" + " " +
+           		 ") latest_reports ON gn.id = latest_reports.ghostnet" + " " +
+           		 "JOIN reports rep ON rep.ghostnet = gn.id AND rep.timestamp = latest_reports.max_timestamp" + " " +
+           		 "WHERE rep.status = ? OR rep.status = ?;";
+    	
+    	String workQuery;
+    	
+    	List<GhostNetBean> results = new ArrayList<>();
          Class.forName("com.mysql.cj.jdbc.Driver");
          try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
              String query = null;
              PreparedStatement statement = null;
              ResultSet resultSet = null;
              
-             query = "SELECT gn.id, gn.latitude, gn.longitude, gn.size" + " " +
-            		 "FROM ghostnets gn" + " " +
-            		 "JOIN (" + " " +
-            		 "    SELECT ghostnet, MAX(timestamp) AS max_timestamp" + " " +
-            		 "    FROM reports" + " " +
-            		 "    GROUP BY ghostnet" + " " +
-            		 ") latest_reports ON gn.id = latest_reports.ghostnet" + " " +
-            		 "JOIN reports rep ON rep.ghostnet = gn.id AND rep.timestamp = latest_reports.max_timestamp" + " " +
-            		 "WHERE rep.status = ?;";
+             switch (inputStatusId) {
+             case 12:
+            	 workQuery = allActive12;
+            	 break;
+             default:
+            	 workQuery = defaultQuery;
+            	 break;
+             }
 
-          
-             statement = connection.prepareStatement(query);
-             statement.setInt(1, inputStatusId);
+             statement = connection.prepareStatement(workQuery);
+             
+             switch (inputStatusId) {
+             case 12:
+            	 Integer value1 = Integer.valueOf(String.valueOf(inputStatusId).substring(0,1));
+            	 Integer value2 = Integer.valueOf(String.valueOf(inputStatusId).substring(1));
+                 statement.setInt(1, value1);
+                 statement.setInt(2, value2);
+                 break;
+             default:
+                 statement.setInt(1, inputStatusId);
+                 break;
+             }
+             
              resultSet = statement.executeQuery();
              
              while (resultSet.next()) {
@@ -196,7 +284,7 @@ public class DataService {
     }
     
     
-    public List<GhostNetBean> getAllGhostNets(int modeSwitch) throws ClassNotFoundException {
+    public List<GhostNetBean> getAllGhostNets() throws ClassNotFoundException {
 
         List<GhostNetBean> results = new ArrayList<>();
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -217,7 +305,7 @@ public class DataService {
                 String latitude =  resultSet.getString("latitude");
                 String longitude =  resultSet.getString("longitude");
                 Integer size =  resultSet.getInt("size");
-
+                
                 workGhostNet.setId(id);
                 workGhostNet.setPosLatitude(latitude);
                 workGhostNet.setPosLongitude(longitude);
@@ -225,19 +313,8 @@ public class DataService {
                 
                 workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
                 workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));
-                
-                
-                switch (modeSwitch) {
-                case 0:
-                	results.add(workGhostNet);
-                    break;
-                case 4:
-                	if (workGhostNet.getLatestReportBean().getStatusId() == modeSwitch) {
-                		results.add(workGhostNet);
-                	}
-                }
-                
-                
+                		
+        		results.add(workGhostNet);                
         }
 
             statement.close();
@@ -273,19 +350,14 @@ public class DataService {
             if (resultSet.next()) {
             	Integer workReportId = Integer.valueOf(resultSet.getString("id"));
             	Integer workUserId = Integer.valueOf(resultSet.getString("user"));
-            	//String workUserLabel = resultSet.getString("userLabel");
             	Integer workGhostNetId = Integer.valueOf(resultSet.getString("ghostnet"));
             	Integer workStatusId = Integer.valueOf(resultSet.getString("status"));
-            	//String workStatusLabel = resultSet.getString("statusLabel");
             	Integer workTimestamp = Integer.valueOf(resultSet.getString("timestamp"));
             	String workTimestampLabel = encodeUnixTimestampHumanReadable(workTimestamp.toString());
             	
             	workReportBean.setId(workReportId);
             	workReportBean.setUserId(workUserId);
-            	//workReportBean.setUserLabel(workUserLabel);
-            	//workReportBean.setGhostNetId(workGhostNetId);
             	workReportBean.setStatusId(workStatusId);
-            	//workReportBean.setStatusLabel(workStatusLabel);
             	workReportBean.setTimestamp(workTimestamp);
             	workReportBean.setTimestampLabel(workTimestampLabel);
             }
@@ -428,10 +500,7 @@ public class DataService {
         return result;
     }
     
-    
-    
-    
-    
+
     public String getDurationHumanReadable(Integer timestampA, Integer timestampB) {
         try {
             long unixTimestampA = timestampA.longValue();
@@ -606,14 +675,7 @@ public class DataService {
     	return markerCode;
     }
     
-    
 
 
     
-
-    
-}
-    
-    
-    
-    
+}    

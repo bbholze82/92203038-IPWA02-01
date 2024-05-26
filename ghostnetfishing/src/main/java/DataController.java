@@ -24,12 +24,16 @@ public class DataController {
     	return dataService.sumEntriesInDBByStatus(statusValue);
     }
     
+    public List<GhostNetBean> getAllRecoveredGhostNetsByUserId(Integer inputUserId) throws ClassNotFoundException {
+    	return dataService.getAllRecoveredGhostNetsByUserId(inputUserId);
+    }
+    
     public GhostNetBean getGhostNetBeanById(int inputId) throws ClassNotFoundException {
     	return dataService.getGhostNetBeanById(inputId);
     }
     
-    public List<GhostNetBean> getAllGhostNets(int modeSwitch) throws ClassNotFoundException {
-    	return dataService.getAllGhostNets(modeSwitch);
+    public List<GhostNetBean> getAllGhostNets() throws ClassNotFoundException {
+    	return dataService.getAllGhostNets();
     }   
     
     public String getAttributesFromDBUsers(Integer inputUserId, int modeSwitch) throws ClassNotFoundException {

@@ -78,13 +78,15 @@ var greyIcon = new L.Icon({
 });
 
 
-<ui:repeat value="#{ghostNetBean.getAllGhostNets(0)}" var="ghostnet">
+<ui:repeat value="#{ghostNetBean.allActiveGhostNets}" var="ghostnet">
+
      var marker = L.marker([<h:outputText value="#{ghostnet.posLatitude}"/>, <h:outputText value="#{ghostnet.posLongitude}"/>], <h:outputText value="#{ghostnet.snippetForMapMarker}"/>); 
      marker.bindPopup("<h:outputText value="#{ghostnet.viewDetailsLink}"/>").openPopup();
+     
      marker.addTo(map);
 </ui:repeat>
 
-
+console.log("ok");
 </script>
 
 </div>
@@ -115,30 +117,6 @@ var greyIcon = new L.Icon({
 </td>
 <td>#{statisticBean.ghostNetsWithStatusSalvagePending}</td>
 <td>Salvage pending</td>
-</tr>
-
-<tr>
-<td>
-<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-green.png"/>
-</td>
-<td>#{statisticBean.ghostNetsWithStatusRecovered}</td>
-<td>Recovered</td>
-</tr>
-
-<tr>
-<td>
-<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-grey.png"/>
-</td>
-<td>#{statisticBean.ghostNetsWithStatusReportedMissing}</td>
-<td>Premarked as missing</td>
-</tr>
-
-<tr>
-<td>
-<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-black.png"/>
-</td>
-<td>#{statisticBean.ghostNetsWithStatusMissing}</td>
-<td>Missing</td>
 </tr>
 
 </table>
@@ -174,7 +152,7 @@ var greyIcon = new L.Icon({
 </thead>
 
 <tbody>
-<ui:repeat value="#{ghostNetBean.getAllGhostNets(0)}" var="ghostNet">
+<ui:repeat value="#{ghostNetBean.allActiveGhostNets}" var="ghostNet">
 	<tr id="id#{ghostNet.id}">
 	<td><h:outputText value="#{ghostNet.id}"/></td>
 	<td><h:outputText value="#{ghostNet.posLatitude}"/></td>
@@ -197,12 +175,60 @@ var greyIcon = new L.Icon({
 </table>
 
 
-</div>
-</div>
+</div><!-- /content-wrapper -->
 </div>
 </div>
 
+
+<div class="row mt-3">
+<div class="col-12">
+<h2 class="header">Ghost Nets Recovered by You</h2>
+
+<div class="content-wrapper">
+<table class="table">
+
+<thead>
+<th scope="col">ID</th>
+<th scope="col">Latitude</th>
+<th scope="col">Longitude</th>
+<th scope="col">Area</th>
+<th scope="col">Size</th>
+<th scope="col">Recovered</th>
+<th scope="col"></th>
+</thead>
+
+<tbody>
+<ui:repeat value="#{ghostNetBean.getAllRecoveredGhostNetsByUserId(loginBean.id)}" var="ghostNet">
+	<tr id="id#{ghostNet.id}">
+	<td><h:outputText value="#{ghostNet.id}"/></td>
+	<td><h:outputText value="#{ghostNet.posLatitude}"/></td>
+	<td><h:outputText value="#{ghostNet.posLongitude}"/></td>
+	<td><h:outputText value="#{ghostNet.labelForPosition}"/></td>
+	<td><h:outputText value="#{ghostNet.sizeLabel}" /></td>
+	<td><h:outputText value="#{ghostNet.ageOfReport}"/> ago</td>    
+	<h:form>
+	<td><h:commandButton class="btn btn-danger btn-sm mt-2" value="Salvage failed" action="#{ghostNet.setStatusToReported(loginBean.id)}" /></td>
+	</h:form>
+	</tr>
+</ui:repeat>
+</tbody>
+
+</table>
+
+
+</div><!-- /content-wrapper -->
+
+
+</div><!-- /col9 -->
+</div><!-- /row -->
+
+
+</div><!-- /container -->
+
 </h:panelGroup>
+
+
+
 
 <script src="#{request.contextPath}/assets/static/js/highlight-table-row.js"></script>
 </ui:define>

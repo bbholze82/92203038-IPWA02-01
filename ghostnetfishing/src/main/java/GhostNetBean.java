@@ -15,9 +15,9 @@ public class GhostNetBean implements Serializable {
     private Integer size;
     private ReportBean firstReportBean;
     private ReportBean latestReportBean;
-
+    
     private final DataController dataController = new DataController();
-
+    
     public Integer getId() {
         return this.id;
     }
@@ -50,8 +50,8 @@ public class GhostNetBean implements Serializable {
     	this.size = size;
     }
     
-    public List<GhostNetBean> getAllGhostNets(int modeswitch) throws ClassNotFoundException {
-    	return dataController.getAllGhostNets(modeswitch);
+    public List<GhostNetBean> getAllGhostNets() throws ClassNotFoundException {
+    	return dataController.getAllGhostNets();
     }
 
     public List<GhostNetBean> getGhostNetsByStatusId(Integer inputStatusId) throws ClassNotFoundException {
@@ -127,10 +127,6 @@ public class GhostNetBean implements Serializable {
     	return dataController.getLabelById(1, this.size);
     }
 
-    public String getStatusLabel() throws ClassNotFoundException {
-    	return dataController.getLabelById(2, this.size);
-    }
-
     public String getAgeOfReport() {
     	Integer currentUnixTime = dataController.getCurrentUnixTime();
     	String ageLabel = dataController.getDurationHumanReadable(this.latestReportBean.getTimestamp() , currentUnixTime);
@@ -155,13 +151,25 @@ public class GhostNetBean implements Serializable {
     	return workLabel;
     }
     
-    public String getShortDetails() throws ClassNotFoundException {
-    	String workUserNameLabel = "";
-    	String workStatusLabel = "";
-    	String workFristReported = "";
-    	String resultTxt =  "Frist reported: " +  workFristReported + "<br/>" + "by: " + workUserNameLabel + "<br/>" + "Status: " + workStatusLabel;
+    
+    public List<GhostNetBean> getAllActiveGhostNets() throws ClassNotFoundException {
+    	return dataController.getGhostNetsByStatusId(12);
+    	
+    }
+    
+    public List<GhostNetBean> getAllRecoveredGhostNetsByUserId(Integer inputUserId) throws ClassNotFoundException {
+    	return dataController.getAllRecoveredGhostNetsByUserId(inputUserId);
+    }
+    
+    public String getDetailsForMapMarker() throws ClassNotFoundException {
+    	String workUserNameLabel = this.firstReportBean.getUserNameLabel();
+    	String workFristReported = this.firstReportBean.getAgeOfReport();
+    	String workStatusLabel = this.latestReportBean.getStatusLabel();
+    	    	
+    	String resultTxt = "Seen: " +  workFristReported + "<br/>" + "by: " + workUserNameLabel + "<br/>" + "Status: " + workStatusLabel + "<br/>" ;
     	return resultTxt;
     }
+
 
 
     public String getViewDetailsLink() {

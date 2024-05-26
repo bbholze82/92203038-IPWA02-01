@@ -108,7 +108,7 @@ Please <a href="./login.xhtml">Login</a> to get access.
      <td><h:outputText value="#{ghostNet.posLatitude}"/></td>
      <td><h:outputText value="#{ghostNet.posLongitude}"/></td>
      <td><h:outputText value="#{ghostNet.sizeLabel}" /></td>
-     <td><h:outputText value="#{ghostNet.latestReportBean.statusLabel}" /></td>
+     <td><h:outputText value="#{ghostNet.latestReportBean.userNameLabel}" /></td>
      <h:form>
      <td><h:commandButton class="btn btn-danger btn-sm mt-2" value="Confirm missing report" action="#{ghostNet.setStatusToMissing(loginBean.id)}"/></td>
      <td><h:commandButton class="btn btn-secondary btn-sm mt-2" value="Cancel missing report" action="#{ghostNet.setStatusToReported(loginBean.id)}"/></td>

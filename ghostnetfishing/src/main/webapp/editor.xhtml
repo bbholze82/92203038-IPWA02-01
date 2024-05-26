@@ -34,7 +34,7 @@ You don't have admin privileges.
 <h2 class="header">Admin's Editor</h2>
 
 <h:form>
-<p:dataTable class="table" value="#{ghostNetBean.getAllGhostNets(0)}" var="ghostNet">
+<p:dataTable class="table" value="#{ghostNetBean.allGhostNets}" var="ghostNet">
 <p:column headerText="ID">
 <h:outputText value="#{ghostNet.id}" />
 </p:column>
