@@ -1,88 +1,83 @@
- html, body {
- display: flex;
- flex-direction: column;
- height: 100%;
- margin: 0;
+html, body {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	margin: 0;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
-
 .background {
-    background-image: url('../images/background01.webp');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed; /* Hält den Hintergrund fest, während man scrollt */
+	background-image: url('../images/background01.webp');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	/* Hält den Hintergrund fest, während man scrollt */
 }
 
 .table {
-	--bs-body-bg: transparent; 
+	--bs-body-bg: transparent;
 }
 
 tr.highlight {
-    animation: highlightAnimation 2s ease-out;
-    background-color: #ffffac;
+	animation: highlightAnimation 2s ease-out;
+	background-color: #ffffac;
 }
 
-
-.content-wrapper { 
+.content-wrapper {
 	background-color: #ffffff;
 	padding: 15px;
 }
 
 .wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
 }
 
 .content {
-    flex: 1;
+	flex: 1;
 }
 
 .btn .btn-primary {
-    background-color:#2563eb;
+	background-color: #2563eb;
 }
 
- .navbar-custom {
-    background-color:#2563eb;
- }
- 
- .navbar-custom .navbar-brand,
- .navbar-custom .nav-link,
- .navbar-custom .navbar-toggler-icon {
-     color: white;
- }
- 
- .navbar-custom .navbar-toggler {
-     border-color: rgba(255, 255, 255, 0.1);
- }
+.navbar-custom {
+	background-color: #2563eb;
+}
+
+.navbar-custom .navbar-brand, .navbar-custom .nav-link, .navbar-custom .navbar-toggler-icon
+	{
+	color: white;
+}
+
+.navbar-custom .navbar-toggler {
+	border-color: rgba(255, 255, 255, 0.1);
+}
 
 .footer {
-    background-color:#2563eb;
-    color: white;
+	background-color: #2563eb;
+	color: white;
 }
 
 .footer p {
-    color: white !important; /* Wichtigkeit hinzufügen, um Bootstrap-Stil zu überschreiben */
+	color: white !important;
+	/* Wichtigkeit hinzufügen, um Bootstrap-Stil zu überschreiben */
 }
 
 .footer .text-muted {
-    color: white !important; /* Wichtigkeit hinzufügen, um Bootstrap-Stil zu überschreiben */
+	color: white !important;
+	/* Wichtigkeit hinzufügen, um Bootstrap-Stil zu überschreiben */
 }
 
 .header {
-    font-weight: bold; /* Macht den Text fett */
-    color: white; /* Setzt die Textfarbe auf Weiß */
-    text-shadow: 
-      -1px -1px 0 #000,  
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-      1px 1px 0 #000; /* Erzeugt eine schwarze Kontur um den Text */
-  }
-  
-
+	font-weight: bold; /* Macht den Text fett */
+	color: white; /* Setzt die Textfarbe auf Weiß */
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px
+		0 #000; /* Erzeugt eine schwarze Kontur um den Text */
+}

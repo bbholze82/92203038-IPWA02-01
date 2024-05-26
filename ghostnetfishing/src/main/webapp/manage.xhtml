@@ -1,34 +1,35 @@
 <ui:composition template="snippets/template.xhtml"
-                xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 
-<ui:define name="content">
+	<ui:define name="content">
 
 
-<h:panelGroup rendered="#{not loginBean.isLoggedIn}">
-<div class="container mt-3 mb-3">
-<div class="alert alert-warning" role="alert">
-Please <a href="./login.xhtml">Login</a> to get access.
-</div>
-</div>
-</h:panelGroup>
+		<h:panelGroup rendered="#{not loginBean.isLoggedIn}">
+			<div class="container mt-3 mb-3">
+				<div class="alert alert-warning" role="alert">
+					Please <a href="./login.xhtml">Login</a> to get access.
+				</div>
+			</div>
+		</h:panelGroup>
 
 
-<h:panelGroup rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 3 or loginBean.role eq 4)}">
+		<h:panelGroup
+			rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 3 or loginBean.role eq 4)}">
 
-<div class="container mt-3 mb-3">
+			<div class="container mt-3 mb-3">
 
-<div class="row">
-<div class="col-9">
-<h2 class="header">Manage Ghost Nets</h2>
-<div class="content-wrapper">
-<div id="map"></div>
+				<div class="row">
+					<div class="col-9">
+						<h2 class="header">Manage Ghost Nets</h2>
+						<div class="content-wrapper">
+							<div id="map"></div>
 
-<script>
+							<script>
 
 var center = [55.454, 4.504]
 
@@ -89,147 +90,175 @@ var greyIcon = new L.Icon({
 console.log("ok");
 </script>
 
-</div>
+						</div>
 
-</div>
-
-
-<div class="col-3">
-<div class="row">
-<h2 class="header">Legend</h2>
-</div>
-
-<div class="row">
-<div class="content-wrapper">
-<table class="table">
-
-<tr>
-<td>
-<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-red.png"/>
-</td>
-<td>#{statisticBean.ghostNetsWithStatusReported}</td>
-<td>Reported</td>
-</tr>
-
-<tr>
-<td>
-<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-yellow.png"/>
-</td>
-<td>#{statisticBean.ghostNetsWithStatusSalvagePending}</td>
-<td>Salvage pending</td>
-</tr>
-
-</table>
-
-</div>
-</div>
-</div><!-- /col-3 -->
-
-</div>
-</div>
-
-<div class="container mt-3 mb-3">
-
-<div class="row">
-<div class="col-12">
-
-<div class="content-wrapper">
-<table class="table">
-
-<thead>
-<th scope="col">ID</th>
-<th scope="col">Latitude</th>
-<th scope="col">Longitude</th>
-<th scope="col">Area</th>
-<th scope="col">Size</th>
-<th scope="col">Status</th>
-<th scope="col">By</th>
-<th scope="col">Last modified</th>
-<th scope="col"></th>
-<th scope="col"></th>
-<th scope="col"></th>
-<th scope="col"></th>
-</thead>
-
-<tbody>
-<ui:repeat value="#{ghostNetBean.allActiveGhostNets}" var="ghostNet">
-	<tr id="id#{ghostNet.id}">
-	<td><h:outputText value="#{ghostNet.id}"/></td>
-	<td><h:outputText value="#{ghostNet.posLatitude}"/></td>
-	<td><h:outputText value="#{ghostNet.posLongitude}"/></td>
-	<td><h:outputText value="#{ghostNet.labelForPosition}"/></td>
-	<td><h:outputText value="#{ghostNet.sizeLabel}" /></td>
-	<td><h:outputText value="#{ghostNet.latestReportBean.statusLabel}"/></td>
-	<td><h:outputText value="#{ghostNet.latestReportBean.userNameLabel}"/></td>
-	<td><h:outputText value="#{ghostNet.ageOfReport}"/> ago</td>    
-	<h:form>
-	<td><h:commandButton class="btn btn-primary btn-sm mt-2" value="Claim salvage" action="#{ghostNet.setStatusToSalvagePending(loginBean.id)}" rendered="#{ghostNet.latestReportBean.statusId eq 1 }" /></td>
-	<td><h:commandButton class="btn btn-danger btn-sm mt-2" value="Cancel salvage" action="#{ghostNet.setStatusToReported(loginBean.id)}" rendered="#{ghostNet.latestReportBean.statusId eq 2 and ghostNet.latestReportBean.userId eq loginBean.id}" /></td>
-	<td><h:commandButton class="btn btn-success btn-sm mt-2" value="Mark as recovered" action="#{ghostNet.Recovered(loginBean.id)}" rendered="#{ghostNet.latestReportBean.statusId eq 2 and ghostNet.latestReportBean.userId eq loginBean.id}" /></td>
-	<td><h:commandButton class="btn btn-secondary btn-sm mt-2" value="Report as missing" action="#{ghostNet.setStatusToReportedMissing(loginBean.id)}" rendered="#{ghostNet.latestReportBean.statusId eq 1}" /></td>
-	</h:form>
-	</tr>
-</ui:repeat>
-</tbody>
-
-</table>
+					</div>
 
 
-</div><!-- /content-wrapper -->
-</div>
-</div>
+					<div class="col-3">
+						<div class="row">
+							<h2 class="header">Legend</h2>
+						</div>
+
+						<div class="row">
+							<div class="content-wrapper">
+								<table class="table">
+
+									<tr>
+										<td><img class="img-fluid" style="width: 25px;"
+											src="./assets/leaflet-color-markers/img/marker-icon-2x-red.png" />
+										</td>
+										<td>#{statisticBean.ghostNetsWithStatusReported}</td>
+										<td>Reported</td>
+									</tr>
+
+									<tr>
+										<td><img class="img-fluid" style="width: 25px;"
+											src="./assets/leaflet-color-markers/img/marker-icon-2x-yellow.png" />
+										</td>
+										<td>#{statisticBean.ghostNetsWithStatusSalvagePending}</td>
+										<td>Salvage pending</td>
+									</tr>
+
+								</table>
+
+							</div>
+						</div>
+					</div>
+					<!-- /col-3 -->
+
+				</div>
+			</div>
+
+			<div class="container mt-3 mb-3">
+
+				<div class="row">
+					<div class="col-12">
+
+						<div class="content-wrapper">
+							<table class="table">
+
+								<thead>
+									<th scope="col">ID</th>
+									<th scope="col">Latitude</th>
+									<th scope="col">Longitude</th>
+									<th scope="col">Area</th>
+									<th scope="col">Size</th>
+									<th scope="col">Status</th>
+									<th scope="col">By</th>
+									<th scope="col">Last modified</th>
+									<th scope="col"></th>
+									<th scope="col"></th>
+									<th scope="col"></th>
+									<th scope="col"></th>
+								</thead>
+
+								<tbody>
+									<ui:repeat value="#{ghostNetBean.allActiveGhostNets}"
+										var="ghostNet">
+										<tr id="id#{ghostNet.id}">
+											<td><h:outputText value="#{ghostNet.id}" /></td>
+											<td><h:outputText value="#{ghostNet.posLatitude}" /></td>
+											<td><h:outputText value="#{ghostNet.posLongitude}" /></td>
+											<td><h:outputText value="#{ghostNet.labelForPosition}" /></td>
+											<td><h:outputText value="#{ghostNet.sizeLabel}" /></td>
+											<td><h:outputText
+													value="#{ghostNet.latestReportBean.statusLabel}" /></td>
+											<td><h:outputText
+													value="#{ghostNet.latestReportBean.userNameLabel}" /></td>
+											<td><h:outputText value="#{ghostNet.ageOfReport}" /> ago</td>
+											<h:form>
+												<td><h:commandButton
+														class="btn btn-primary btn-sm mt-2" value="Claim salvage"
+														action="#{ghostNet.setStatusToSalvagePending(loginBean.id)}"
+														rendered="#{ghostNet.latestReportBean.statusId eq 1 }" /></td>
+												<td><h:commandButton class="btn btn-danger btn-sm mt-2"
+														value="Cancel salvage"
+														action="#{ghostNet.setStatusToReported(loginBean.id)}"
+														rendered="#{ghostNet.latestReportBean.statusId eq 2 and ghostNet.latestReportBean.userId eq loginBean.id}" /></td>
+												<td><h:commandButton
+														class="btn btn-success btn-sm mt-2"
+														value="Mark as recovered"
+														action="#{ghostNet.Recovered(loginBean.id)}"
+														rendered="#{ghostNet.latestReportBean.statusId eq 2 and ghostNet.latestReportBean.userId eq loginBean.id}" /></td>
+												<td><h:commandButton
+														class="btn btn-secondary btn-sm mt-2"
+														value="Report as missing"
+														action="#{ghostNet.setStatusToReportedMissing(loginBean.id)}"
+														rendered="#{ghostNet.latestReportBean.statusId eq 1}" /></td>
+											</h:form>
+										</tr>
+									</ui:repeat>
+								</tbody>
+
+							</table>
 
 
-<div class="row mt-3">
-<div class="col-12">
-<h2 class="header">Ghost Nets Recovered by You</h2>
-
-<div class="content-wrapper">
-<table class="table">
-
-<thead>
-<th scope="col">ID</th>
-<th scope="col">Latitude</th>
-<th scope="col">Longitude</th>
-<th scope="col">Area</th>
-<th scope="col">Size</th>
-<th scope="col">Recovered</th>
-<th scope="col"></th>
-</thead>
-
-<tbody>
-<ui:repeat value="#{ghostNetBean.getAllRecoveredGhostNetsByUserId(loginBean.id)}" var="ghostNet">
-	<tr id="id#{ghostNet.id}">
-	<td><h:outputText value="#{ghostNet.id}"/></td>
-	<td><h:outputText value="#{ghostNet.posLatitude}"/></td>
-	<td><h:outputText value="#{ghostNet.posLongitude}"/></td>
-	<td><h:outputText value="#{ghostNet.labelForPosition}"/></td>
-	<td><h:outputText value="#{ghostNet.sizeLabel}" /></td>
-	<td><h:outputText value="#{ghostNet.ageOfReport}"/> ago</td>    
-	<h:form>
-	<td><h:commandButton class="btn btn-danger btn-sm mt-2" value="Salvage failed" action="#{ghostNet.setStatusToReported(loginBean.id)}" /></td>
-	</h:form>
-	</tr>
-</ui:repeat>
-</tbody>
-
-</table>
+						</div>
+						<!-- /content-wrapper -->
+					</div>
+				</div>
 
 
-</div><!-- /content-wrapper -->
+				<div class="row mt-3">
+					<div class="col-12">
+						<h2 class="header">Ghost Nets Recovered by You</h2>
+
+						<div class="content-wrapper">
+							<table class="table">
+
+								<thead>
+									<th scope="col">ID</th>
+									<th scope="col">Latitude</th>
+									<th scope="col">Longitude</th>
+									<th scope="col">Area</th>
+									<th scope="col">Size</th>
+									<th scope="col">Recovered</th>
+									<th scope="col"></th>
+								</thead>
+
+								<tbody>
+									<ui:repeat
+										value="#{ghostNetBean.getAllRecoveredGhostNetsByUserId(loginBean.id)}"
+										var="ghostNet">
+										<tr id="id#{ghostNet.id}">
+											<td><h:outputText value="#{ghostNet.id}" /></td>
+											<td><h:outputText value="#{ghostNet.posLatitude}" /></td>
+											<td><h:outputText value="#{ghostNet.posLongitude}" /></td>
+											<td><h:outputText value="#{ghostNet.labelForPosition}" /></td>
+											<td><h:outputText value="#{ghostNet.sizeLabel}" /></td>
+											<td><h:outputText value="#{ghostNet.ageOfReport}" /> ago</td>
+											<h:form>
+												<td><h:commandButton class="btn btn-danger btn-sm mt-2"
+														value="Salvage failed"
+														action="#{ghostNet.setStatusToReported(loginBean.id)}" /></td>
+											</h:form>
+										</tr>
+									</ui:repeat>
+								</tbody>
+
+							</table>
 
 
-</div><!-- /col9 -->
-</div><!-- /row -->
+						</div>
+						<!-- /content-wrapper -->
 
 
-</div><!-- /container -->
+					</div>
+					<!-- /col9 -->
+				</div>
+				<!-- /row -->
 
-</h:panelGroup>
+
+			</div>
+			<!-- /container -->
+
+		</h:panelGroup>
 
 
 
 
-<script src="#{request.contextPath}/assets/static/js/highlight-table-row.js"></script>
-</ui:define>
+		<script
+			src="#{request.contextPath}/assets/static/js/highlight-table-row.js"></script>
+	</ui:define>
 </ui:composition>

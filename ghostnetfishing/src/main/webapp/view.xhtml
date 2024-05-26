@@ -1,22 +1,22 @@
 <ui:composition template="snippets/template.xhtml"
-                xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-<ui:define name="content">
+	<ui:define name="content">
 
 
-<div class="container mt-3 mb-3">
+		<div class="container mt-3 mb-3">
 
-<div class="row">
-<div class="col-9">
-<h2 class="header">See Ghost Nets</h2>
-<div class="content-wrapper">
-	<div id="map"></div>
+			<div class="row">
+				<div class="col-9">
+					<h2 class="header">See Ghost Nets</h2>
+					<div class="content-wrapper">
+						<div id="map"></div>
 
-<script>
+						<script>
 
 var center = [55.454, 4.504]
 
@@ -83,70 +83,72 @@ var blackIcon = new L.Icon({
 
 
 </script>
-</div>
-</div>
+					</div>
+				</div>
 
-<div class="col-3">
+				<div class="col-3">
 
-<div class="row">
-<h2 class="header">Legend</h2>
-</div>
+					<div class="row">
+						<h2 class="header">Legend</h2>
+					</div>
 
-<div class="row">
-<div class="content-wrapper">
-<table class="table">
+					<div class="row">
+						<div class="content-wrapper">
+							<table class="table">
 
-<tr>
-<td>
-<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-red.png"/>
-</td>
-<td>#{statisticBean.ghostNetsWithStatusReported}</td>
-<td>Reported</td>
-</tr>
+								<tr>
+									<td><img class="img-fluid" style="width: 25px;"
+										src="./assets/leaflet-color-markers/img/marker-icon-2x-red.png" />
+									</td>
+									<td>#{statisticBean.ghostNetsWithStatusReported}</td>
+									<td>Reported</td>
+								</tr>
 
-<tr>
-<td>
-<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-yellow.png"/>
-</td>
-<td>#{statisticBean.ghostNetsWithStatusSalvagePending}</td>
-<td>Salvage pending</td>
-</tr>
+								<tr>
+									<td><img class="img-fluid" style="width: 25px;"
+										src="./assets/leaflet-color-markers/img/marker-icon-2x-yellow.png" />
+									</td>
+									<td>#{statisticBean.ghostNetsWithStatusSalvagePending}</td>
+									<td>Salvage pending</td>
+								</tr>
 
-<tr>
-<td>
-<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-green.png"/>
-</td>
-<td>#{statisticBean.ghostNetsWithStatusRecovered}</td>
-<td>Recovered</td>
-</tr>
+								<tr>
+									<td><img class="img-fluid" style="width: 25px;"
+										src="./assets/leaflet-color-markers/img/marker-icon-2x-green.png" />
+									</td>
+									<td>#{statisticBean.ghostNetsWithStatusRecovered}</td>
+									<td>Recovered</td>
+								</tr>
 
-<tr>
-<td>
-<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-grey.png"/>
-</td>
-<td>#{statisticBean.ghostNetsWithStatusReportedMissing}</td>
-<td>Premarked as missing</td>
-</tr>
+								<tr>
+									<td><img class="img-fluid" style="width: 25px;"
+										src="./assets/leaflet-color-markers/img/marker-icon-2x-grey.png" />
+									</td>
+									<td>#{statisticBean.ghostNetsWithStatusReportedMissing}</td>
+									<td>Premarked as missing</td>
+								</tr>
 
-<tr>
-<td>
-<img class="img-fluid" style="width:25px;" src="./assets/leaflet-color-markers/img/marker-icon-2x-black.png"/>
-</td>
-<td>#{statisticBean.ghostNetsWithStatusMissing}</td>
-<td>Missing</td>
-</tr>
+								<tr>
+									<td><img class="img-fluid" style="width: 25px;"
+										src="./assets/leaflet-color-markers/img/marker-icon-2x-black.png" />
+									</td>
+									<td>#{statisticBean.ghostNetsWithStatusMissing}</td>
+									<td>Missing</td>
+								</tr>
 
-</table>
+							</table>
 
-</div><!-- /content-wrapper -->
-</div>
-
-
-</div><!-- /col-3 -->
-
-</div>
-</div>
+						</div>
+						<!-- /content-wrapper -->
+					</div>
 
 
-</ui:define>
+				</div>
+				<!-- /col-3 -->
+
+			</div>
+		</div>
+
+
+	</ui:define>
 </ui:composition>
