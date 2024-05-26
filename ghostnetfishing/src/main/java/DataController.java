@@ -1,6 +1,7 @@
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Named
@@ -9,33 +10,73 @@ public class DataController {
     public DataController() {
     }
     private final DataService dataService = new DataService();
+    private final DataServiceGeoNames dataServiceGeoNames = new DataServiceGeoNames();
 
     public Boolean loginUser(LoginBean inputBean) throws ClassNotFoundException {
         return dataService.login(inputBean);
     }
     
-    public void sendNewGhostNetData(String inputLatitude, String inputLongitude, Integer inputSize, Integer reportedByUserId) throws ClassNotFoundException {
-    	dataService.sendNewGhostNetData(inputLatitude, inputLongitude, inputSize, reportedByUserId);
+    public void sendNewGhostNetData(Integer inputNewId, String inputLatitude, String inputLongitude, Integer inputSize) throws ClassNotFoundException {
+    	dataService.sendNewGhostNetData(inputNewId, inputLatitude, inputLongitude, inputSize);
     }
     
     public Integer sumEntriesInDBByStatus(Integer statusValue) throws ClassNotFoundException {
     	return dataService.sumEntriesInDBByStatus(statusValue);
     }
     
-    public List<GhostNetBean> getAllGhostNets(int modeSwitch) throws ClassNotFoundException {
-    	return dataService.getAllGhostNets(modeSwitch);
+    public GhostNetBean getGhostNetBeanById(int inputId) throws ClassNotFoundException {
+    	return dataService.getGhostNetBeanById(inputId);
     }
     
-    public void editSalvageStatusOfGhostNet(GhostNetBean inputGhostNet, Integer inputUserid, int modeSwitch) throws ClassNotFoundException {
-    	dataService.editSalvageStatusOfGhostNet(inputGhostNet, inputUserid, modeSwitch);
-    }
-        
+    public List<GhostNetBean> getAllGhostNets(int modeSwitch) throws ClassNotFoundException {
+    	return dataService.getAllGhostNets(modeSwitch);
+    }   
+    
     public String getAttributesFromDBUsers(Integer inputUserId, int modeSwitch) throws ClassNotFoundException {
     	return dataService.getAttributesFromDBUsers(inputUserId, modeSwitch);
     }
     
-    public void setStatusOfGhostnetToPremarkedAsMissing(GhostNetBean inputGhostNet) throws ClassNotFoundException {
-    	dataService.setStatusOfGhostnetToPremarkedAsMissing(inputGhostNet);
+    public void createReportForGhostNet(Integer inputUserId, Integer inputGhostNetId, int inputStatusId) throws ClassNotFoundException {
+    	dataService.createReportForGhostNet(inputUserId, inputGhostNetId, inputStatusId);
+    }
+
+    public String getSnippetForMapMarker(Integer inputStatusId) {
+    	return dataService.getSnippetForMapMarker(inputStatusId);
     }
     
+    public int getLatestGhostNetId() throws ClassNotFoundException {
+    	return dataService.getLatestGhostNetId();
+    }
+    
+    public List<ReportBean> getReportsByUserId(Integer inputUserId) throws ClassNotFoundException {
+    	return dataService.getReportsByUserId(inputUserId);
+    }
+    
+    public String getLabelById(int modeeSwitch, int inputId) throws ClassNotFoundException {
+    	return dataService.getLabelById(modeeSwitch, inputId);
+    }
+    
+    public Integer getCurrentUnixTime() {
+    	return dataService.getCurrentUnixTime();
+    }
+    
+    public String getDurationHumanReadable (Integer inputTimestampA, Integer inputTimestampB) {
+    	return dataService.getDurationHumanReadable(inputTimestampA, inputTimestampB);
+    }
+    
+    public String getLabelForPositionFromCache(int inputGhostNetId) throws ClassNotFoundException {
+    	return dataServiceGeoNames.getLabelForPositionFromCache(inputGhostNetId);    	
+    }
+    
+    public String getLabelForPositionFromService(Integer inputGhostNetId, String inputLatitude, String inputLongitude) throws ClassNotFoundException {
+        return dataServiceGeoNames.getPositionLabelFromService(inputLatitude, inputLongitude);
+    }
+    
+    public void saveGeoNameResultToCache(Integer inputGhostNetId,  String inputGeoNameLabel) throws ClassNotFoundException {
+    	dataServiceGeoNames.saveGeoNameResultToCache(inputGhostNetId, inputGeoNameLabel);
+    }
+    
+    public List<GhostNetBean> getGhostNetsByStatusId(Integer inputStatusId) throws ClassNotFoundException {
+    	return dataService.getGhostNetsByStatusId(inputStatusId);
+    }
 }

@@ -10,6 +10,30 @@ body {
     flex-direction: column;
 }
 
+
+.background {
+    background-image: url('../images/background01.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Hält den Hintergrund fest, während man scrollt */
+}
+
+.table {
+	--bs-body-bg: transparent; 
+}
+
+tr.highlight {
+    animation: highlightAnimation 2s ease-out;
+    background-color: #ffffac;
+}
+
+
+.content-wrapper { 
+	background-color: #ffffff;
+	padding: 15px;
+}
+
 .wrapper {
     flex: 1;
     display: flex;
@@ -18,6 +42,10 @@ body {
 
 .content {
     flex: 1;
+}
+
+.btn .btn-primary {
+    background-color:#2563eb;
 }
 
  .navbar-custom {
@@ -46,3 +74,14 @@ body {
 .footer .text-muted {
     color: white !important; /* Wichtigkeit hinzufügen, um Bootstrap-Stil zu überschreiben */
 }
+
+.header {
+    font-weight: bold; /* Macht den Text fett */
+    color: white; /* Setzt die Textfarbe auf Weiß */
+    text-shadow: 
+      -1px -1px 0 #000,  
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000; /* Erzeugt eine schwarze Kontur um den Text */
+  }
+  

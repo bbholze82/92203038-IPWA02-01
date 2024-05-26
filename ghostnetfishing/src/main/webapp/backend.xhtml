@@ -1,0 +1,167 @@
+<ui:composition template="snippets/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:define name="header-title">
+<title>Backend</title>
+</ui:define>
+
+<ui:define name="debug-infos">
+    <h:panelGroup rendered="#{serverBean.debugMode and loginBean.adminPrivileges}">
+        <div class="row"> 
+            <div class="content-wrapper">
+                <!-- Debug Information -->
+                
+                <div class="col 12">
+                    <table class="table">
+                        #{serverBean.setRequestCounterUpByOne()}
+                        <tr><td>Starttime</td><td>#{serverBean.startTime}</td></tr>
+                        <tr><td>Requests</td><td>#{serverBean.requestCounter}</td></tr>
+                        <tr><td>Entries in DB:</td><td>#{serverBean.sumEntriesinDBByStatus(0)}</td></tr>
+                        <tr><td>ID</td><td>#{loginBean.id}</td></tr>
+                        <tr><td>Role</td><td>#{loginBean.role}</td></tr>
+                        <tr><td>User name</td><td>#{loginBean.username}</td></tr>
+                    </table>
+                </div><!-- /col-12 -->
+                
+            </div><!-- /content-wrapper -->
+        </div>
+    </h:panelGroup>
+</ui:define>
+
+
+<ui:define name="content">
+
+<h:panelGroup rendered="#{not loginBean.isLoggedIn}">
+<div class="container mt-3 mb-3">
+<div class="alert alert-warning" role="alert">
+Please <a href="./login.xhtml">Login</a> to get access.
+</div>
+</div>
+</h:panelGroup>
+
+<div class="container mt-3 mb-3">
+<h:panelGroup rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 3 or loginBean.role eq 4)}">
+
+<div class="row">
+<div class="col-12">
+<h2 class="header">Backend</h2>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-9">
+<p:outputPanel rendered="#{loginBean.role eq 3 or loginBean.role eq 4}">
+<h2 class="header">User history</h2>
+
+<div class="content-wrapper">
+<table class="table">
+<thead>
+<th scopte="row">Report Id</th>
+<th scopte="row">Ghost Net Id</th>
+<th scopte="row">Status Id</th>
+<th scopte="row">Age</th>
+</thead>
+<tbody>
+
+<ui:repeat value="#{ghostNetBean.getReportsByUserId(loginBean.id)}" var="report">
+
+<tr>
+<td><h:outputText value="#{report.id}" /></td>
+<td><h:outputText value="#{report.ghostNetId}" /></td>
+<td><h:outputText value="#{report.statusLabel}" /></td>
+<td><h:outputText value="#{report.ageOfReport}" /></td>
+</tr>
+
+</ui:repeat>
+</tbody>
+</table>
+
+</div><!-- /content-wrapper -->
+</p:outputPanel>
+
+
+<p:outputPanel rendered="#{loginBean.role eq 1}">
+<h2 class="header">Missing reports pending</h2>
+
+<div class="content-wrapper">
+<table class="table">
+
+<thead>
+<th scope="col">ID</th>
+<th scope="col">Latitude</th>
+<th scope="col">Longitude</th>
+<th scope="col">Size</th>
+<th scope="col">Reported Missing by</th>
+<th scope="col"></th>
+<th scope="col"></th>
+</thead>
+
+<tbody>
+<ui:repeat value="#{ghostNetBean.ghostNetsReportedMissing}" var="ghostNet">
+     <tr>
+     <td><h:outputText value="#{ghostNet.id}"/></td>
+     <td><h:outputText value="#{ghostNet.posLatitude}"/></td>
+     <td><h:outputText value="#{ghostNet.posLongitude}"/></td>
+     <td><h:outputText value="#{ghostNet.sizeLabel}" /></td>
+     <td><h:outputText value="#{ghostNet.latestReportBean.statusLabel}" /></td>
+     <h:form>
+     <td><h:commandButton class="btn btn-danger btn-sm mt-2" value="Confirm missing report" action="#{ghostNet.setStatusToMissing(loginBean.id)}"/></td>
+     <td><h:commandButton class="btn btn-secondary btn-sm mt-2" value="Cancel missing report" action="#{ghostNet.setStatusToReported(loginBean.id)}"/></td>
+     </h:form>
+     </tr>
+</ui:repeat>
+</tbody>
+
+</table>
+</div>
+</p:outputPanel>
+
+
+</div>
+
+
+<div class="col-3">
+    <div class="row">
+        <h2 class="header">User Details</h2>
+    </div>
+
+    <div class="row">
+    <div class="content-wrapper">
+   
+            <p:outputPanel rendered="#{loginBean.role eq 1}">
+                <img class="img-fluid mt-3" src="./assets/static/images/userrole_admin_01.png"/>
+            </p:outputPanel>
+            
+            <p:outputPanel rendered="#{loginBean.role eq 3}">
+                <img class="img-fluid mt-3" src="./assets/static/images/userrole_hunter_02.png"/>
+            </p:outputPanel>
+            
+            <p:outputPanel rendered="#{loginBean.role eq 4}">
+                <img class="img-fluid mt-3" src="./assets/static/images/userrole_reporter_04.png"/>
+            </p:outputPanel>
+            
+            <table class="table">
+                <tbody>
+                    <tr><td>Role:</td><td>#{loginBean.roleLabel}</td></tr>
+                    <tr><td>User name:</td><td>#{loginBean.username}</td></tr>
+                    <tr><td>First name:</td><td>#{loginBean.firstname}</td></tr>
+                    <tr><td>Last name:</td><td>#{loginBean.lastname}</td></tr>
+                    <tr><td>Phone number:</td><td>#{loginBean.phonenumber}</td></tr>
+                </tbody>
+            </table>
+        </div><!-- /content-wrapper -->
+    </div><!-- /row -->
+</div><!-- /col3 -->
+</div>
+
+</h:panelGroup>
+</div>
+
+</ui:define>
+
+</ui:composition>

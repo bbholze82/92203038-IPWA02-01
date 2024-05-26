@@ -1,37 +1,23 @@
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
 @Named
 @RequestScoped
 public class GhostNetBean implements Serializable {
-    private Integer id;
+	
+    private int id;
     private String posLongitude;
     private String posLatitude;
-    private Integer size; 
-    private String author;
-    private Integer statusCode;
-    private Integer reportedByUserId;
-    private String reportTimestamp;
-    private Boolean reportedByKnownUser;
-    private Integer salvageClaimedByUserId;
-    private Boolean salvageIsClaimed;
-    private String claimedTimestamp;
-    private String lastEditTimestamp;
-    
+    private Integer size;
+    private ReportBean firstReportBean;
+    private ReportBean latestReportBean;
+
     private final DataController dataController = new DataController();
 
-    
     public Integer getId() {
         return this.id;
     }
@@ -48,7 +34,6 @@ public class GhostNetBean implements Serializable {
     	this.posLatitude = posLatitude;
     }
     
-    
     public String getPosLongitude() {
         return this.posLongitude;
     }
@@ -57,274 +42,134 @@ public class GhostNetBean implements Serializable {
     	this.posLongitude = posLongitude;
     }
     
-    public String getAuthor() {
-        return this.author;
+    public Integer getSize() {
+    	return this.size;
     }
     
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-    
-    public void setStatusCode(Integer statusCode) {
-    	this.statusCode = statusCode;
-    }
-    
-    public Integer getStatusCode() {
-    	return this.statusCode;
-    }
-    
-    public String getStatusCodeLabel() {
-    	String labelTxt = "Unknown";
-    	// Label-Text sollte aus der Datenbank ausgelesen. Dies ist nur eine provisorische Loesung.
-    	switch (this.statusCode) {
-    	case 1:
-    		labelTxt = "Reported";
-    		break;
-		case 2:
-			labelTxt = "Salvage pending";
-    		break;
-		case 3:
-			labelTxt = "Recovered";
-    		break;
-		case 4:
-			labelTxt = "Premarked as missing";
-    		break;
-		case 5:
-			labelTxt =  "Missing";
-    		break;
-    	}
-    	
-    	return labelTxt;
-    }
-    
-    public String getCodeForMarker() {
-    	
-    	String markerColor = "blackIcon";
-    	switch (this.statusCode) {
-    		
-    	case 1:
-    		markerColor = "redIcon";
-    		break;
-    	case 2:
-    		markerColor = "yellowIcon";
-    		break;
-    	case 3:
-    		markerColor = "greenIcon";
-    		break;
-    	case 4:
-    		markerColor = "greyIcon";
-    		break;
-    	case 5:
-    		markerColor = "blackIcon";
-    		break;
-    	}
-    	
-    	String markerCode = "{icon: " + markerColor + "}";
-    	return markerCode;
+    public void setSize(Integer size) {
+    	this.size = size;
     }
     
     public List<GhostNetBean> getAllGhostNets(int modeswitch) throws ClassNotFoundException {
     	return dataController.getAllGhostNets(modeswitch);
     }
 
-    
-    public Integer getSalvageClaimedByUserId() {
-    	return this.salvageClaimedByUserId;
+    public List<GhostNetBean> getGhostNetsByStatusId(Integer inputStatusId) throws ClassNotFoundException {
+    	return dataController.getGhostNetsByStatusId(inputStatusId);
     }
 
-    public void setSalvageClaimedByUserId(Integer salvageClaimedByUserId) {
-    	this.salvageClaimedByUserId = salvageClaimedByUserId;
-    }
- 
-    
-    public String submitData(String inputUserId) throws ClassNotFoundException { 
-      	dataController.sendNewGhostNetData(this.posLatitude, this.posLongitude, this.size, Integer.valueOf(inputUserId));
-    	return "view.xhtml?faces-redirect=true";
+    public List<GhostNetBean> getGhostNetsReportedMissing() throws ClassNotFoundException {
+    	List<GhostNetBean> results = dataController.getGhostNetsByStatusId(4);
+    	return results;
     }
     
-    public Integer getReportedByUserId() {
-    	return this.reportedByUserId;
+    public String submitData(Integer inputUserId) throws ClassNotFoundException {
+      	// new Id
+      	this.id = this.getLatestId() + 1;
+    	
+    	dataController.sendNewGhostNetData(this.id, posLatitude, this.posLongitude, this.size);
+      	
+      	this.createReport(inputUserId, 1);
+        return "view.xhtml?faces-redirect=true";
     }
     
-    public void setReportedByUserId(Integer reportedByUserId) {
-    	this.reportedByUserId = reportedByUserId;
+    public ReportBean getFirstReportBean() {
+    	return this.firstReportBean;
     }
     
-    public String getReportTimestamp() {
-        // Parse the Unixzeit string into a long value
-       long unixSeconds = Long.parseLong(this.reportTimestamp);
+    public void setFirstReportBean(ReportBean firstReportBean) {
+    	this.firstReportBean = firstReportBean;
+    }
+    
+    public ReportBean getLatestReportBean() {
+    	return this.latestReportBean;
+    }
+    
+    public void setLatestReportBean(ReportBean latestReportBean) {
+    	this.latestReportBean = latestReportBean;
+    }
+    
+    public void createReport(Integer inputUserId, int statusId)  throws ClassNotFoundException {
+    	dataController.createReportForGhostNet(inputUserId, this.id, statusId);
+    }
+    
+    public String getSnippetForMapMarker() {
+    	String htmlSnippet = dataController.getSnippetForMapMarker(this.latestReportBean.getStatusId());	
+    	return htmlSnippet;
+    }
+    
+    public Integer getLatestId() throws ClassNotFoundException {
+    	Integer latestId = dataController.getLatestGhostNetId();
+    	return latestId;
+    }
+    
+    public void setStatusToReported(Integer inputUserId) throws ClassNotFoundException {
+    	dataController.createReportForGhostNet(inputUserId, this.id, 1);
+    }
+    
+    public void setStatusToSalvagePending(Integer inputUserId) throws ClassNotFoundException {
+    	dataController.createReportForGhostNet(inputUserId, this.id, 2);
+    }
+    
+    public void Recovered(Integer inputUserId) throws ClassNotFoundException {
+    	dataController.createReportForGhostNet(inputUserId, this.id, 3);
+    }
+    
+    public void setStatusToReportedMissing(Integer inputUserId) throws ClassNotFoundException {
+    	dataController.createReportForGhostNet(inputUserId, this.id, 4);
+    }
+    
+    public void setStatusToMissing(Integer inputUserId) throws ClassNotFoundException {
+    	dataController.createReportForGhostNet(inputUserId, this.id, 5);
+    }
+    
+    public String getSizeLabel() throws ClassNotFoundException {
+    	return dataController.getLabelById(1, this.size);
+    }
+
+    public String getStatusLabel() throws ClassNotFoundException {
+    	return dataController.getLabelById(2, this.size);
+    }
+
+    public String getAgeOfReport() {
+    	Integer currentUnixTime = dataController.getCurrentUnixTime();
+    	String ageLabel = dataController.getDurationHumanReadable(this.latestReportBean.getTimestamp() , currentUnixTime);
         
-       // Create a Date object from the Unix seconds
-       Date date = new Date(unixSeconds * 1000L);
-         
-       // Define the desired date format
-       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-            
-       // Optionally set the timezone if needed, here using UTC
-       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-         
-       // Format the date into the desired format and return the string
-        String resultTxt = sdf.format(date);
-        
+    	return ageLabel;
+    }
+    
+    public List<ReportBean> getReportsByUserId(Integer inputUserId) throws ClassNotFoundException {
+    	return dataController.getReportsByUserId(inputUserId);
+    }
+    
+    public String getLabelForPosition() throws ClassNotFoundException {
+    	
+    	String workLabel = dataController.getLabelForPositionFromCache(this.id);
+    	Integer workGeoNameId = null;
+    	
+    	if (workLabel == null) {
+    		workLabel = dataController.getLabelForPositionFromService(this.id, this.posLatitude, this.posLongitude);
+    		dataController.saveGeoNameResultToCache(this.id, workLabel);
+    	}
+
+    	return workLabel;
+    }
+    
+    public String getShortDetails() throws ClassNotFoundException {
+    	String workUserNameLabel = "";
+    	String workStatusLabel = "";
+    	String workFristReported = "";
+    	String resultTxt =  "Frist reported: " +  workFristReported + "<br/>" + "by: " + workUserNameLabel + "<br/>" + "Status: " + workStatusLabel;
     	return resultTxt;
     }
-    
-    public String getTimeLeftSinceReportTimestamp() {
-        try {
-            long unixTimestamp = Long.parseLong(this.reportTimestamp);
-            LocalDateTime dateTime = LocalDateTime.ofEpochSecond(unixTimestamp, 0, ZoneOffset.UTC);
-            LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
-            Duration duration = Duration.between(dateTime, now);
 
-            long days = duration.toDays();
-            long hours = duration.toHours() % 24;
-            long minutes = duration.toMinutes() % 60;
+    public String getViewDetailsLink() {
+    	String javaScript = "onclick='highlightRowAndScroll(\\\"" + "id" + this.id + "\\\")'";
+    	String resultTxt =  "<a href='#id" + this.id + "'" + " " + javaScript + ">View details</>";
 
-            if (days > 0) {
-                return days + " day(s)";
-            } else if (hours > 0) {
-                return hours + " hour(s) and " + minutes + " minute(s)";
-            } else {
-                return minutes + " minute(s)";
-            }
-        //
-        } catch (NumberFormatException e) {
-            return "Invalid format";
-        }
+    	//String resultTxt =  "<a href='./details.xhtml'>View details</>";
+    	return resultTxt;
     }
-    
-    public void setReportTimestamp(String reportTimestamp) {
-    	this.reportTimestamp = reportTimestamp;
-    }
-    
-    public String claimSalvage(Integer userId) throws ClassNotFoundException {
-    	this.salvageClaimedByUserId = userId;
-    	dataController.editSalvageStatusOfGhostNet(this, userId, 1);
-    	return "hunt.xhtml?faces-redirect=true";
-    }
-    
-    public String cancelSalvage(Integer userId) throws ClassNotFoundException {
-    	dataController.editSalvageStatusOfGhostNet(this, userId, 2);
-    	return "hunt.xhtml?faces-redirect=true";
-    }
-
-    
-    public String markAsRecovered(Integer userId) throws ClassNotFoundException {
-    	dataController.editSalvageStatusOfGhostNet(this, userId, 3);
-    	return "hunt.xhtml?faces-redirect=true";
-    }
-    
-    public Boolean getSalvageIsClaimed() {
-    	return this.salvageIsClaimed;
-    }
-    
-    public void setSalvageIsClaimed(Boolean inputVal) {
-    	this.salvageIsClaimed = inputVal;
-    }
-    
-    public Boolean getReportedByKnowUser() {
-    	return this.reportedByKnownUser;
-    }
-    
-    public void setReportedByKnowUser(Boolean inputVal) {
-    	this.reportedByKnownUser = inputVal;
-    }
-    
-    public String getSalvageClaimedByUsername() throws ClassNotFoundException {
-    	String result = "N.N.";
-    	
-    	if (!this.salvageIsClaimed) {
-    		return result;
-    	}
-    	
-    	if (this.salvageClaimedByUserId >= 1) {
-    		return dataController.getAttributesFromDBUsers(this.salvageClaimedByUserId, 1);
-    	} else {
-    		return result;
-    	}
-    }
-    
-    public String getReportedByUsername() throws ClassNotFoundException {
-    	String result = "N.N.";
-    	
-    	if (!this.reportedByKnownUser) {
-    		return result;
-    	}
-    	
-    	if (this.reportedByUserId >= 1) {
-    		return dataController.getAttributesFromDBUsers(this.reportedByUserId , 1);
-    	} else {
-    		return result;
-    	}
-    }
-       
-    public Integer getSize() {
-    	return this.size;
-    }
-    
-    public String getSizeLabel() {
-    	String labelTxt = "Unknown";
-    	// Label-Text sollte aus der Datenbank ausgelesen. Dies ist nur eine provisorische Loesung.
-    	switch (this.size) {
-    	case 1:
-    		labelTxt = "Small";
-    		break;
-		case 2:
-			labelTxt = "Middle";
-    		break;
-		case 3:
-			labelTxt = "Huge";
-    		break;
-    	}
-    	return labelTxt;
-    }
-    
-    public void setSize(Integer sizeVal) {
-    	this.size = sizeVal;
-    }
-    
-    public String getClaimedTimestamp() {
-    	return this.claimedTimestamp;
-    }
-
-    public void setClaimedTimestamp() {
-    	long currentTimeMillis = System.currentTimeMillis();
-        long unixTimeSeconds = currentTimeMillis / 1000L;    	
-    	this.claimedTimestamp =  Long.toString(unixTimeSeconds);
-    }
-    
-    public void setClaimedTimestamp(String timestamp) {    	
-    	this.claimedTimestamp = timestamp;
-    }
-    
-    public void removeClaimedTimestamp() {    	
-    	this.claimedTimestamp = null;
-    }
-
-    public String setStatusToPremarkedAsMissing() throws ClassNotFoundException {
-    	dataController.setStatusOfGhostnetToPremarkedAsMissing(this);
-    	return "view.xhtml?faces-redirect=true";
-    }
-    
-    public String getLastEditTimestamp() {
-       long unixSeconds = Long.parseLong(this.lastEditTimestamp);
-       Date date = new Date(unixSeconds * 1000L);
-       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-       String resultTxt = sdf.format(date);
-       return resultTxt;
-    }
-    
-    public void setLastEditTimestamp() {
-    	long currentTimeMillis = System.currentTimeMillis();
-        long unixTimeSeconds = currentTimeMillis / 1000L;    	
-    	this.lastEditTimestamp =  Long.toString(unixTimeSeconds);
-    }
-    
-    public void setLastEditTimestamp(String timestamp) {  	
-    	this.lastEditTimestamp = timestamp;
-    }
-    
     
 }

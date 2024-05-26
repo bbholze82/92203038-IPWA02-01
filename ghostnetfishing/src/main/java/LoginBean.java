@@ -16,7 +16,8 @@ public class LoginBean implements Serializable {
     private String phonenumber;
     private Boolean adminPrivileges;
 
-    
+    private final DataController dataController = new DataController();
+
     //
     private String errorMessage;
     private String isLoggedInAs;
@@ -66,7 +67,7 @@ public class LoginBean implements Serializable {
         		return "admin.xhtml?faces-redirect=true";
         	
         	// hunter
-        	if (this.role == 2) 
+        	if (this.role == 3) 
         		return "hunt.xhtml?faces-redirect=true";
         	
         	// reporter
@@ -103,29 +104,9 @@ public class LoginBean implements Serializable {
     public Integer getRole() {
     	return this.role;
     }
-    
-    public String getRoleLabel() {
-    	
-    	String labelTxt = "Unknown";
-    	
-    	// provisorische Implementierung, sollte aus der Datenbank kommen
-    	switch (this.role) {
-    	
-    	// admin
-    	case 1:
-    		labelTxt = "Admin";
-    		break;
-        // hunter
-    	case 2:
-    		labelTxt = "Hunter";
-    		break;
-        // reporter
-    	case 4:
-    		labelTxt = "Reporter";
-    		break;
-    	}
-    	
-    	return labelTxt;
+
+    public String getRoleLabel() throws ClassNotFoundException {
+    	return dataController.getLabelById(3, this.role);
     }
     
     public void setRole(Integer role) {
@@ -199,4 +180,5 @@ public class LoginBean implements Serializable {
     public void setAdminPrivileges(Boolean adminPrivileges) {
     	this.adminPrivileges = adminPrivileges;
     }
+    
 }

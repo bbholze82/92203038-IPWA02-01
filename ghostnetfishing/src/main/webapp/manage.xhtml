@@ -5,16 +5,28 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
+
 <ui:define name="content">
 
+
+<h:panelGroup rendered="#{not loginBean.isLoggedIn}">
+<div class="container mt-3 mb-3">
+<div class="alert alert-warning" role="alert">
+Please <a href="./login.xhtml">Login</a> to get access.
+</div>
+</div>
+</h:panelGroup>
+
+
+<h:panelGroup rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 3 or loginBean.role eq 4)}">
 
 <div class="container mt-3 mb-3">
 
 <div class="row">
 <div class="col-9">
-<h2 class="header">See Ghost Nets</h2>
+<h2 class="header">Manage Ghost Nets</h2>
 <div class="content-wrapper">
-	<div id="map"></div>
+<div id="map"></div>
 
 <script>
 
@@ -65,29 +77,22 @@ var greyIcon = new L.Icon({
 	  shadowSize: [41, 41]
 });
 
-var blackIcon = new L.Icon({
-	  iconUrl: './assets/leaflet-color-markers/img/marker-icon-2x-black.png',
-	  shadowUrl: './assets/leaflet-color-markers/img//marker-shadow.png',
-	  iconSize: [25, 41],
-	  iconAnchor: [12, 41],
-	  popupAnchor: [1, -34],
-	  shadowSize: [41, 41]
-});
-
 
 <ui:repeat value="#{ghostNetBean.getAllGhostNets(0)}" var="ghostnet">
      var marker = L.marker([<h:outputText value="#{ghostnet.posLatitude}"/>, <h:outputText value="#{ghostnet.posLongitude}"/>], <h:outputText value="#{ghostnet.snippetForMapMarker}"/>); 
-     marker.bindPopup("<h:outputText value="#{ghostNetBean.shortDetails}"/>").openPopup();
+     marker.bindPopup("<h:outputText value="#{ghostnet.viewDetailsLink}"/>").openPopup();
      marker.addTo(map);
 </ui:repeat>
 
 
 </script>
+
 </div>
+
 </div>
+
 
 <div class="col-3">
-
 <div class="row">
 <h2 class="header">Legend</h2>
 </div>
@@ -138,15 +143,67 @@ var blackIcon = new L.Icon({
 
 </table>
 
-</div><!-- /content-wrapper -->
 </div>
-
-
+</div>
 </div><!-- /col-3 -->
 
 </div>
 </div>
 
+<div class="container mt-3 mb-3">
 
+<div class="row">
+<div class="col-12">
+
+<div class="content-wrapper">
+<table class="table">
+
+<thead>
+<th scope="col">ID</th>
+<th scope="col">Latitude</th>
+<th scope="col">Longitude</th>
+<th scope="col">Area</th>
+<th scope="col">Size</th>
+<th scope="col">Status</th>
+<th scope="col">By</th>
+<th scope="col">Last modified</th>
+<th scope="col"></th>
+<th scope="col"></th>
+<th scope="col"></th>
+<th scope="col"></th>
+</thead>
+
+<tbody>
+<ui:repeat value="#{ghostNetBean.getAllGhostNets(0)}" var="ghostNet">
+	<tr id="id#{ghostNet.id}">
+	<td><h:outputText value="#{ghostNet.id}"/></td>
+	<td><h:outputText value="#{ghostNet.posLatitude}"/></td>
+	<td><h:outputText value="#{ghostNet.posLongitude}"/></td>
+	<td><h:outputText value="#{ghostNet.labelForPosition}"/></td>
+	<td><h:outputText value="#{ghostNet.sizeLabel}" /></td>
+	<td><h:outputText value="#{ghostNet.latestReportBean.statusLabel}"/></td>
+	<td><h:outputText value="#{ghostNet.latestReportBean.userNameLabel}"/></td>
+	<td><h:outputText value="#{ghostNet.ageOfReport}"/> ago</td>    
+	<h:form>
+	<td><h:commandButton class="btn btn-primary btn-sm mt-2" value="Claim salvage" action="#{ghostNet.setStatusToSalvagePending(loginBean.id)}" rendered="#{ghostNet.latestReportBean.statusId eq 1 }" /></td>
+	<td><h:commandButton class="btn btn-danger btn-sm mt-2" value="Cancel salvage" action="#{ghostNet.setStatusToReported(loginBean.id)}" rendered="#{ghostNet.latestReportBean.statusId eq 2 and ghostNet.latestReportBean.userId eq loginBean.id}" /></td>
+	<td><h:commandButton class="btn btn-success btn-sm mt-2" value="Mark as recovered" action="#{ghostNet.Recovered(loginBean.id)}" rendered="#{ghostNet.latestReportBean.statusId eq 2 and ghostNet.latestReportBean.userId eq loginBean.id}" /></td>
+	<td><h:commandButton class="btn btn-secondary btn-sm mt-2" value="Report as missing" action="#{ghostNet.setStatusToReportedMissing(loginBean.id)}" rendered="#{ghostNet.latestReportBean.statusId eq 1}" /></td>
+	</h:form>
+	</tr>
+</ui:repeat>
+</tbody>
+
+</table>
+
+
+</div>
+</div>
+</div>
+</div>
+
+</h:panelGroup>
+
+<script src="#{request.contextPath}/assets/static/js/highlight-table-row.js"></script>
 </ui:define>
 </ui:composition>

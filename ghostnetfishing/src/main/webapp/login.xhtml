@@ -9,23 +9,24 @@
 
 <div class="container mt-3 mb-3">
 
-<div class="row">
-<div class="col-12">
-<h2>Login</h2>
-</div>
-</div>
 
 <div class="row">
 <div class="col-9">
-	
+<h2 class="header">Login</h2>
+
+<div class="content-wrapper">
 <h:form>
-<p:outputLabel for="username-input" value="Username" />
-<p:inputText class="form-control mt-2" id="username-input" required="true" value="#{loginBean.username}" />
+    <div class="form-floating mb-3">
+        <p:inputText class="form-control" id="username-input" required="true" placeholder="User name" value="#{loginBean.username}" />
+        <p:outputLabel for="username-input" value="Username" />
+    </div>
 
-<p:outputLabel for="password-input" value="Password" />
-<p:password class="form-control mt-2" id="password-input" required="true" value="#{loginBean.usedPassword}" />
+    <div class="form-floating mb-3">
+        <p:password class="form-control" id="password-input" required="true" placeholder="Password" value="#{loginBean.usedPassword}" />
+        <p:outputLabel for="password-input" value="Password" />
+    </div>
 
-<p:commandButton class="btn btn-primary mt-2" id="submit-button" value="Login" action="#{loginBean.login()}" update="username-input, password-input" />
+    <p:commandButton class="btn btn-primary mt-2" id="submit-button" value="Login" action="#{loginBean.login()}" update="username-input, password-input" />
 </h:form>
 
 </div>
@@ -33,6 +34,7 @@
 <div class="col-3">
 </div>
 
+</div>
 </div>
 </div>
 

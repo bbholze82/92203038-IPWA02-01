@@ -13,90 +13,88 @@
 <link rel="stylesheet" type="text/css" media="screen" href="./assets/static/css/leaflet_custom.css"/>
 <script src="./assets/leaflet/leaflet.js"></script>
 <script src="./assets/bootstrap/js/bootstrap.min.js"></script>
-<title></title>
+<link rel="apple-touch-icon" sizes="180x180" href="./assets/static/favicons/apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="./assets/static/favicons/favicon-32x32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="./assets/static/favicons/favicon-16x16.png"/>
+<link rel="manifest" href="./assets/static/favicons/site.webmanifest"/>
+<meta name="msapplication-TileColor" content="#da532c"/>
+<meta name="theme-color" content="#ffffff"/>
+
+ <!-- Header title -->
+<ui:insert name="header-title">
+</ui:insert>
+<!-- End Header title -->
 </h:head>
 
-<h:body>
+ <!-- debug infos -->
+<ui:insert name="debug-infos">
+</ui:insert>
+<!-- End of debug infos -->
 
-<h:panelGroup rendered="#{serverBean.debugMode and loginBean.adminPrivileges}"> <h:panelGroup id="debugInfo">
-<div class="row">
-            <h2>Debug Information</h2>
- <!-- Debug Information -->
-        <div class="alert alert-primary" role="alert">
-            #{serverBean.setRequestCounterUpByOne()}
-            Starttime: #{serverBean.startTime} <br/>
-            Requests: #{serverBean.requestCounter} <br/>
-            Entries in DB: #{serverBean.sumEntriesinDBByStatus(0)} <br/>
-                You are logged in. <br/>
-                ID: #{loginBean.id} <br/>
-                Role: #{loginBean.role} <br/>
-                User name: #{loginBean.username} <br/>
-                Hashed Password: #{loginBean.hashedPassword} <br/>
-                Salt: #{loginBean.salt} <br/>
-                First name: #{loginBean.firstname} <br/>
-                Last name: #{loginBean.lastname} <br/>
-                Phone number: #{loginBean.phonenumber}
-        </div>
-</div>
-    </h:panelGroup>
-    <!-- End Debug Information -->
- </h:panelGroup>
-   
+<h:body class="d-flex flex-column min-vh-100 background">
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.xhtml">Shea Sepherd</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="./index.xhtml">Shea Sepherd</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="./view.xhtml">See Ghost Nets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./submit.xhtml">Submit Ghost Net</a>
+                </li>
+                <h:panelGroup rendered="#{loginBean.role eq 3 or loginBean.role eq 4}">
                     <li class="nav-item">
-                        <a class="nav-link" href="./view.xhtml">See Ghost Nets</a>
+                        <a class="nav-link" href="./manage.xhtml">Manage Ghost Nets</a>
                     </li>
+                </h:panelGroup> 
+                <h:panelGroup rendered="#{loginBean.isLoggedIn}">
                     <li class="nav-item">
-                        <a class="nav-link" href="./submit.xhtml">Submit Ghost Net</a>
+                        <a class="nav-link" href="./backend.xhtml">Backend</a>
                     </li>
-                    <h:panelGroup rendered="#{loginBean.role eq 1 or loginBean.role eq 2}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="./hunt.xhtml">Hunt Ghost Nets</a>
-                        </li>
-                    </h:panelGroup> 
-                    <h:panelGroup rendered="#{loginBean.isLoggedIn}">
-                        <li class="nav-item">
-                            <h:form>
-                                <h:commandLink class="nav-link" value="Logout" action="#{loginBean.logout()}"/>
-                            </h:form>
-                        </li>
-                    </h:panelGroup>
-                    <h:panelGroup rendered="#{not loginBean.isLoggedIn}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="./login.xhtml">Login</a>
-                        </li>
-                    </h:panelGroup>
-                </ul>
-            </div>
+                </h:panelGroup> 
+                <h:panelGroup rendered="#{loginBean.isLoggedIn and loginBean.role eq 1}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./editor.xhtml">Editor</a>
+                    </li>
+                </h:panelGroup> 
+                <h:panelGroup rendered="#{loginBean.isLoggedIn}">
+                    <li class="nav-item">
+                        <h:form>
+                            <h:commandLink class="nav-link" value="Logout" action="#{loginBean.logout()}"/>
+                        </h:form>
+                    </li>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not loginBean.isLoggedIn}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./login.xhtml">Login</a>
+                    </li>
+                </h:panelGroup>
+            </ul>
         </div>
-    </nav>
-    <!-- End Navbar -->
+    </div>
+</nav>
+<!-- End Navbar -->
 
+<!-- Main Content -->
+<ui:insert name="content">
+</ui:insert>
+<!-- End Main Content -->
 
-        <!-- Main Content -->
-        <ui:insert name="content">
-        </ui:insert>
-        <!-- End Main Content -->
+<!-- Footer -->
+<footer class="footer py-3 mt-auto">
+    <div class="container text-center">
+        <p class="text-muted mb-0">Shea Sepherd Foundation. All Rights Reserved.</p>
+        <p class="text-muted mb-0">We respect your privacy. This is a cookie-free site that does not collect any personal data.</p>
+    </div>
+</footer>
+<!-- End Footer -->
 
-
-    <!-- Footer -->
-    <footer class="footer py-3">
-        <div class="container text-center">
-            <p class="text-muted mb-0">Shea Sepherd Foundation. All Rights Reserved.</p>
-            <p class="text-muted mb-0">We respect your privacy. This is a cookie-free site that does not collect any personal data.</p>
-        </div>
-    </footer>
-    <!-- End Footer -->
-
-    <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 </h:body>
 </html>

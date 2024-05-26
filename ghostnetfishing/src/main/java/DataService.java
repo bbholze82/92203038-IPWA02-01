@@ -1,9 +1,14 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.TimeZone;
 
 public class DataService {
 
@@ -58,8 +63,8 @@ public class DataService {
                         inputBean.setAdminPrivileges(false);
                 	}
                 	
-                    // Login von Usern der Systemrolle (3) blockieren
-                    if (inputBean.getRole() == 3) {
+                    // Login von Usern der Systemrolle (2) blockieren
+                    if (inputBean.getRole() == 2) {
                     	return loginSuccessfully;
                     } else {
                     	loginSuccessfully = true;                   
@@ -95,6 +100,101 @@ public class DataService {
         return hashedEnteredPassword.equals(storedHash);
     }
     
+    public GhostNetBean getGhostNetBeanById(int inputId) throws ClassNotFoundException {
+
+        GhostNetBean workGhostNetBean = new GhostNetBean();
+        
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            String query = null;
+            PreparedStatement statement = null;
+            ResultSet resultSet = null;
+            query = "SELECT * FROM ghostnets WHERE id=?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, inputId);
+            resultSet = statement.executeQuery();
+            
+            if (resultSet.next()) {
+            	
+            	GhostNetBean workGhostNet = new GhostNetBean();
+
+                Integer id = Integer.valueOf(resultSet.getString("id"));
+                String latitude =  resultSet.getString("latitude");
+                String longitude =  resultSet.getString("longitude");
+                Integer size =  resultSet.getInt("size");
+
+                workGhostNet.setId(id);
+                workGhostNet.setPosLatitude(latitude);
+                workGhostNet.setPosLongitude(longitude);
+                workGhostNet.setSize(size);
+                
+                workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
+                workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));  
+        }
+
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return workGhostNetBean;
+    }
+    
+    
+    public List<GhostNetBean> getGhostNetsByStatusId(int inputStatusId) throws ClassNotFoundException {
+    	 List<GhostNetBean> results = new ArrayList<>();
+         Class.forName("com.mysql.cj.jdbc.Driver");
+         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+             String query = null;
+             PreparedStatement statement = null;
+             ResultSet resultSet = null;
+             
+             query = "SELECT gn.id, gn.latitude, gn.longitude, gn.size" + " " +
+            		 "FROM ghostnets gn" + " " +
+            		 "JOIN (" + " " +
+            		 "    SELECT ghostnet, MAX(timestamp) AS max_timestamp" + " " +
+            		 "    FROM reports" + " " +
+            		 "    GROUP BY ghostnet" + " " +
+            		 ") latest_reports ON gn.id = latest_reports.ghostnet" + " " +
+            		 "JOIN reports rep ON rep.ghostnet = gn.id AND rep.timestamp = latest_reports.max_timestamp" + " " +
+            		 "WHERE rep.status = ?;";
+
+          
+             statement = connection.prepareStatement(query);
+             statement.setInt(1, inputStatusId);
+             resultSet = statement.executeQuery();
+             
+             while (resultSet.next()) {
+             	
+             	GhostNetBean workGhostNet = new GhostNetBean();
+
+                Integer id = Integer.valueOf(resultSet.getString("id"));
+                String latitude =  resultSet.getString("latitude");
+                String longitude =  resultSet.getString("longitude");
+                Integer size =  resultSet.getInt("size");
+
+                workGhostNet.setId(id);
+                workGhostNet.setPosLatitude(latitude);
+                workGhostNet.setPosLongitude(longitude);
+                workGhostNet.setSize(size);
+                 
+                workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
+                workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));    
+                 
+                results.add(workGhostNet);
+                 
+         }
+
+             statement.close();
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+         return results;
+    }
+    
+    
+    
     
     public List<GhostNetBean> getAllGhostNets(int modeSwitch) throws ClassNotFoundException {
 
@@ -104,82 +204,40 @@ public class DataService {
             String query = null;
             PreparedStatement statement = null;
             ResultSet resultSet = null;
-            switch (modeSwitch) {
-            case 0:
-            	query = "SELECT * FROM ghostnets";
-            	statement = connection.prepareStatement(query);
-            	break;
-            case 1:
-            	query = "SELECT * FROM ghostnets WHERE statuscode = ?";
-            	statement = connection.prepareStatement(query);
-                statement.setString(1, "1");
-            	break;
-        	case 2:
-        		query = "SELECT * FROM ghostnets WHERE statuscode = ? OR statuscode = ?";
-        		statement = connection.prepareStatement(query);
-        		statement.setString(1, "1");
-        		statement.setString(2, "2");
-        		break;
-    		case 3:
-    			query = "SELECT * FROM ghostnets WHERE statuscode = ?";
-    			statement = connection.prepareStatement(query);
-    			statement.setString(1, "3");
-    			break;
-    		case 4:
-    			query = "SELECT * FROM ghostnets WHERE statuscode = ?";
-    			statement = connection.prepareStatement(query);
-    			statement.setString(1, "4");
-    			break;
-    	}
+            query = "SELECT * FROM ghostnets";
+            statement = connection.prepareStatement(query);
             
             resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
             	
-                GhostNetBean workGhostNet = new GhostNetBean();
+            	GhostNetBean workGhostNet = new GhostNetBean();
 
                 Integer id = Integer.valueOf(resultSet.getString("id"));
                 String latitude =  resultSet.getString("latitude");
                 String longitude =  resultSet.getString("longitude");
-                //String author = resultSet.getString("author");
-                
-                String statusCode = resultSet.getString("statuscode");
-            	Integer size = Integer.valueOf(resultSet.getString("size"));
-            	String reportts = resultSet.getString("reportts");
+                Integer size =  resultSet.getInt("size");
 
-                
-                Integer reportedByUserId;
-                try {
-                	 reportedByUserId = Integer.valueOf(resultSet.getString("reportedby"));
-                     workGhostNet.setReportedByUserId(reportedByUserId);
-                     workGhostNet.setReportedByKnowUser(true);
-                } catch (Exception e) {
-                    workGhostNet.setReportedByKnowUser(false);
-                }
-                
-                Integer salvageClaimedByUserId;
-                try {
-                	salvageClaimedByUserId = Integer.valueOf(resultSet.getString("claimedby"));
-                    workGhostNet.setSalvageClaimedByUserId(salvageClaimedByUserId);
-                    workGhostNet.setSalvageIsClaimed(true);
-                } catch (Exception e) {
-                	workGhostNet.setSalvageIsClaimed(false);
-                }
-                
-                String reportTimestamp = resultSet.getString("reportts");
-                String claimedTimestamp = resultSet.getString("claimedts");
-                String lastEditTimestamp = resultSet.getString("lasteditts");
-
-                
                 workGhostNet.setId(id);
                 workGhostNet.setPosLatitude(latitude);
                 workGhostNet.setPosLongitude(longitude);
                 workGhostNet.setSize(size);
-                workGhostNet.setStatusCode(Integer.valueOf(statusCode));
-                workGhostNet.setReportTimestamp(reportts);
-                workGhostNet.setClaimedTimestamp(claimedTimestamp);
-                workGhostNet.setLastEditTimestamp(lastEditTimestamp);
-                results.add(workGhostNet);
+                
+                workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
+                workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));
+                
+                
+                switch (modeSwitch) {
+                case 0:
+                	results.add(workGhostNet);
+                    break;
+                case 4:
+                	if (workGhostNet.getLatestReportBean().getStatusId() == modeSwitch) {
+                		results.add(workGhostNet);
+                	}
+                }
+                
+                
         }
 
             statement.close();
@@ -190,68 +248,67 @@ public class DataService {
         return results;
     	
     }
-    
-    
-    public void editSalvageStatusOfGhostNet(GhostNetBean inputGhostNet, Integer inputUserId, int modeSwitch) throws ClassNotFoundException {
+     
+    public ReportBean getReportBeanForGhostNet(Integer ghostNetId, Integer modeswitch) throws ClassNotFoundException {
+    	ReportBean workReportBean = new ReportBean();
+    	
+        Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
         	
-            PreparedStatement updateStatement = connection.prepareStatement("UPDATE ghostnets SET claimedby = ?, statuscode = ?, claimedts = ?, lasteditts = ? WHERE id = ?");
-           
-            switch (modeSwitch)  {
+            String query = "SELECT * FROM reports";
+            
+            switch (modeswitch) {
             case 1:
-                updateStatement.setString(1, inputUserId.toString());
-                updateStatement.setString(2, "2");
-                updateStatement.setString(3, getCurrentUnixTime());
-                updateStatement.setString(4, getCurrentUnixTime());
-                updateStatement.setString(5, inputGhostNet.getId().toString());
-
+                query = "SELECT * FROM reports WHERE ghostnet=? ORDER BY timestamp ASC LIMIT 1";
             	break;
-            case 2:
-                updateStatement.setString(1, null);
-                updateStatement.setString(2, "1");
-                updateStatement.setString(3, null);
-                updateStatement.setString(4, getCurrentUnixTime());
-                updateStatement.setString(5, inputGhostNet.getId().toString());
+            case 99:
+                query = "SELECT * FROM reports WHERE ghostnet=? ORDER BY timestamp DESC LIMIT 1";
             	break;
+            }
             
-        	case 3:
-        		updateStatement.setString(1, null);
-        		updateStatement.setString(2, "3");
-                updateStatement.setString(3, getCurrentUnixTime());
-                updateStatement.setString(4, getCurrentUnixTime());
-        		updateStatement.setString(5, inputGhostNet.getId().toString());
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, ghostNetId.toString());
+            ResultSet resultSet = statement.executeQuery();
 
-        		break;
-        	}
-            
-            updateStatement.executeUpdate();
-            updateStatement.close();
+            if (resultSet.next()) {
+            	Integer workReportId = Integer.valueOf(resultSet.getString("id"));
+            	Integer workUserId = Integer.valueOf(resultSet.getString("user"));
+            	//String workUserLabel = resultSet.getString("userLabel");
+            	Integer workGhostNetId = Integer.valueOf(resultSet.getString("ghostnet"));
+            	Integer workStatusId = Integer.valueOf(resultSet.getString("status"));
+            	//String workStatusLabel = resultSet.getString("statusLabel");
+            	Integer workTimestamp = Integer.valueOf(resultSet.getString("timestamp"));
+            	String workTimestampLabel = encodeUnixTimestampHumanReadable(workTimestamp.toString());
+            	
+            	workReportBean.setId(workReportId);
+            	workReportBean.setUserId(workUserId);
+            	//workReportBean.setUserLabel(workUserLabel);
+            	//workReportBean.setGhostNetId(workGhostNetId);
+            	workReportBean.setStatusId(workStatusId);
+            	//workReportBean.setStatusLabel(workStatusLabel);
+            	workReportBean.setTimestamp(workTimestamp);
+            	workReportBean.setTimestampLabel(workTimestampLabel);
+            }
+            statement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    	
+    	return workReportBean;
+    } 
     
-    public void sendNewGhostNetData(String inputLatitude, String inputLongitude, Integer inputSize, Integer reportedByUserId) throws ClassNotFoundException {
+    public void createReportForGhostNet(Integer inputUserId, Integer inputGhostNetId, Integer inputStatusId) throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            String query = "INSERT INTO ghostnets (latitude, longitude, size, statuscode, reportedBy, reportts, lasteditts) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO reports (user, ghostnet, status, timestamp) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
-            
-            statement.setString(1, inputLatitude);
-            statement.setString(2, inputLongitude);
-            statement.setString(3, inputSize.toString());
-            statement.setString(4, "1");
-            
-            if (reportedByUserId == 0) {
-            	statement.setString(5, null);
-            } else {
-                statement.setString(5, reportedByUserId.toString());
-            }
-            
-            statement.setString(6, getCurrentUnixTime());
-            statement.setString(7, getCurrentUnixTime());
-
+            // id, ghostnet, status, timestamp
+            statement.setInt(1, inputUserId);
+            statement.setInt(2, inputGhostNetId);
+            statement.setInt(3, inputStatusId);
+            statement.setInt(4, Integer.valueOf(getCurrentUnixTime()));
+            //
             statement.executeUpdate();
             statement.close();
         } catch (SQLException e) {
@@ -260,6 +317,24 @@ public class DataService {
 
     }
     
+    public void sendNewGhostNetData(Integer inputNewId, String inputLatitude, String inputLongitude, Integer inputSize) throws ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            String query = "INSERT INTO ghostnets (id, latitude, longitude, size) VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            //
+            statement.setInt(1, inputNewId);
+            statement.setString(2, inputLatitude);
+            statement.setString(3, inputLongitude);
+            statement.setInt(4, inputSize);
+
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
     
     public String getAttributesFromDBUsers(Integer inputUserId, int modeSwitch) throws ClassNotFoundException {
     	String result = "";
@@ -286,42 +361,37 @@ public class DataService {
         }
     	
     	return result;
-    }
-    
+    }    
     
     public Integer sumEntriesInDBByStatus(Integer statusValue) throws ClassNotFoundException {
     	Integer result = 0;
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            String query = "";
+        	String simpleQuery = "SELECT * FROM ghostnets";
+            String extendedQuery = "SELECT COUNT(*) AS result" + " " +
+            		"FROM ghostnets g" + " " +
+            		"JOIN (" + " " +
+            		    "SELECT r.ghostnet, MAX(r.timestamp) AS max_timestamp" + " " +
+            		    "FROM reports r" + " " +
+            		    "GROUP BY r.ghostnet" + " " +
+            		") latest_reports ON g.id = latest_reports.ghostnet" + " " +
+            		"JOIN reports r ON g.id = r.ghostnet AND latest_reports.max_timestamp = r.timestamp" + " " +
+            		"WHERE r.status = ?;";
+
+            PreparedStatement statement;
             
-            switch (statusValue) {
-            
-            case 0:
-            	query= "SELECT * FROM ghostnets";
-            	break;
-            case 1:
-            	query= "SELECT * FROM ghostnets WHERE statuscode=1";
-            	break;
-            case 2:
-            	query= "SELECT * FROM ghostnets WHERE statuscode=2";
-            	break;
-            case 3:
-            	query= "SELECT * FROM ghostnets WHERE statuscode=3";
-            	break;
-            case 4:
-            	query= "SELECT * FROM ghostnets WHERE statuscode=4";
-            	break;
-            case 5:
-            	query= "SELECT * FROM ghostnets WHERE statuscode=5";
-            	break;
+            if (statusValue == 0) {
+               statement = connection.prepareStatement(simpleQuery);
+
+            } else {
+                statement = connection.prepareStatement(extendedQuery);
+                statement.setInt(1, statusValue);
             }
             
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statement.executeQuery();
             
             while (resultSet.next()) {              
-                result++;
+                result = resultSet.getInt("result");
             }
             
             statement.close();
@@ -332,33 +402,192 @@ public class DataService {
         return result;
     }
     
-    public void setStatusOfGhostnetToPremarkedAsMissing(GhostNetBean inputGhostNet) throws ClassNotFoundException {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-        	
-            PreparedStatement updateStatement = connection.prepareStatement("UPDATE ghostnets SET claimedby = ?, statuscode = ?, claimedts = ?, lasteditts = ? WHERE id = ?");
-           
-            updateStatement.setString(1, null);
-            updateStatement.setString(2, "4");
-            updateStatement.setString(3, null);
-            updateStatement.setString(4, getCurrentUnixTime());
-            updateStatement.setString(5, inputGhostNet.getId().toString());
-            
-            updateStatement.executeUpdate();
-            updateStatement.close();
+    
+    
+    
+    
+    public String getDurationHumanReadable(Integer timestampA, Integer timestampB) {
+        try {
+            long unixTimestampA = timestampA.longValue();
+            long unixTimestampB = timestampB.longValue();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            LocalDateTime dateTimeA = LocalDateTime.ofEpochSecond(unixTimestampA, 0, ZoneOffset.UTC);
+            LocalDateTime dateTimeB = LocalDateTime.ofEpochSecond(unixTimestampB, 0, ZoneOffset.UTC);
+
+            Duration duration = Duration.between(dateTimeA, dateTimeB);
+
+            long days = duration.toDays();
+            long hours = duration.toHours() % 24;
+            long minutes = duration.toMinutes() % 60;
+
+            if (days > 0) {
+                return days + " day(s)";
+            } else if (hours > 0) {
+                return hours + " hour(s) and " + minutes + " minute(s)";
+            } else {
+                return minutes + " minute(s)";
+            }
+        //
+        } catch (NumberFormatException e) {
+            return "Invalid format";
         }
     }
     
+    public List<ReportBean> getReportsByUserId(Integer inputUserId) throws ClassNotFoundException {
+        List<ReportBean> results = new ArrayList<>();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            String query = null;
+            PreparedStatement statement = null;
+            ResultSet resultSet = null;
+            query = "SELECT * FROM reports WHERE user = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, inputUserId);
+            resultSet = statement.executeQuery();
+            
+            while (resultSet.next()) {
+            	
+            	ReportBean workReportBean = new ReportBean();
+
+                Integer id = Integer.valueOf(resultSet.getString("id"));
+                Integer ghostnet =  resultSet.getInt("ghostnet");
+                Integer status =  resultSet.getInt("status");
+                Integer timestamp =  resultSet.getInt("timestamp");
+
+                workReportBean.setId(id);
+                workReportBean.setGhostNetId(ghostnet);
+                workReportBean.setStatusId(status);
+                workReportBean.setTimestamp(timestamp);
+                
+                results.add(workReportBean);
+        }
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
     
-    public static String getCurrentUnixTime() {
+    
+    public Integer getLatestGhostNetId() throws ClassNotFoundException {
+    	Integer lastestId = 0;
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            String query= "SELECT id FROM ghostnets ORDER BY id DESC LIMIT 1";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {              
+            	lastestId = resultSet.getInt("id");
+            }
+            
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return lastestId;
+    }
+    
+    public String getLabelById(int modeswitch, int inputId) throws ClassNotFoundException {
+        String labelTxt = "";
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            String query = "";
+            
+            switch(modeswitch) {
+                case 1:
+                    query= "SELECT label FROM ghostnetsizes WHERE id=?";
+                    break;
+                case 2:
+                    query= "SELECT label FROM statuscodes WHERE id=?";
+                    break;
+                case 3:
+                    query= "SELECT label FROM userroles WHERE id=?";
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid mode switch value");
+            }
+            
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, inputId);
+            ResultSet resultSet = statement.executeQuery();
+   
+            if (resultSet.next()) {              
+                labelTxt = resultSet.getString("label");
+            }
+            
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return labelTxt;
+    }
+    
+    //
+    // helper
+    //
+    public String encodeUnixTimestampHumanReadable(String unixTimestamp) {
+        // Parse the Unixzeit string into a long value
+       long unixSeconds = Long.parseLong(unixTimestamp);
+        
+       // Create a Date object from the Unix seconds
+       Date date = new Date(unixSeconds * 1000L);
+         
+       // Define the desired date format
+       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+            
+       // Optionally set the timezone if needed, here using UTC
+       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+         
+       // Format the date into the desired format and return the string
+        String resultTxt = sdf.format(date);
+        
+    	return resultTxt;
+    }
+    
+    public Integer getCurrentUnixTime() {
         // System.currentTimeMillis() gibt die aktuelle Zeit in Millisekunden zurück
         long currentTimeMillis = System.currentTimeMillis();
         // Unixzeit in Sekunden berechnen
         long unixTimeSeconds = currentTimeMillis / 1000L;
         // Unixzeit als String zurückgeben
-        return Long.toString(unixTimeSeconds);
+        Integer unixTime = (int) unixTimeSeconds;
+        return unixTime;
     }
+    
+    public String getSnippetForMapMarker(Integer inputStatusId) {
+    	String markerColor = "blackIcon";
+    	switch (inputStatusId) {
+    	//	
+    	case 1:
+    		markerColor = "redIcon";
+    		break;
+    	case 2:
+    		markerColor = "yellowIcon";
+    		break;
+    	case 3:
+    		markerColor = "greenIcon";
+    		break;
+    	case 4:
+    		markerColor = "greyIcon";
+    		break;
+    	case 5:
+    		markerColor = "blackIcon";
+    		break;
+    	}
+    	String markerCode = "{icon: " + markerColor + "}";
+    	return markerCode;
+    }
+    
+    
 
+
+    
+
+    
 }
+    
+    
+    
+    
