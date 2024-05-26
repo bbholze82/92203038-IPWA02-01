@@ -5,8 +5,11 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-	<ui:define name="content">
+	<ui:define name="head-title">
+		<title>See Ghost Nets</title>
+	</ui:define>
 
+	<ui:define name="content">
 
 		<div class="container mt-3 mb-3">
 
@@ -15,8 +18,9 @@
 					<h2 class="header">See Ghost Nets</h2>
 					<div class="content-wrapper">
 						<div id="map"></div>
-
 						<script>
+
+
 
 var center = [55.454, 4.504]
 
@@ -75,13 +79,12 @@ var blackIcon = new L.Icon({
 });
 
 
+
 <ui:repeat value="#{ghostNetBean.allGhostNets}" var="ghostnet">
      var marker = L.marker([<h:outputText value="#{ghostnet.posLatitude}"/>, <h:outputText value="#{ghostnet.posLongitude}"/>], <h:outputText value="#{ghostnet.snippetForMapMarker}"/>); 
      marker.bindPopup("<h:outputText value="#{ghostnet.detailsForMapMarker}"/>").openPopup();
      marker.addTo(map);
 </ui:repeat>
-
-
 </script>
 					</div>
 				</div>

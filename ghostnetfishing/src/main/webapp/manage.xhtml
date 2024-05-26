@@ -5,6 +5,9 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
+	<ui:define name="header-title">
+		<title>Manage Ghost Nets</title>
+	</ui:define>
 
 	<ui:define name="content">
 
@@ -166,7 +169,8 @@ console.log("ok");
 													value="#{ghostNet.latestReportBean.statusLabel}" /></td>
 											<td><h:outputText
 													value="#{ghostNet.latestReportBean.userNameLabel}" /></td>
-											<td><h:outputText value="#{ghostNet.ageOfReport}" /> ago</td>
+											<td><h:outputText value="#{ghostNet.ageOfReport}" />
+												ago</td>
 											<h:form>
 												<td><h:commandButton
 														class="btn btn-primary btn-sm mt-2" value="Claim salvage"
@@ -227,7 +231,8 @@ console.log("ok");
 											<td><h:outputText value="#{ghostNet.posLongitude}" /></td>
 											<td><h:outputText value="#{ghostNet.labelForPosition}" /></td>
 											<td><h:outputText value="#{ghostNet.sizeLabel}" /></td>
-											<td><h:outputText value="#{ghostNet.ageOfReport}" /> ago</td>
+											<td><h:outputText value="#{ghostNet.ageOfReport}" />
+												ago</td>
 											<h:form>
 												<td><h:commandButton class="btn btn-danger btn-sm mt-2"
 														value="Salvage failed"
