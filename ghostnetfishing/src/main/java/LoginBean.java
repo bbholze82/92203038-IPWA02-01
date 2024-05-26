@@ -1,4 +1,6 @@
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import java.io.Serializable;
 
@@ -18,9 +20,7 @@ public class LoginBean implements Serializable {
 
     private final DataController dataController = new DataController();
 
-    //
     private String errorMessage;
-    private String isLoggedInAs;
     private Boolean isLoggedIn;
 
     public LoginBean() {
@@ -37,13 +37,9 @@ public class LoginBean implements Serializable {
     public String getErrorMessage() {
         return errorMessage;
     }
-
-    public String getIsLoggedInAs() {
-        return isLoggedInAs;
-    }
-
-    public void setIsLoggedInAs(String isLoggedInAs) {
-        this.isLoggedInAs = isLoggedInAs;
+    
+    public void setErrorMessage(String errorMessage) {
+    	this.errorMessage = errorMessage;
     }
     
     public Boolean getIsLoggedIn() {
@@ -57,28 +53,29 @@ public class LoginBean implements Serializable {
     
     public String login() throws ClassNotFoundException {
         DataController dataController = new DataController();
-        Boolean loginSuccessfully = dataController.loginUser(this);
+        String loginStatus = dataController.loginUser(this);
         
-        if (loginSuccessfully) {
+        if (loginStatus.equals("backend")) {
         	this.setIsLoggedIn(true);
         	
-        	// admin
-        	if (this.role == 1) 
-        		return "admin.xhtml?faces-redirect=true";
+        	if (this.role == 1)  {
+        		//
+        	}
         	
-        	// hunter
-        	if (this.role == 3) 
-        		return "hunt.xhtml?faces-redirect=true";
-        	
-        	// reporter
-        	if (this.role == 4) 
-        		return "submit.xhtml?faces-redirect=true";
-        	
-        	return "login.xhtml?faces-redirect=true";
+        	if (this.role == 2)  {
+        		//
+        	}
         } else {
-        	return "login.xhtml?faces-redirect=true";
+            this.errorMessage = "The username or password is incorrect.";  
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Have you tried turning your memory off and on again?",  "Username or password is incorrect."));       
+            loginStatus = "failed";
         }
+        
+        return loginStatus;
     }
+    
+    
+    
 
     public String logout() {
 
@@ -93,11 +90,10 @@ public class LoginBean implements Serializable {
         
         //
         this.errorMessage = null;
-        this.isLoggedInAs = null;
         this.isLoggedIn = null;
         this.adminPrivileges = null;
-        
     	return "index.xhtml?faces-redirect=true";
+
     }
     
     

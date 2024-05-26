@@ -17,8 +17,8 @@ public class DataService {
     private static final String DB_PASSWORD="";
 
 
-    public Boolean login(LoginBean inputBean) throws ClassNotFoundException {
-        Boolean loginSuccessfully = false;
+    public String login(LoginBean inputBean) throws ClassNotFoundException {
+        String loginCase = "";
         String workUsername = inputBean.getUsername();
         String workInputPassword = inputBean.getUsedPassword();
         inputBean.cleanUpUsedPassword();
@@ -42,17 +42,14 @@ public class DataService {
             	if (passwordCheckSuccessfully) {
             		Integer id = Integer.valueOf(resultSet.getString("id"));
                 	Integer role = Integer.valueOf(resultSet.getString("role"));
-                	String firstname = resultSet.getString("firstname");
-                	String lastname = resultSet.getString("lastname");
-                	String phonenumber = resultSet.getString("phonenumber");
                 	String hashedpassword = resultSet.getString("hashedpassword");
                 	String salt = resultSet.getString("salt");
                 	
                 	inputBean.setId(id);
                 	inputBean.setRole(role);
-                	inputBean.setFirstname(firstname);
-                	inputBean.setLastname(lastname);
-                	inputBean.setPhonenumber(phonenumber);
+                	inputBean.setFirstname(getAttributesFromDBUsers(id, 2));
+                	inputBean.setLastname(getAttributesFromDBUsers(id, 3));
+                	inputBean.setPhonenumber(getAttributesFromDBUsers(id, 4));
                 	inputBean.setHashedPassword(hashedpassword);
                 	inputBean.setSalt(salt);
 
@@ -65,9 +62,13 @@ public class DataService {
                 	
                     // Login von Usern der Systemrolle (2) blockieren
                     if (inputBean.getRole() == 2) {
-                    	return loginSuccessfully;
+                    	loginCase = "failed";
+                    	return loginCase;
+                    	
                     } else {
-                    	loginSuccessfully = true;                   
+                    	loginCase = "backend";
+                    	inputBean.setIsLoggedIn(true);
+                    	return loginCase;
                     }
             	}
             }
@@ -82,9 +83,10 @@ public class DataService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        return loginSuccessfully;
+        
+        return loginCase;
     }
-
+    
     
     // Methode zum Hashen des Passworts mit der Salt
     public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException {
@@ -192,8 +194,6 @@ public class DataService {
 
          return results;
     }
-    
-    
     
     
     public List<GhostNetBean> getAllGhostNets(int modeSwitch) throws ClassNotFoundException {
@@ -337,30 +337,56 @@ public class DataService {
     }
     
     public String getAttributesFromDBUsers(Integer inputUserId, int modeSwitch) throws ClassNotFoundException {
-    	String result = "";
+    	String resultTxt = "";
     	
         Class.forName("com.mysql.cj.jdbc.Driver");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            String query = "SELECT * FROM users WHERE BINARY id = ?";
+            String query = "";
+            
+            switch(modeSwitch) {
+            case 1:
+       		     query = "SELECT * FROM users WHERE id = ?";
+            	break;
+            case 2:
+        		query = "SELECT * FROM userdetails WHERE userid = ?";
+            	break;
+            case 3:
+        		query = "SELECT * FROM userdetails WHERE userid = ?";
+            	break;
+            case 4:
+        		query = "SELECT * FROM userdetails WHERE userid = ?";
+            	break;	
+            }
+            
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, inputUserId.toString());
             ResultSet resultSet = statement.executeQuery();
-
+            
             if (resultSet.next()) {
-            	String username = resultSet.getString("username");
                 switch (modeSwitch) {
                 	case 1:
-                		result = username;
+                    	resultTxt = resultSet.getString("username");
                 		break;
+                	case 2:
+                    	resultTxt = resultSet.getString("firstname");
+                		break;
+                	case 3:
+                    	resultTxt = resultSet.getString("lastname");
+                		break;
+                	case 4:
+                    	resultTxt = resultSet.getString("phonenumber");
+                		break;
+
                 }
             }
+            
             statement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     	
-    	return result;
+    	return resultTxt;
     }    
     
     public Integer sumEntriesInDBByStatus(Integer statusValue) throws ClassNotFoundException {

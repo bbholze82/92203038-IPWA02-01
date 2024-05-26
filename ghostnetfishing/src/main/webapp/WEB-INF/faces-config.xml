@@ -7,6 +7,7 @@
     <navigation-rule>
     <from-view-id>/login.xhtml</from-view-id>
     <navigation-case>
+        <from-outcome>backend</from-outcome>
         <to-view-id>/backend.xhtml</to-view-id>
         <redirect />
     </navigation-case>

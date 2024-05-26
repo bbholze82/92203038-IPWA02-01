@@ -12,7 +12,7 @@ public class DataController {
     private final DataService dataService = new DataService();
     private final DataServiceGeoNames dataServiceGeoNames = new DataServiceGeoNames();
 
-    public Boolean loginUser(LoginBean inputBean) throws ClassNotFoundException {
+    public String loginUser(LoginBean inputBean) throws ClassNotFoundException {
         return dataService.login(inputBean);
     }
     

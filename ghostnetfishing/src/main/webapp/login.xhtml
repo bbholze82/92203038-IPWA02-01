@@ -15,6 +15,7 @@
 <h2 class="header">Login</h2>
 
 <div class="content-wrapper">
+
 <h:form>
     <div class="form-floating mb-3">
         <p:inputText class="form-control" id="username-input" required="true" placeholder="User name" value="#{loginBean.username}" />
@@ -26,10 +27,16 @@
         <p:outputLabel for="password-input" value="Password" />
     </div>
 
-    <p:commandButton class="btn btn-primary mt-2" id="submit-button" value="Login" action="#{loginBean.login()}" update="username-input, password-input" />
+    <p:commandButton value="Login" action="#{loginBean.login()}" styleClass="btn btn-primary mt-2" update="messages" />
+
+    <!-- Fehlermeldungen anzeigen -->
 </h:form>
 
+<p:messages id="messages" autoUpdate="true" closable="true" showDetail="true" />
+
+
 </div>
+
 
 <div class="col-3">
 </div>
