@@ -75,11 +75,6 @@ public class ReportBean implements Serializable {
 		this.timestampLabel = timestampLabel;
 	}
 
-    public String getStatusLabel() throws ClassNotFoundException {
-        this.statusLabel = dataController.getLabelById(2, this.statusId);
-    	return this.statusLabel;
-    }
-
     public String getAgeOfReport() {
     	Integer currentUnixTime = dataController.getCurrentUnixTime();
     	String ageLabel = dataController.getDurationHumanReadable(this.timestamp, currentUnixTime);

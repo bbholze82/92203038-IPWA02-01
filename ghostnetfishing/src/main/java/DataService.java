@@ -12,11 +12,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class DataService {
 
+	private static final Boolean SQL_LOG = false;
     private static final String DB_URL="jdbc:mysql://localhost:3306/ghostnetdata";
     private static final String DB_USERNAME="root";
     private static final String DB_PASSWORD="";
@@ -33,7 +36,9 @@ public class DataService {
             String query = "SELECT * FROM users WHERE BINARY username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, workUsername);
-
+            if (SQL_LOG) {
+                createSQLDebugEntry("login", statement.toString().substring(statement.toString().indexOf(":")).trim());
+            }
             ResultSet resultSet = statement.executeQuery();
 
             // Benutzername gefunden
@@ -119,6 +124,9 @@ public class DataService {
             query = "SELECT * FROM ghostnets WHERE id=?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, inputId);
+            if (SQL_LOG) {
+                createSQLDebugEntry("getGhostNetBeanById", statement.toString().substring(statement.toString().indexOf(":")).trim());
+            };
             resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -170,7 +178,9 @@ public class DataService {
         PreparedStatement statement = connection.prepareStatement(workQuery);
         statement = connection.prepareStatement(workQuery);
         statement.setInt(1, inputUserId);
-
+        if (SQL_LOG) {
+            createSQLDebugEntry("getAllRecoveredGhostNetsByUserId", statement.toString().substring(statement.toString().indexOf(":")).trim());
+        }
         ResultSet resultSet = statement.executeQuery();
 
         while (resultSet.next()) {
@@ -257,6 +267,9 @@ public class DataService {
                  break;
              }
 
+             if (SQL_LOG) {
+                 createSQLDebugEntry("getGhostNetsByStatusId", statement.toString().substring(statement.toString().indexOf(":")).trim());
+             }
              resultSet = statement.executeQuery();
 
              while (resultSet.next()) {
@@ -300,6 +313,9 @@ public class DataService {
             query = "SELECT * FROM ghostnets";
             statement = connection.prepareStatement(query);
 
+            if (SQL_LOG) {
+                createSQLDebugEntry("getAllGhostNets", statement.toString().substring(statement.toString().indexOf(":")).trim());
+            }
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -350,6 +366,9 @@ public class DataService {
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, ghostNetId.toString());
+            if (SQL_LOG) {
+                createSQLDebugEntry("getReportBeanForGhostNet", statement.toString().substring(statement.toString().indexOf(":")).trim());
+            }
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -385,7 +404,9 @@ public class DataService {
             statement.setInt(2, inputGhostNetId);
             statement.setInt(3, inputStatusId);
             statement.setInt(4, Integer.valueOf(getCurrentUnixTime()));
-            //
+            if (SQL_LOG) {
+                createSQLDebugEntry("createReportForGhostNet", statement.toString().substring(statement.toString().indexOf(":")).trim());
+            }
             statement.executeUpdate();
             statement.close();
         } catch (SQLException e) {
@@ -404,7 +425,9 @@ public class DataService {
             statement.setString(2, inputLatitude);
             statement.setString(3, inputLongitude);
             statement.setInt(4, inputSize);
-
+            if (SQL_LOG) {
+                createSQLDebugEntry("sendNewGhostNetData", statement.toString().substring(statement.toString().indexOf(":")).trim());
+            }
             statement.executeUpdate();
             statement.close();
         } catch (SQLException e) {
@@ -453,7 +476,6 @@ public class DataService {
                 	case 4:
                     	resultTxt = resultSet.getString("phonenumber");
                 		break;
-
                 }
             }
 
@@ -490,7 +512,9 @@ public class DataService {
                 statement = connection.prepareStatement(extendedQuery);
                 statement.setInt(1, statusValue);
             }
-
+            if (SQL_LOG) {
+                createSQLDebugEntry("sumEntriesInDBByStatus", statement.toString().substring(statement.toString().indexOf(":")).trim());
+            }
 			ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -505,34 +529,6 @@ public class DataService {
         return result;
     }
 
-
-    public String getDurationHumanReadable(Integer timestampA, Integer timestampB) {
-        try {
-            long unixTimestampA = timestampA.longValue();
-            long unixTimestampB = timestampB.longValue();
-
-            LocalDateTime dateTimeA = LocalDateTime.ofEpochSecond(unixTimestampA, 0, ZoneOffset.UTC);
-            LocalDateTime dateTimeB = LocalDateTime.ofEpochSecond(unixTimestampB, 0, ZoneOffset.UTC);
-
-            Duration duration = Duration.between(dateTimeA, dateTimeB);
-
-            long days = duration.toDays();
-            long hours = duration.toHours() % 24;
-            long minutes = duration.toMinutes() % 60;
-
-            if (days > 0) {
-                return days + " day(s)";
-            } else if (hours > 0) {
-                return hours + " hour(s) and " + minutes + " minute(s)";
-            } else {
-                return minutes + " minute(s)";
-            }
-        //
-        } catch (NumberFormatException e) {
-            return "Invalid format";
-        }
-    }
-
     public List<ReportBean> getReportsByUserId(Integer inputUserId) throws ClassNotFoundException {
         List<ReportBean> results = new ArrayList<>();
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -543,6 +539,9 @@ public class DataService {
             query = "SELECT * FROM reports WHERE user = ?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, inputUserId);
+            if (SQL_LOG) {
+                createSQLDebugEntry("getReportsByUserId", statement.toString().substring(statement.toString().indexOf(":")).trim());
+            }
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -576,6 +575,9 @@ public class DataService {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
             String query= "SELECT id FROM ghostnets ORDER BY id DESC LIMIT 1";
             PreparedStatement statement = connection.prepareStatement(query);
+            if (SQL_LOG) {
+                createSQLDebugEntry("getLatestGhostNetId", statement.toString().substring(statement.toString().indexOf(":")).trim());
+            }
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
             	lastestId = resultSet.getInt("id");
@@ -589,31 +591,101 @@ public class DataService {
         return lastestId;
     }
 
-    public String getLabelById(int modeswitch, int inputId) throws ClassNotFoundException {
-        String labelTxt = "";
+    public String getDetailsForMapMarker(Integer inputFirstReportedTimeStampLabel, String inputUserNameLabel, String inputStatusLabel, Integer inputLanguageId) {
+    	
+    	String workTimeStamp = getDurationHumanReadable(inputFirstReportedTimeStampLabel, getCurrentUnixTime());
+
+    	String label01 = "";
+        String label02 = "";
+    	String label03 = "";
+    	
+    	switch(inputLanguageId) {
+    	case 1:
+    		label01 = "Frist seen";
+    		label02 = "by";
+    		label03 = "Status";
+    		break;
+    		
+    	case 2:
+    		label01 = "Seen";
+    		label02 = "by";
+    		label03 = "Status";
+    	}
+    	
+    	
+    	String resultTxt = "<table class=\'\table'>" + 
+    					   "<tbody>" + 
+    					   "<tr>" + "<td>" + label01 +  "<td>" + "<td>" + workTimeStamp +  " ago" + "<td>" + "</tr>" +
+    					   "<tr>" + "<td>" + label02 +  "<td>" + "<td>" + inputUserNameLabel +  "<td>" + "</tr>" +
+    					   "<tr>" + "<td>" + label03 +  "<td>" + "<td>" + inputStatusLabel +  "<td>" + "</tr>" +
+    					   "<tbody>" + 
+    	                   "</table>";
+    	
+
+    	//String resultTxt = "Seen: " +  inputFirstReportedLabel + "<br/>" + "by: " + inputUserLabel + "<br/>" + "Status: " + inputStatusLabel + "<br/>" ;
+    	return resultTxt; 
+    }
+    
+    
+    public Map<Integer, String> getLabels(int modeSwitch) throws ClassNotFoundException {
+        
+        Map<Integer, String> workLabels = new HashMap<>();
+
+    	String labelTxt = "";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
             String query = "";
 
-            switch(modeswitch) {
+            switch(modeSwitch) {
                 case 1:
-                    query= "SELECT label FROM ghostnetsizes WHERE id=?";
+                    query= "SELECT * FROM ghostnetsizes";
                     break;
                 case 2:
-                    query= "SELECT label FROM statuscodes WHERE id=?";
+                    query= "SELECT * FROM statuscodes";
                     break;
                 case 3:
-                    query= "SELECT label FROM userroles WHERE id=?";
+                    query= "SELECT * FROM userroles";
                     break;
+                case 4:
+                    query= "SELECT * FROM users";
+                    break;
+                    
                 default:
                     throw new IllegalArgumentException("Invalid mode switch value");
             }
 
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, inputId);
+
+            if (SQL_LOG) {
+                createSQLDebugEntry("getLabelById", statement.toString().substring(statement.toString().indexOf(":")).trim());
+            }
+            
             ResultSet resultSet = statement.executeQuery();
 
-            if (resultSet.next()) {
-                labelTxt = resultSet.getString("label");
+            String workColumnName = "";
+            
+            switch (modeSwitch) {
+            
+            case 1:
+            	workColumnName = "label";
+            	break;
+            	
+            case 2:
+            	workColumnName = "label";
+            	break;
+            	
+            case 3:
+            	workColumnName = "label";
+            	break;
+            	
+            case 4:
+            	workColumnName = "username";
+            	break;
+            }
+            
+            while (resultSet.next()) {
+                Integer workId = resultSet.getInt("id");
+                String workLabel = resultSet.getString(workColumnName);
+                workLabels.put(workId, workLabel);
             }
 
             statement.close();
@@ -621,37 +693,68 @@ public class DataService {
             e.printStackTrace();
         }
 
-        return labelTxt;
+        return workLabels;
+    }
+    
+    
+    public String getLabel(LabelBean inputLabelBean, Integer modeSwitch, Integer inputWorkVal, Integer workLanguageId) {
+    	LabelBean workLabelBean = inputLabelBean;
+    	Map<Integer, String> workLabels = new HashMap<>();
+    	String resultLabel = "";
+    	
+    	switch (modeSwitch) {
+    	
+    	case 1:
+    		workLabels = workLabelBean.getSizeLabels();
+    		break;
+    		
+    	case 2:
+    		workLabels = workLabelBean.getStatusLabels();
+    		break; 	
+    		
+    	case 3: 
+    		workLabels = workLabelBean.getUserRoleLabels();
+            break; 
+            
+    	case 4: 
+    		workLabels = workLabelBean.getUserNameLabels();
+            break; 
+    	}
+    	
+    	try {
+    		resultLabel = workLabels.get(inputWorkVal);
+    		
+    	} catch (Exception e) {
+    		resultLabel = "Label not found";
+    	}
+    	
+    	return resultLabel;
     }
 
     //
     // helper
     //
     public String encodeUnixTimestampHumanReadable(String unixTimestamp) {
-        // Parse the Unixzeit string into a long value
+        // 
        long unixSeconds = Long.parseLong(unixTimestamp);
-
-       // Create a Date object from the Unix seconds
+       // 
        Date date = new Date(unixSeconds * 1000L);
-
-       // Define the desired date format
+       //
        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-
-       // Optionally set the timezone if needed, here using UTC
+       //
        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-       // Format the date into the desired format and return the string
+       //
         String resultTxt = sdf.format(date);
 
     	return resultTxt;
-    }
-
+    } 
+    
     public Integer getCurrentUnixTime() {
-        // System.currentTimeMillis() gibt die aktuelle Zeit in Millisekunden zurück
+        // 
         long currentTimeMillis = System.currentTimeMillis();
-        // Unixzeit in Sekunden berechnen
+        // 
         long unixTimeSeconds = currentTimeMillis / 1000L;
-        // Unixzeit als String zurückgeben
+        // 
         int unixTime = (int) unixTimeSeconds;
         return unixTime;
     }
@@ -680,7 +783,52 @@ public class DataService {
     	return markerCode;
     }
 
+    public void createSQLDebugEntry(String inputMethodName, String inputQuery) throws ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/debuglogdata", DB_USERNAME, DB_PASSWORD)) {
+            String query = "INSERT INTO sqllogs (methodname, query, timestamp) VALUES (?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            //
+            statement.setString(1, inputMethodName);
+            statement.setString(2, inputQuery);
+            statement.setInt(3, Integer.valueOf(getCurrentUnixTime()));
+            //
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
+    }
+    
+    public String getDurationHumanReadable(Integer timestampA, Integer timestampB) {
+        try {
+            long unixTimestampA = timestampA.longValue();
+            long unixTimestampB = timestampB.longValue();
 
+            LocalDateTime dateTimeA = LocalDateTime.ofEpochSecond(unixTimestampA, 0, ZoneOffset.UTC);
+            LocalDateTime dateTimeB = LocalDateTime.ofEpochSecond(unixTimestampB, 0, ZoneOffset.UTC);
+
+            Duration duration = Duration.between(dateTimeA, dateTimeB);
+
+            long days = duration.toDays();
+            long hours = duration.toHours() % 24;
+            long minutes = duration.toMinutes() % 60;
+
+            if (days > 0) {
+                return days + " day(s)";
+            } else if (hours > 0) {
+                return hours + " hour(s) and " + minutes + " minute(s)";
+            } else {
+                return minutes + " minute(s)";
+            }
+        //
+        } catch (NumberFormatException e) {
+            return "Invalid format";
+        }
+    }
+    
+
+        
 
 }

@@ -122,10 +122,6 @@ public class GhostNetBean implements Serializable {
     	dataController.createReportForGhostNet(inputUserId, this.id, 5);
     }
 
-    public String getSizeLabel() throws ClassNotFoundException {
-    	return dataController.getLabelById(1, this.size);
-    }
-
     public String getAgeOfReport() {
     	Integer currentUnixTime = dataController.getCurrentUnixTime();
     	String ageLabel = dataController.getDurationHumanReadable(this.latestReportBean.getTimestamp() , currentUnixTime);
@@ -138,7 +134,6 @@ public class GhostNetBean implements Serializable {
     }
 
     public String getLabelForPosition() throws ClassNotFoundException {
-
     	String workLabel = dataController.getLabelForPositionFromCache(this.id);
     	Integer workGeoNameId = null;
 
@@ -160,15 +155,9 @@ public class GhostNetBean implements Serializable {
     	return dataController.getAllRecoveredGhostNetsByUserId(inputUserId);
     }
 
-    public String getDetailsForMapMarker() throws ClassNotFoundException {
-    	String workUserNameLabel = this.firstReportBean.getUserNameLabel();
-    	String workFristReported = this.firstReportBean.getAgeOfReport();
-    	String workStatusLabel = this.latestReportBean.getStatusLabel();
-
-    	String resultTxt = "Seen: " +  workFristReported + "<br/>" + "by: " + workUserNameLabel + "<br/>" + "Status: " + workStatusLabel + "<br/>" ;
-    	return resultTxt;
+    public String getDetailsForMapMarker(Integer inputFirstReportedTimeStampLabel, String inputUserLabel, String inputStatusLabel, Integer inputLanguageId) throws ClassNotFoundException {
+       return dataController.getDetailsForMapMarker(inputFirstReportedTimeStampLabel, inputUserLabel, inputStatusLabel, inputLanguageId);
     }
-
 
 
     public String getViewDetailsLink() {

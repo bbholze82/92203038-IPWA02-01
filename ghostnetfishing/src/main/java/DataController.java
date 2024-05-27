@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Map;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
@@ -55,10 +56,6 @@ public class DataController {
     	return dataService.getReportsByUserId(inputUserId);
     }
 
-    public String getLabelById(int modeeSwitch, int inputId) throws ClassNotFoundException {
-    	return dataService.getLabelById(modeeSwitch, inputId);
-    }
-
     public Integer getCurrentUnixTime() {
     	return dataService.getCurrentUnixTime();
     }
@@ -81,5 +78,17 @@ public class DataController {
 
     public List<GhostNetBean> getGhostNetsByStatusId(Integer inputStatusId) throws ClassNotFoundException {
     	return dataService.getGhostNetsByStatusId(inputStatusId);
+    }
+    
+    public Map<Integer, String> getLabels(Integer inputModeSwitch) throws ClassNotFoundException {
+    	return dataService.getLabels(inputModeSwitch);
+    }
+    
+    public String getLabel(LabelBean inputLabelBean, Integer inputModeSwitch, Integer inputWorkVal, Integer inputLanguageId) {
+    	return dataService.getLabel(inputLabelBean, inputModeSwitch, inputWorkVal, inputLanguageId);
+    }
+    
+    public String getDetailsForMapMarker(Integer inputFirstReportedTimeStampLabel, String inputUserNameLabel, String inputStatusLabel, Integer inputLanguageId) {
+    	return dataService.getDetailsForMapMarker(inputFirstReportedTimeStampLabel, inputUserNameLabel, inputStatusLabel, inputLanguageId);
     }
 }

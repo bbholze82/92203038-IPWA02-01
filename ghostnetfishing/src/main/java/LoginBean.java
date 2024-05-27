@@ -18,6 +18,7 @@ public class LoginBean implements Serializable {
     private String lastname;
     private String phonenumber;
     private Boolean adminPrivileges;
+    private Integer languageId;
 
     private final DataController dataController = new DataController();
 
@@ -25,6 +26,8 @@ public class LoginBean implements Serializable {
     private Boolean isLoggedIn;
 
     public LoginBean() {
+    	// id für die Sprache
+    	this.languageId = 1;
     }
 
     public String getUsername() {
@@ -76,8 +79,6 @@ public class LoginBean implements Serializable {
     }
 
 
-
-
     public String logout() {
 
     	this.id = null;
@@ -100,10 +101,6 @@ public class LoginBean implements Serializable {
 
     public Integer getRole() {
     	return this.role;
-    }
-
-    public String getRoleLabel() throws ClassNotFoundException {
-    	return dataController.getLabelById(3, this.role);
     }
 
     public void setRole(Integer role) {
@@ -177,5 +174,11 @@ public class LoginBean implements Serializable {
     public void setAdminPrivileges(Boolean adminPrivileges) {
     	this.adminPrivileges = adminPrivileges;
     }
+    
+    public Integer getLanguageId() {
+    	return this.languageId;
+    }
+    
+    
 
 }
