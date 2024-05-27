@@ -16,8 +16,6 @@ public class LabelBean {
     private Map<Integer, String> userRoleLabels;
     private Map<Integer, String> userNameLabels;
 
-
-
     private final DataController dataController = new DataController();
 
     public LabelBean() throws ClassNotFoundException {

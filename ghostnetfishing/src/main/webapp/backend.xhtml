@@ -37,11 +37,13 @@
 							</tr>
 							<tr>
 								<td>Role</td>
-								<td>#{labelBean.getUserRoleLabelById(loginBean.role, loginBean.languageId)}</td>
+								<td>#{labelBean.getUserRoleLabelById(loginBean.role,
+									loginBean.languageId)}</td>
 							</tr>
 							<tr>
 								<td>User name</td>
-								<td>#{labelBean.getUserNameLabelById(loginBean.id, loginBean.languageId)}</td>
+								<td>#{labelBean.getUserNameLabelById(loginBean.id,
+									loginBean.languageId)}</td>
 							</tr>
 						</table>
 					</div>
@@ -98,7 +100,8 @@
 											<tr>
 												<td><h:outputText value="#{report.id}" /></td>
 												<td><h:outputText value="#{report.ghostNetId}" /></td>
-												<td><h:outputText value="#{labelBean.getStatusLabelById(report.statusId, loginBean.languageId)}" /></td>
+												<td><h:outputText
+														value="#{labelBean.getStatusLabelById(report.statusId, loginBean.languageId)}" /></td>
 												<td><h:outputText value="#{report.ageOfReport}" /></td>
 											</tr>
 
@@ -134,7 +137,8 @@
 												<td><h:outputText value="#{ghostNet.id}" /></td>
 												<td><h:outputText value="#{ghostNet.posLatitude}" /></td>
 												<td><h:outputText value="#{ghostNet.posLongitude}" /></td>
-												<td><h:outputText value="#{labelBean.getSizeLabelById(ghostNet.size, loginBean.languageId)}" /></td>
+												<td><h:outputText
+														value="#{labelBean.getSizeLabelById(ghostNet.size, loginBean.languageId)}" /></td>
 												<td><h:outputText
 														value="#{ghostNet.latestReportBean.userNameLabel}" /></td>
 												<h:form>
@@ -186,11 +190,13 @@
 									<tbody>
 										<tr>
 											<td>Role:</td>
-											<td>#{labelBean.getUserRoleLabelById(loginBean.role, loginBean.languageId)}</td>
+											<td>#{labelBean.getUserRoleLabelById(loginBean.role,
+												loginBean.languageId)}</td>
 										</tr>
 										<tr>
 											<td>User name:</td>
-											<td>#{labelBean.getUserNameLabelById(loginBean.id, loginBean.languageId)}</td>
+											<td>#{labelBean.getUserNameLabelById(loginBean.id,
+												loginBean.languageId)}</td>
 										</tr>
 										<tr>
 											<td>First name:</td>

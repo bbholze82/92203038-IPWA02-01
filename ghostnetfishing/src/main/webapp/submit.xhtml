@@ -38,8 +38,14 @@
 								<table class="table">
 									<tbody>
 										<tr>
+											<td>Role:</td>
+											<td>#{labelBean.getUserRoleLabelById(loginBean.role,
+												loginBean.languageId)}</td>
+										</tr>
+										<tr>
 											<td>User name:</td>
-											<td>#{loginBean.username}</td>
+											<td>#{labelBean.getUserNameLabelById(loginBean.id,
+												loginBean.languageId)}</td>
 										</tr>
 										<tr>
 											<td>First name:</td>

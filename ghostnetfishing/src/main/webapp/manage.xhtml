@@ -112,7 +112,8 @@ console.log("ok");
 											src="./assets/leaflet-color-markers/img/marker-icon-2x-red.png" />
 										</td>
 										<td>#{statisticBean.ghostNetsWithStatusReported}</td>
-										<td>#{labelBean.getStatusLabelById(1, loginBean.languageId)}</td>
+										<td>#{labelBean.getStatusLabelById(1,
+											loginBean.languageId)}</td>
 									</tr>
 
 									<tr>
@@ -120,7 +121,8 @@ console.log("ok");
 											src="./assets/leaflet-color-markers/img/marker-icon-2x-yellow.png" />
 										</td>
 										<td>#{statisticBean.ghostNetsWithStatusSalvagePending}</td>
-										<td>#{labelBean.getStatusLabelById(2, loginBean.languageId)}</td>
+										<td>#{labelBean.getStatusLabelById(2,
+											loginBean.languageId)}</td>
 									</tr>
 
 								</table>
@@ -164,9 +166,12 @@ console.log("ok");
 											<td><h:outputText value="#{ghostNet.posLatitude}" /></td>
 											<td><h:outputText value="#{ghostNet.posLongitude}" /></td>
 											<td><h:outputText value="#{ghostNet.labelForPosition}" /></td>
-											<td><h:outputText value="#{labelBean.getSizeLabelById(ghostNet.size, loginBean.languageId)}"/></td>
-											<td><h:outputText value="#{labelBean.getStatusLabelById(ghostNet.latestReportBean.statusId, loginBean.languageId)}"/></td>
-											<td><h:outputText value="#{labelBean.getUserNameLabelById(ghostNet.latestReportBean.userId, loginBean.languageId)}" /></td>
+											<td><h:outputText
+													value="#{labelBean.getSizeLabelById(ghostNet.size, loginBean.languageId)}" /></td>
+											<td><h:outputText
+													value="#{labelBean.getStatusLabelById(ghostNet.latestReportBean.statusId, loginBean.languageId)}" /></td>
+											<td><h:outputText
+													value="#{labelBean.getUserNameLabelById(ghostNet.latestReportBean.userId, loginBean.languageId)}" /></td>
 											<td><h:outputText value="#{ghostNet.ageOfReport}" />
 												ago</td>
 											<h:form>
@@ -228,7 +233,8 @@ console.log("ok");
 											<td><h:outputText value="#{ghostNet.posLatitude}" /></td>
 											<td><h:outputText value="#{ghostNet.posLongitude}" /></td>
 											<td><h:outputText value="#{ghostNet.labelForPosition}" /></td>
-											<td><h:outputText value="#{labelBean.getSizeLabelById(ghostNet.size, loginBean.languageId)}" /></td>
+											<td><h:outputText
+													value="#{labelBean.getSizeLabelById(ghostNet.size, loginBean.languageId)}" /></td>
 											<td><h:outputText value="#{ghostNet.ageOfReport}" />
 												ago</td>
 											<h:form>
