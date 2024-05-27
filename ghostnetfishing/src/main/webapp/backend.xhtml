@@ -16,7 +16,7 @@
 				<div class="content-wrapper">
 					<!-- Debug Information -->
 
-					<div class="col 12">
+					<div class="col-12 col-md-9">
 						<table class="table">
 							#{serverBean.setRequestCounterUpByOne()}
 							<tr>
@@ -71,14 +71,14 @@
 				rendered="#{(loginBean.isLoggedIn) and (loginBean.role eq 1 or loginBean.role eq 3 or loginBean.role eq 4)}">
 
 				<div class="row">
-					<div class="col-12">
+					<div class="col-12 col-md-9">
 						<h2 class="header">Backend</h2>
 					</div>
 				</div>
 
 
 				<div class="row">
-					<div class="col-9">
+					<div class="col-12 col-md-9">
 						<p:outputPanel
 							rendered="#{loginBean.role eq 3 or loginBean.role eq 4}">
 							<h2 class="header">User history</h2>
@@ -163,7 +163,7 @@
 					</div>
 
 
-					<div class="col-3">
+					<div class="col-12 col-md-3">
 						<div class="row">
 							<h2 class="header">User Details</h2>
 						</div>
