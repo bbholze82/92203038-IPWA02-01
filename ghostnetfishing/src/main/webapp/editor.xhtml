@@ -6,7 +6,7 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 	<ui:define name="header-title">
-		<title>Admin's Editor</title>
+		<title>Editor</title>
 	</ui:define>
 
 	<ui:define name="content">
@@ -32,7 +32,7 @@
 			rendered="#{loginBean.isLoggedIn and loginBean.adminPrivileges}">
 			<div class="container mt-3 mb-3">
 				<div class="row">
-					<h2 class="header">Admin's Editor</h2>
+					<h2 class="header">Editor</h2>
 
 					<h:form>
 						<p:dataTable class="table" value="#{ghostNetBean.allGhostNets}"
@@ -76,7 +76,7 @@
 							</p:column>
 							<p:column headerText="Status 3">
 								<h:commandButton class="btn btn-success btn-sm mt-2" value="Set"
-									action="#{ghostNet.Recovered(1)}" />
+									action="#{ghostNet.setStatusToRecovered(1)}" />
 							</p:column>
 							<p:column headerText="Status 4">
 								<h:commandButton class="btn btn-secondary btn-sm mt-2"

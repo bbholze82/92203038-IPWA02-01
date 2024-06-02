@@ -32,11 +32,6 @@
 	<!-- End Header title -->
 </h:head>
 
-<!-- debug infos -->
-<ui:insert name="debug-infos">
-</ui:insert>
-<!-- End of debug infos -->
-
 <h:body class="d-flex flex-column min-vh-100 background">
 
 	<!-- Navbar -->
@@ -68,6 +63,11 @@
 						rendered="#{loginBean.isLoggedIn and loginBean.role eq 1}">
 						<li class="nav-item"><a class="nav-link"
 							href="./editor.xhtml">Editor</a></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{loginBean.isLoggedIn and loginBean.role eq 1}">
+						<li class="nav-item"><a class="nav-link"
+							href="./tests.xhtml">Tests</a></li>
 					</h:panelGroup>
 					<h:panelGroup rendered="#{loginBean.isLoggedIn}">
 						<li class="nav-item"><h:form>

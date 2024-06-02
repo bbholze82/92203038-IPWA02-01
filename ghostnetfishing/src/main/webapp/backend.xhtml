@@ -9,53 +9,6 @@
 		<title>Backend</title>
 	</ui:define>
 
-	<ui:define name="debug-infos">
-		<h:panelGroup
-			rendered="#{serverBean.debugMode and loginBean.adminPrivileges}">
-			<div class="row">
-				<div class="content-wrapper">
-					<!-- Debug Information -->
-
-					<div class="col-12 col-md-9">
-						<table class="table">
-							#{serverBean.setRequestCounterUpByOne()}
-							<tr>
-								<td>Starttime</td>
-								<td>#{serverBean.startTime}</td>
-							</tr>
-							<tr>
-								<td>Requests</td>
-								<td>#{serverBean.requestCounter}</td>
-							</tr>
-							<tr>
-								<td>Entries in DB:</td>
-								<td>#{serverBean.sumEntriesinDBByStatus(0)}</td>
-							</tr>
-							<tr>
-								<td>ID</td>
-								<td>#{loginBean.id}</td>
-							</tr>
-							<tr>
-								<td>Role</td>
-								<td>#{labelBean.getUserRoleLabelById(loginBean.role,
-									loginBean.languageId)}</td>
-							</tr>
-							<tr>
-								<td>User name</td>
-								<td>#{labelBean.getUserNameLabelById(loginBean.id,
-									loginBean.languageId)}</td>
-							</tr>
-						</table>
-					</div>
-					<!-- /col-12 -->
-
-				</div>
-				<!-- /content-wrapper -->
-			</div>
-		</h:panelGroup>
-	</ui:define>
-
-
 	<ui:define name="content">
 
 		<h:panelGroup rendered="#{not loginBean.isLoggedIn}">
@@ -81,7 +34,7 @@
 					<div class="col-12 col-md-9">
 						<p:outputPanel
 							rendered="#{loginBean.role eq 3 or loginBean.role eq 4}">
-							<h2 class="header">User history</h2>
+							<h3 class="header">User History</h3>
 
 							<div class="content-wrapper">
 								<table class="table">
@@ -115,7 +68,7 @@
 
 
 						<p:outputPanel rendered="#{loginBean.role eq 1}">
-							<h2 class="header">Missing reports pending</h2>
+							<h3 class="header">Missing Reports Pending</h3>
 
 							<div class="content-wrapper">
 								<table class="table">
@@ -165,7 +118,7 @@
 
 					<div class="col-12 col-md-3">
 						<div class="row">
-							<h2 class="header">User Details</h2>
+							<h3 class="header">User Details</h3>
 						</div>
 
 						<div class="row">

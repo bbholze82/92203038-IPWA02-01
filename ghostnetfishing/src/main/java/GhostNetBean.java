@@ -109,7 +109,7 @@ public class GhostNetBean implements Serializable {
     	dataController.createReportForGhostNet(inputUserId, this.id, 2);
     }
 
-    public void Recovered(Integer inputUserId) throws ClassNotFoundException {
+    public void setStatusToRecovered(Integer inputUserId) throws ClassNotFoundException {
     	dataController.createReportForGhostNet(inputUserId, this.id, 3);
     }
 
@@ -119,7 +119,7 @@ public class GhostNetBean implements Serializable {
 
     public void setStatusToMissing(Integer inputUserId) throws ClassNotFoundException {
     	dataController.createReportForGhostNet(inputUserId, this.id, 5);
-    }
+    }     
 
     public String getAgeOfReport() {
     	Integer currentUnixTime = dataController.getCurrentUnixTime();

@@ -91,4 +91,21 @@ public class DataController {
     public String getDetailsForMapMarker(Integer inputFirstReportedTimeStampLabel, String inputUserNameLabel, String inputStatusLabel, Integer inputLanguageId) {
     	return dataService.getDetailsForMapMarker(inputFirstReportedTimeStampLabel, inputUserNameLabel, inputStatusLabel, inputLanguageId);
     }
+    
+    public Boolean testCompareLatestStatusId(int inputGhostNetId, int inputCompareStatusVal) throws ClassNotFoundException {
+    	return dataService.testCompareLatestStatusId(inputGhostNetId, inputCompareStatusVal);
+    }
+    
+    public void testDeleteGhostNet(Integer inputValueId) throws ClassNotFoundException {
+    	dataService.testDeleteGhostNet(inputValueId);
+    }
+    
+    public void testDeleteReports(Integer inputValueId) throws ClassNotFoundException {
+    	dataService.testDeleteReports(inputValueId);
+    }
+    
+    public String getUnixTimestampHumanReadableForLog() {
+    	return dataService.getUnixTimestampHumanReadableForLog();
+    }
+    
 }

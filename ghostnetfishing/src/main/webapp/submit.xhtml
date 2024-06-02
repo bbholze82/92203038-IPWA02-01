@@ -39,11 +39,6 @@
 								<table class="table">
 									<tbody>
 										<tr>
-											<td>Role:</td>
-											<td>#{labelBean.getUserRoleLabelById(loginBean.role,
-												loginBean.languageId)}</td>
-										</tr>
-										<tr>
 											<td>User name:</td>
 											<td>#{labelBean.getUserNameLabelById(loginBean.id,
 												loginBean.languageId)}</td>
@@ -107,7 +102,7 @@
 								</div>
 
 								<!-- Submit Button -->
-								<p:commandButton class="btn btn-primary" value="Submit"
+								<p:commandButton class="btn btn-sm" value="Submit"
 									action="#{ghostNetBean.submitData(loginBean.isLoggedIn ? loginBean.id : 2)}" />
 							</h:form>
 

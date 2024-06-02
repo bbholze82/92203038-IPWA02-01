@@ -126,7 +126,7 @@ public class DataService {
             statement.setInt(1, inputId);
             if (SQL_LOG) {
                 createSQLDebugEntry("getGhostNetBeanById", statement.toString().substring(statement.toString().indexOf(":")).trim());
-            };
+            }
             resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -344,6 +344,101 @@ public class DataService {
         }
 
         return results;
+
+    }
+
+    // nur für Software-Tests
+    public Boolean testCompareLatestStatusId(int inputGhostNetId, int inputCompareStatusValue) throws ClassNotFoundException {
+
+        boolean resultValue = false;
+    	Integer resultStatus = -1;
+
+        String workQuery = "SELECT * FROM reports WHERE ghostnet=? ORDER BY timestamp DESC LIMIT 1";
+
+    	List<GhostNetBean> results = new ArrayList<>();
+         Class.forName("com.mysql.cj.jdbc.Driver");
+         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+             String query = null;
+             PreparedStatement statement = null;
+             ResultSet resultSet = null;
+             statement = connection.prepareStatement(workQuery);
+
+             statement.setInt(1, inputGhostNetId);
+
+             resultSet = statement.executeQuery();
+
+             while (resultSet.next()) {
+
+             	GhostNetBean workGhostNet = new GhostNetBean();
+
+                Integer workStatus = resultSet.getInt("status");
+
+                if (workStatus == inputCompareStatusValue) {
+                	resultStatus = workStatus;
+                	resultValue = true;
+                }
+         }
+             statement.close();
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+         return resultValue;
+    }
+
+    public void testDeleteGhostNet(Integer inputId) throws ClassNotFoundException {
+
+    	String foreignKeyOffQuery = "SET FOREIGN_KEY_CHECKS = 0";
+    	String foreignKeyOnQuery =  "SET FOREIGN_KEY_CHECKS = 1";
+
+    	String deleteQuery = "DELETE FROM ghostnets WHERE id=?";
+
+    	Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+
+        	PreparedStatement statement = connection.prepareStatement(foreignKeyOffQuery);
+            statement.execute();
+
+        	statement = connection.prepareStatement(deleteQuery);
+        	statement.setString(1, inputId.toString());
+            statement.execute();
+
+        	statement = connection.prepareStatement(foreignKeyOnQuery);
+            statement.execute();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void testDeleteReports(Integer inputId) throws ClassNotFoundException {
+
+    	String foreignKeyOffQuery = "SET FOREIGN_KEY_CHECKS = 0";
+    	String foreignKeyOnQuery = "SET FOREIGN_KEY_CHECKS = 1";
+
+    	String deleteQuery = "DELETE FROM reports WHERE ghostnet=?";
+
+    	Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+
+        	PreparedStatement statement = connection.prepareStatement(foreignKeyOffQuery);
+            statement.execute();
+
+        	statement = connection.prepareStatement(deleteQuery);
+        	statement.setString(1, inputId.toString());
+            statement.execute();
+
+        	statement = connection.prepareStatement(foreignKeyOnQuery);
+            statement.execute();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -592,43 +687,43 @@ public class DataService {
     }
 
     public String getDetailsForMapMarker(Integer inputFirstReportedTimeStampLabel, String inputUserNameLabel, String inputStatusLabel, Integer inputLanguageId) {
-    	
+
     	String workTimeStamp = getDurationHumanReadable(inputFirstReportedTimeStampLabel, getCurrentUnixTime());
 
     	String label01 = "";
         String label02 = "";
     	String label03 = "";
-    	
+
     	switch(inputLanguageId) {
     	case 1:
     		label01 = "Frist seen";
     		label02 = "by";
     		label03 = "Status";
     		break;
-    		
+
     	case 2:
     		label01 = "Seen";
     		label02 = "by";
     		label03 = "Status";
     	}
-    	
-    	
-    	String resultTxt = "<table class=\'\table'>" + 
-    					   "<tbody>" + 
+
+
+    	String resultTxt = "<table class=\'\table'>" +
+    					   "<tbody>" +
     					   "<tr>" + "<td>" + label01 +  "<td>" + "<td>" + workTimeStamp +  " ago" + "<td>" + "</tr>" +
     					   "<tr>" + "<td>" + label02 +  "<td>" + "<td>" + inputUserNameLabel +  "<td>" + "</tr>" +
     					   "<tr>" + "<td>" + label03 +  "<td>" + "<td>" + inputStatusLabel +  "<td>" + "</tr>" +
-    					   "<tbody>" + 
+    					   "<tbody>" +
     	                   "</table>";
-    	
+
 
     	//String resultTxt = "Seen: " +  inputFirstReportedLabel + "<br/>" + "by: " + inputUserLabel + "<br/>" + "Status: " + inputStatusLabel + "<br/>" ;
-    	return resultTxt; 
+    	return resultTxt;
     }
-    
-    
+
+
     public Map<Integer, String> getLabels(int modeSwitch) throws ClassNotFoundException {
-        
+
         Map<Integer, String> workLabels = new HashMap<>();
 
     	String labelTxt = "";
@@ -648,7 +743,7 @@ public class DataService {
                 case 4:
                     query= "SELECT * FROM users";
                     break;
-                    
+
                 default:
                     throw new IllegalArgumentException("Invalid mode switch value");
             }
@@ -658,30 +753,30 @@ public class DataService {
             if (SQL_LOG) {
                 createSQLDebugEntry("getLabelById", statement.toString().substring(statement.toString().indexOf(":")).trim());
             }
-            
+
             ResultSet resultSet = statement.executeQuery();
 
             String workColumnName = "";
-            
+
             switch (modeSwitch) {
-            
+
             case 1:
             	workColumnName = "label";
             	break;
-            	
+
             case 2:
             	workColumnName = "label";
             	break;
-            	
+
             case 3:
             	workColumnName = "label";
             	break;
-            	
+
             case 4:
             	workColumnName = "username";
             	break;
             }
-            
+
             while (resultSet.next()) {
                 Integer workId = resultSet.getInt("id");
                 String workLabel = resultSet.getString(workColumnName);
@@ -695,39 +790,39 @@ public class DataService {
 
         return workLabels;
     }
-    
-    
+
+
     public String getLabel(LabelBean inputLabelBean, Integer modeSwitch, Integer inputWorkVal, Integer workLanguageId) {
     	LabelBean workLabelBean = inputLabelBean;
     	Map<Integer, String> workLabels = new HashMap<>();
     	String resultLabel = "";
-    	
+
     	switch (modeSwitch) {
-    	
+
     	case 1:
     		workLabels = workLabelBean.getSizeLabels();
     		break;
-    		
+
     	case 2:
     		workLabels = workLabelBean.getStatusLabels();
-    		break; 	
-    		
-    	case 3: 
+    		break;
+
+    	case 3:
     		workLabels = workLabelBean.getUserRoleLabels();
-            break; 
-            
-    	case 4: 
+            break;
+
+    	case 4:
     		workLabels = workLabelBean.getUserNameLabels();
-            break; 
+            break;
     	}
-    	
+
     	try {
     		resultLabel = workLabels.get(inputWorkVal);
-    		
+
     	} catch (Exception e) {
     		resultLabel = "Label not found";
     	}
-    	
+
     	return resultLabel;
     }
 
@@ -735,9 +830,9 @@ public class DataService {
     // helper
     //
     public String encodeUnixTimestampHumanReadable(String unixTimestamp) {
-        // 
+        //
        long unixSeconds = Long.parseLong(unixTimestamp);
-       // 
+       //
        Date date = new Date(unixSeconds * 1000L);
        //
        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
@@ -747,14 +842,31 @@ public class DataService {
         String resultTxt = sdf.format(date);
 
     	return resultTxt;
-    } 
-    
-    public Integer getCurrentUnixTime() {
-        // 
+    }
+
+    public String getUnixTimestampHumanReadableForLog() {
+        //
         long currentTimeMillis = System.currentTimeMillis();
-        // 
+        //
         long unixTimeSeconds = currentTimeMillis / 1000L;
-        // 
+        //
+        Date date = new Date(unixTimeSeconds * 1000L);
+        //
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:SS");
+        //
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        //
+        String resultTxt = sdf.format(date);
+
+    	return resultTxt;
+    }
+
+    public Integer getCurrentUnixTime() {
+        //
+        long currentTimeMillis = System.currentTimeMillis();
+        //
+        long unixTimeSeconds = currentTimeMillis / 1000L;
+        //
         int unixTime = (int) unixTimeSeconds;
         return unixTime;
     }
@@ -800,7 +912,7 @@ public class DataService {
         }
 
     }
-    
+
     public String getDurationHumanReadable(Integer timestampA, Integer timestampB) {
         try {
             long unixTimestampA = timestampA.longValue();
@@ -827,8 +939,8 @@ public class DataService {
             return "Invalid format";
         }
     }
-    
 
-        
+
+
 
 }

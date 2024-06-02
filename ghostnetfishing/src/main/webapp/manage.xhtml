@@ -186,7 +186,7 @@ console.log("ok");
 												<td><h:commandButton
 														class="btn btn-success btn-sm mt-2"
 														value="Mark as recovered"
-														action="#{ghostNet.Recovered(loginBean.id)}"
+														action="#{ghostNet.setStatusToRecovered(loginBean.id)}"
 														rendered="#{ghostNet.latestReportBean.statusId eq 2 and ghostNet.latestReportBean.userId eq loginBean.id}" /></td>
 												<td><h:commandButton
 														class="btn btn-secondary btn-sm mt-2"
@@ -209,7 +209,7 @@ console.log("ok");
 
 				<div class="row mt-3">
 					<div class="col-12">
-						<h2 class="header">Ghost Nets Recovered by You</h2>
+						<h3 class="header">Ghost Nets Recovered By You</h3>
 
 						<div class="content-wrapper">
 							<table class="table">
