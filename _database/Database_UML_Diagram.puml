@@ -1,0 +1,73 @@
+
+@startuml
+
+entity geonamescache {
+  * ghostnetid : int
+  --
+  name : varchar(255)
+  timestamp : int
+}
+
+entity ghostnets {
+  * id : int
+  --
+  latitude : varchar(255)
+  longitude : varchar(255)
+  size : int
+}
+
+entity ghostnetsizes {
+  * id : int
+  --
+  label : varchar(255)
+}
+
+entity reports {
+  * id : int
+  --
+  user : int
+  ghostnet : int
+  status : int
+  timestamp : int
+}
+
+entity statuscodes {
+  * id : int
+  --
+  label : varchar(255)
+}
+
+entity userdetails {
+  * userid : int
+  --
+  firstname : varchar(255)
+  lastname : varchar(255)
+  phonenumber : varchar(255)
+}
+
+entity userroles {
+  * id : int
+  --
+  role : int
+  label : varchar(255)
+}
+
+entity users {
+  * id : int
+  --
+  role : int
+  username : varchar(255)
+  comment : varchar(255)
+  hashedpassword : varchar(255)
+  salt : varchar(255)
+}
+
+geonamescache }|--|| ghostnets
+ghostnets }|--|| ghostnetsizes
+reports }|--|| users
+reports }|--|| ghostnets
+reports }|--|| statuscodes
+userdetails }|--|| users
+users }|--|| userroles
+
+@enduml

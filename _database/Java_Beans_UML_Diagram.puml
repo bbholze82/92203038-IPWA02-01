@@ -1,0 +1,168 @@
+
+@startuml
+
+class DataController {
+  + DB_URL : String
+  + DB_USERNAME : String
+  + DB_PASSWORD : String
+  + getLabel(Object, int, int, int) : String
+  + getGeoDataByBoundingBox(Float, Float, Float, Float) : ArrayList<GTopic>
+  + getLastestNetId() : int
+  + getDetailsForMapMarker(Integer, String, String, Integer) : String
+  + getLabels(int) : Map<Integer, String>
+}
+
+class DataService {
+  - dataController : DataController
+  + getGeoData() : ArrayList<GTopic>
+  + getGeoJSON() : String
+}
+
+class DataServiceGeoNames {
+  + GEONAME_API_URL : String
+  + GEONAME_API_USERNAME : String
+  + getGeoNameData(double, double, double, double, int) : String
+  + parseGeoNameJSON(String) : GTopic
+}
+
+class GhostNetBean {
+  - id : String
+  - name : String
+  - status : String
+  + getId() : String
+  + setId(String) : void
+  + getName() : String
+  + setName(String) : void
+  + getStatus() : String
+  + setStatus(String) : void
+}
+
+class LabelBean {
+  - sizeLabels : Map<Integer, String>
+  - statusLabels : Map<Integer, String>
+  - userRoleLabels : Map<Integer, String>
+  - userNameLabels : Map<Integer, String>
+  - dataController : DataController
+  + LabelBean()
+  + getSizeLabels() : Map<Integer, String>
+  + getStatusLabels() : Map<Integer, String>
+  + getUserRoleLabels() : Map<Integer, String>
+  + getUserNameLabels() : Map<Integer, String>
+  + getSizeLabelById(Integer, Integer) : String
+  + getStatusLabelById(Integer, Integer) : String
+  + getUserRoleLabelById(Integer, Integer) : String
+  + getUserNameLabelById(Integer, Integer) : String
+}
+
+class LoginBean {
+  - id : Integer
+  - role : Integer
+  - username : String
+  - usedPassword : String
+  - hashedPassword : String
+  - salt : String
+  - firstname : String
+  - lastname : String
+  - phonenumber : String
+  - adminPrivileges : Boolean
+  - languageId : Integer
+  - dataController : DataController
+  - errorMessage : String
+  - isLoggedIn : Boolean
+  + LoginBean()
+  + getUsername() : String
+  + setUsername(String) : void
+  + getErrorMessage() : String
+  + setErrorMessage(String) : void
+  + getIsLoggedIn() : Boolean
+  + setIsLoggedIn(Boolean) : void
+  + login() : String
+  + logout() : void
+  + getRole() : Integer
+  + setRole(Integer) : void
+  + getFirstname() : String
+  + setFirstname(String) : void
+  + getLastname() : String
+  + setLastname(String) : void
+  + getId() : Integer
+  + setId(Integer) : void
+  + getPhonenumber() : String
+  + setPhonenumber(String) : void
+  + setHashedPassword(String) : void
+  + getHashedPassword() : String
+  + setSalt(String) : void
+  + getSalt() : String
+  + setUsedPassword(String) : void
+  + getUsedPassword() : String
+  + cleanUpUsedPassword() : void
+  + getAdminPrivileges() : Boolean
+  + setAdminPrivileges(Boolean) : void
+  + getLanguageId() : Integer
+}
+
+class ServerBean {
+  - startTime : LocalDateTime
+  - requestCounter : Integer
+  - entriesinDB : Integer
+  - debugMode : Boolean
+  - dataController : DataController
+  + ServerBean()
+  + getStartTime() : String
+  + setRequestCounterUpByOne() : void
+  + getRequestCounter() : Integer
+  + sumEntriesinDBByStatus(Integer) : Integer
+  + getDebugMode() : Boolean
+  + setDebugMode(Boolean) : void
+}
+
+class StatisticBean {
+  - ghostNetsinDB : Integer
+  - ghostNetsWithStatusReported : Integer
+  - ghostNetsWithStatusSalvagePending : Integer
+  - ghostNetsWithStatusRecovered : Integer
+  - ghostNetsWithStatusReportedMissing : Integer
+  - ghostNetsWithStatusMissing : Integer
+  - dataController : DataController
+  + getGhostNetsInDB() : Integer
+  + getGhostNetsWithStatusReported() : Integer
+  + getGhostNetsWithStatusSalvagePending() : Integer
+  + getGhostNetsWithStatusRecovered() : Integer
+  + getGhostNetsWithStatusReportedMissing() : Integer
+  + getGhostNetsWithStatusMissing() : Integer
+}
+
+class ReportBean {
+  - id : Integer
+  - userId : Integer
+  - userNameLabel : String
+  - ghostNetId : Integer
+  - statusId : Integer
+  - statusLabel : String
+  - timestamp : Integer
+  - timestampLabel : String
+  - dataController : DataController
+  + getId() : Integer
+  + setId(Integer) : void
+  + getUserId() : Integer
+  + setUserId(Integer) : void
+  + getUserNameLabel() : String
+  + setUserNameLabel(String) : void
+  + getGhostNetId() : Integer
+  + setGhostNetId(Integer) : void
+  + getStatusId() : Integer
+  + setStatusId(Integer) : void
+  + getTimestamp() : Integer
+  + setTimestamp(Integer) : void
+  + getTimestampLabel() : String
+  + setTimestampLabel(String) : void
+  + getAgeOfReport() : String
+}
+
+DataService --> DataController
+LabelBean --> DataController
+LoginBean --> DataController
+ServerBean --> DataController
+StatisticBean --> DataController
+ReportBean --> DataController
+
+@enduml
