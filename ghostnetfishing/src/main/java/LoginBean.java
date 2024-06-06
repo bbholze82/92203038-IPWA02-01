@@ -19,6 +19,8 @@ public class LoginBean implements Serializable {
     private String phonenumber;
     private Boolean adminPrivileges;
     private Integer languageId;
+    private Integer chatPartnerUserId;
+	private Boolean chatPartnerUserIdIsSet;
 
     private final DataController dataController = new DataController();
 
@@ -28,6 +30,8 @@ public class LoginBean implements Serializable {
     public LoginBean() {
     	// id für die Sprache
     	this.languageId = 1;
+    	this.chatPartnerUserId = -1;
+    	this.chatPartnerUserIdIsSet = false;
     }
 
     public String getUsername() {
@@ -95,9 +99,7 @@ public class LoginBean implements Serializable {
         this.isLoggedIn = null;
         this.adminPrivileges = null;
     	return "index.xhtml?faces-redirect=true";
-
     }
-
 
     public Integer getRole() {
     	return this.role;
@@ -179,6 +181,26 @@ public class LoginBean implements Serializable {
     	return this.languageId;
     }
     
-    
-
+	public Boolean getChatPartnerSelected() {
+		return this.chatPartnerUserIdIsSet;
+	}
+	
+	public void setChatPartnerUserIdIsSetToTrue() {
+		this.chatPartnerUserIdIsSet = true;
+	}
+	
+	public void setChatPartnerUserIdIsSetToFalse() {
+		this.chatPartnerUserIdIsSet = false;
+	}
+	
+	public Integer getChatPartnerUserId() {
+		return this.chatPartnerUserId;
+	}
+	
+	public String setChatPartnerUserId(Integer chatPartnerUserId) {
+		this.chatPartnerUserId = chatPartnerUserId;
+		this.chatPartnerUserIdIsSet = true;
+		return "chats.xhtml?faces-redirect=true";
+	}
+	
 }

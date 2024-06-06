@@ -37,8 +37,14 @@ tr.highlight {
 	flex: 1;
 }
 
-.btn .btn-primary {
-	background-color: #2563eb;
+.chat-active {
+	background-color: #2563eb !important;
+	border-color: #2563eb !important;
+}
+
+.chat-inactive {
+	background-color: #bbd0fb !important;
+	border-color: #bbd0fb !important;
 }
 
 .navbar-custom {
@@ -74,4 +80,35 @@ tr.highlight {
 	color: white; /* Setzt die Textfarbe auf Weiß */
 	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px
 		0 #000; /* Erzeugt eine schwarze Kontur um den Text */
+}
+
+.message {
+	border-radius: 15px;
+	padding: 10px;
+	margin: 5px 0;
+	position: relative;
+}
+
+.message-sent {
+	background-color: #2563eb;
+	text-align: right;
+	color: white;
+}
+
+.message-received {
+	background-color: #bbd0fb;
+	color: #2563eb;
+}
+
+.timestamp {
+	font-size: 0.75rem;
+	color: white;
+	display: block;
+	text-align: right;
+	margin-top: 5px;
+}
+
+.message-received .timestamp {
+	text-align: left;
+	color: #2563eb;
 }

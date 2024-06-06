@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -108,4 +109,31 @@ public class DataController {
     	return dataService.getUnixTimestampHumanReadableForLog();
     }
     
+    public String encodeUnixTimestampHumanReadable(String inputTimestamp) {
+    	return dataService.encodeUnixTimestampHumanReadable(inputTimestamp);
+    }
+    
+    public List<Integer> getUserIdsOfChatpatners(Integer inputUserId) throws ClassNotFoundException {
+    	return dataService.getUserIdsOfChatpatners(inputUserId);
+    }
+    
+    public List<ChatBean> getChatsForUser(Integer inputUserId) throws ClassNotFoundException {
+    	return dataService.getChatsForUser(inputUserId);
+    }
+    
+    public String sendNewMessage(Integer senderUserId, Integer recipientUserId, String text, Integer timestamp) throws ClassNotFoundException {
+    	return dataService.sendNewMessage(senderUserId, recipientUserId, text, timestamp);
+    }
+    
+    public List<MessageBean> getMessagesForChat(Integer inputUserId, Integer inputChatPartnerId) throws ClassNotFoundException {
+    	return dataService.getMessagesForChat(inputUserId, inputChatPartnerId);
+    }
+    
+    public Boolean getChatHasMessages(Integer inputUserId, Integer inputChatPartnerId) throws ClassNotFoundException {
+    	return dataService.getChatHasMessages(inputUserId, inputChatPartnerId);
+    }
+    
+    public String encodeUnixTimestampHumanReadableForChat(Integer timestamp) {
+    	return dataService.encodeUnixTimestampHumanReadableForChat(timestamp);
+    }
 }

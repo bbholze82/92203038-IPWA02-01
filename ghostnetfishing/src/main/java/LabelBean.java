@@ -53,8 +53,8 @@ public class LabelBean {
     	return this.dataController.getLabel(this, 3, inputUserRoleId, inputLanguageId);
     }
     
-    public String getUserNameLabelById(Integer inputUserId, Integer inputLanguageId) {
-    	return this.dataController.getLabel(this, 4, inputUserId, inputLanguageId);
+    public String getUserNameLabelById(Integer inputUserId) {
+    	return this.dataController.getLabel(this, 4, inputUserId, 1);
     }
   
 

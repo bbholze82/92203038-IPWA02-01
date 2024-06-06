@@ -63,9 +63,8 @@ public class GhostNetBean implements Serializable {
     }
 
     public String submitData(Integer inputUserId) throws ClassNotFoundException {
-      	// new Id
       	this.id = this.getLatestId() + 1;
-    	dataController.sendNewGhostNetData(this.id, posLatitude, this.posLongitude, this.size);
+    	dataController.sendNewGhostNetData(this.id, this.posLatitude, this.posLongitude, this.size);
 
       	this.createReport(inputUserId, 1);
         return "view.xhtml?faces-redirect=true";

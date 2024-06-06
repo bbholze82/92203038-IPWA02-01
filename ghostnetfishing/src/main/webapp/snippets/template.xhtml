@@ -51,9 +51,14 @@
 					<li class="nav-item"><a class="nav-link" href="./submit.xhtml">Submit
 							Ghost Net</a></li>
 					<h:panelGroup
-						rendered="#{loginBean.role eq 3 or loginBean.role eq 4}">
+						rendered="#{loginBean.role eq 1 or loginBean.role eq 3 or loginBean.role eq 4}">
 						<li class="nav-item"><a class="nav-link"
 							href="./manage.xhtml">Manage Ghost Nets</a></li>
+					</h:panelGroup>
+					<h:panelGroup
+						rendered="#{loginBean.role eq 1 or loginBean.role eq 3 or loginBean.role eq 4}">
+						<li class="nav-item"><a class="nav-link"
+							href="./chats.xhtml">Chats</a></li>
 					</h:panelGroup>
 					<h:panelGroup rendered="#{loginBean.isLoggedIn}">
 						<li class="nav-item"><a class="nav-link"

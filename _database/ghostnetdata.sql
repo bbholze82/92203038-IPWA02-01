@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 27. Mai 2024 um 23:41
+-- Erstellungszeit: 06. Jun 2024 um 01:55
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.0.30
 
@@ -23,11 +23,11 @@ USE `ghostnetdata`;
 -- Tabellenstruktur für Tabelle `geonamescache`
 --
 
-DROP TABLE IF EXISTS `geonamescache`;
-CREATE TABLE `geonamescache` (
+CREATE TABLE IF NOT EXISTS `geonamescache` (
   `ghostnetid` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `timestamp` int(11) NOT NULL
+  `timestamp` int(11) NOT NULL,
+  PRIMARY KEY (`ghostnetid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -61,7 +61,9 @@ INSERT INTO `geonamescache` (`ghostnetid`, `name`, `timestamp`) VALUES
 (55, 'English Channel', 1716745842),
 (56, 'Inner Seas Off The West Coast Of Scotland', 1716763330),
 (57, 'Skagerrak', 1716844087),
-(58, 'North Sea', 1716846011);
+(58, 'North Sea', 1716846011),
+(59, 'North Atlantic Ocean', 1717367116),
+(60, 'Baltic Sea', 1717603087);
 
 -- --------------------------------------------------------
 
@@ -69,13 +71,14 @@ INSERT INTO `geonamescache` (`ghostnetid`, `name`, `timestamp`) VALUES
 -- Tabellenstruktur für Tabelle `ghostnets`
 --
 
-DROP TABLE IF EXISTS `ghostnets`;
-CREATE TABLE `ghostnets` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `ghostnets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `latitude` varchar(255) DEFAULT NULL,
   `longitude` varchar(255) DEFAULT NULL,
-  `size` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `size` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `size` (`size`)
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `ghostnets`
@@ -108,7 +111,9 @@ INSERT INTO `ghostnets` (`id`, `latitude`, `longitude`, `size`) VALUES
 (55, '48.87628', '-2.37305', 1),
 (56, '58.04766', '-6.06445', 2),
 (57, '59.47968', '10.52490', 1),
-(58, '56.81050', '5.38330', 3);
+(58, '56.81050', '5.38330', 3),
+(59, '60.87487', '-0.83496', 2),
+(60, '54.51726', '10.30518', 1);
 
 -- --------------------------------------------------------
 
@@ -116,11 +121,11 @@ INSERT INTO `ghostnets` (`id`, `latitude`, `longitude`, `size`) VALUES
 -- Tabellenstruktur für Tabelle `ghostnetsizes`
 --
 
-DROP TABLE IF EXISTS `ghostnetsizes`;
-CREATE TABLE `ghostnetsizes` (
-  `id` int(11) NOT NULL,
-  `label` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE IF NOT EXISTS `ghostnetsizes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `label` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `ghostnetsizes`
@@ -134,17 +139,45 @@ INSERT INTO `ghostnetsizes` (`id`, `label`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `messages`
+--
+
+CREATE TABLE IF NOT EXISTS `messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `senderid` int(11) NOT NULL,
+  `recipientid` int(11) NOT NULL,
+  `text` varchar(255) NOT NULL,
+  `timestamp` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `senderid` (`senderid`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `messages`
+--
+
+INSERT INTO `messages` (`id`, `senderid`, `recipientid`, `text`, `timestamp`) VALUES
+(27, 4, 3, 'Chat started', 1717631392),
+(28, 4, 3, 'Hello. I would like to participate in the recovery of the fishing net off Hirtshals.', 1717631504),
+(29, 3, 4, 'Hello. Shall we discuss everything further on WhatsApp? My number is 555-4040.', 1717631609);
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `reports`
 --
 
-DROP TABLE IF EXISTS `reports`;
-CREATE TABLE `reports` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `reports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` int(11) DEFAULT NULL,
   `ghostnet` int(11) DEFAULT NULL,
   `status` int(11) DEFAULT NULL,
-  `timestamp` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `timestamp` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`),
+  KEY `ghostnet` (`ghostnet`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=439 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `reports`
@@ -206,7 +239,18 @@ INSERT INTO `reports` (`id`, `user`, `ghostnet`, `status`, `timestamp`) VALUES
 (53, 3, 57, 2, 1716845906),
 (54, 3, 58, 1, 1716845942),
 (55, 4, 26, 4, 1716846037),
-(56, 4, 34, 4, 1716846053);
+(56, 4, 34, 4, 1716846053),
+(389, 1, 59, 1, 1717366500),
+(429, 1, 28, 2, 1717532497),
+(430, 1, 28, 1, 1717532500),
+(431, 1, 28, 2, 1717532506),
+(432, 1, 28, 1, 1717532509),
+(433, 1, 25, 1, 1717602261),
+(434, 1, 29, 2, 1717602491),
+(435, 1, 29, 1, 1717602499),
+(436, 2, 60, 1, 1717603073),
+(437, 1, 25, 2, 1717605390),
+(438, 1, 25, 1, 1717605397);
 
 -- --------------------------------------------------------
 
@@ -214,11 +258,11 @@ INSERT INTO `reports` (`id`, `user`, `ghostnet`, `status`, `timestamp`) VALUES
 -- Tabellenstruktur für Tabelle `statuscodes`
 --
 
-DROP TABLE IF EXISTS `statuscodes`;
-CREATE TABLE `statuscodes` (
-  `id` int(11) NOT NULL,
-  `label` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE IF NOT EXISTS `statuscodes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `label` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `statuscodes`
@@ -237,12 +281,12 @@ INSERT INTO `statuscodes` (`id`, `label`) VALUES
 -- Tabellenstruktur für Tabelle `userdetails`
 --
 
-DROP TABLE IF EXISTS `userdetails`;
-CREATE TABLE `userdetails` (
+CREATE TABLE IF NOT EXISTS `userdetails` (
   `userid` int(11) NOT NULL,
   `firstname` varchar(255) DEFAULT NULL,
   `lastname` varchar(255) DEFAULT NULL,
-  `phonenumber` varchar(255) DEFAULT NULL
+  `phonenumber` varchar(255) DEFAULT NULL,
+  KEY `userid` (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -261,12 +305,12 @@ INSERT INTO `userdetails` (`userid`, `firstname`, `lastname`, `phonenumber`) VAL
 -- Tabellenstruktur für Tabelle `userroles`
 --
 
-DROP TABLE IF EXISTS `userroles`;
-CREATE TABLE `userroles` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `userroles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `role` int(11) NOT NULL,
-  `label` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `label` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `userroles`
@@ -284,15 +328,16 @@ INSERT INTO `userroles` (`id`, `role`, `label`) VALUES
 -- Tabellenstruktur für Tabelle `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `role` int(11) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
   `hashedpassword` varchar(255) DEFAULT NULL,
-  `salt` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `salt` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `role` (`role`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `users`
@@ -303,103 +348,6 @@ INSERT INTO `users` (`id`, `role`, `username`, `comment`, `hashedpassword`, `sal
 (2, 2, 'Anonymous', NULL, NULL, NULL),
 (3, 3, 'johndoe', 'john123', 'xoiwdOGPB54D87Z1BdwpDDviPaOYEnBKxUJKHTftrEM=', 'qwWnhK5AInx3HCcIl2PHlw=='),
 (4, 4, 'janedoe', 'jane123', 'JNlFKNTLGSm+aBfFco463t5WYz4cMGN3bbq6rhpDRnY=', 'NwkEIZ3kAfeBfSxx8NaIqQ==');
-
---
--- Indizes der exportierten Tabellen
---
-
---
--- Indizes für die Tabelle `geonamescache`
---
-ALTER TABLE `geonamescache`
-  ADD PRIMARY KEY (`ghostnetid`);
-
---
--- Indizes für die Tabelle `ghostnets`
---
-ALTER TABLE `ghostnets`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `size` (`size`);
-
---
--- Indizes für die Tabelle `ghostnetsizes`
---
-ALTER TABLE `ghostnetsizes`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indizes für die Tabelle `reports`
---
-ALTER TABLE `reports`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user` (`user`),
-  ADD KEY `ghostnet` (`ghostnet`),
-  ADD KEY `status` (`status`);
-
---
--- Indizes für die Tabelle `statuscodes`
---
-ALTER TABLE `statuscodes`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indizes für die Tabelle `userdetails`
---
-ALTER TABLE `userdetails`
-  ADD KEY `userid` (`userid`);
-
---
--- Indizes für die Tabelle `userroles`
---
-ALTER TABLE `userroles`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indizes für die Tabelle `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `role` (`role`);
-
---
--- AUTO_INCREMENT für exportierte Tabellen
---
-
---
--- AUTO_INCREMENT für Tabelle `ghostnets`
---
-ALTER TABLE `ghostnets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
-
---
--- AUTO_INCREMENT für Tabelle `ghostnetsizes`
---
-ALTER TABLE `ghostnetsizes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT für Tabelle `reports`
---
-ALTER TABLE `reports`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
-
---
--- AUTO_INCREMENT für Tabelle `statuscodes`
---
-ALTER TABLE `statuscodes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT für Tabelle `userroles`
---
-ALTER TABLE `userroles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT für Tabelle `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints der exportierten Tabellen
@@ -416,6 +364,13 @@ ALTER TABLE `geonamescache`
 --
 ALTER TABLE `ghostnets`
   ADD CONSTRAINT `ghostnets_ibfk_1` FOREIGN KEY (`size`) REFERENCES `ghostnetsizes` (`id`);
+
+--
+-- Constraints der Tabelle `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`senderid`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`senderid`) REFERENCES `users` (`id`);
 
 --
 -- Constraints der Tabelle `reports`

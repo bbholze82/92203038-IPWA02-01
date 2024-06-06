@@ -170,19 +170,33 @@ console.log("ok");
 													value="#{labelBean.getSizeLabelById(ghostNet.size, loginBean.languageId)}" /></td>
 											<td><h:outputText
 													value="#{labelBean.getStatusLabelById(ghostNet.latestReportBean.statusId, loginBean.languageId)}" /></td>
-											<td><h:outputText
-													value="#{labelBean.getUserNameLabelById(ghostNet.latestReportBean.userId, loginBean.languageId)}" /></td>
+													
+										   <h:panelGroup rendered="#{(ghostNet.latestReportBean.userId eq 2) or (ghostNet.latestReportBean.userId eq loginBean.id)}">
+										   <td>#{labelBean.getUserNameLabelById(ghostNet.latestReportBean.userId)}</td>
+										   </h:panelGroup>
+										   
+										   <h:panelGroup rendered="#{(ghostNet.latestReportBean.userId ne 2) and (ghostNet.latestReportBean.userId ne loginBean.id)}">
+										   <h:form>
+										   <td><h:commandButton class="btn btn-outline-primary btn-sm mt-2"
+														value="#{labelBean.getUserNameLabelById(ghostNet.latestReportBean.userId)}"
+														action="#{chatBean.startNewChat(loginBean, ghostNet.latestReportBean.userId)}"/></td>
+										   </h:form>
+										   </h:panelGroup>
+												
+
 											<td><h:outputText value="#{ghostNet.ageOfReport}" />
 												ago</td>
-											<h:form>
+											<h:form>											
 												<td><h:commandButton
 														class="btn btn-primary btn-sm mt-2" value="Claim salvage"
 														action="#{ghostNet.setStatusToSalvagePending(loginBean.id)}"
 														rendered="#{ghostNet.latestReportBean.statusId eq 1 }" /></td>
+
 												<td><h:commandButton class="btn btn-danger btn-sm mt-2"
 														value="Cancel salvage"
 														action="#{ghostNet.setStatusToReported(loginBean.id)}"
 														rendered="#{ghostNet.latestReportBean.statusId eq 2 and ghostNet.latestReportBean.userId eq loginBean.id}" /></td>
+
 												<td><h:commandButton
 														class="btn btn-success btn-sm mt-2"
 														value="Mark as recovered"

@@ -63,7 +63,9 @@ public class DataService {
                 	inputBean.setHashedPassword(hashedpassword);
                 	inputBean.setSalt(salt);
 
-
+                    inputBean.setChatPartnerUserId(getLastChatPartnerUserId(inputBean.getId()));
+                    inputBean.setChatPartnerUserIdIsSetToTrue();
+                	
                 	if (role == 1) {
                         inputBean.setAdminPrivileges(true);
                 	} else {
@@ -93,7 +95,7 @@ public class DataService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+        
         return loginCase;
     }
 
@@ -145,7 +147,6 @@ public class DataService {
 
                 workGhostNet.setFirstReportBean(getReportBeanForGhostNet(id, 1));
                 workGhostNet.setLatestReportBean(getReportBeanForGhostNet(id, 99));
-
         }
 
             statement.close();
@@ -154,6 +155,343 @@ public class DataService {
         }
 
         return workGhostNetBean;
+    }
+    
+    
+    public List<Integer> getUserIdsOfChatpatners(Integer inputUserId) throws ClassNotFoundException {
+        List<Integer> chatPartnersUserId = new ArrayList<>();
+        List<MessageBean> messageResults = new ArrayList<>();
+    	
+    	// Chatpartner abfragen    	
+    	String defaultQuery = "SELECT * FROM messages WHERE senderid=? OR recipientid =? ";
+
+    	Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        PreparedStatement statement = connection.prepareStatement(defaultQuery);
+        statement = connection.prepareStatement(defaultQuery);
+        
+        statement.setInt(1, inputUserId);
+        statement.setInt(2, inputUserId);
+        
+        if (SQL_LOG) {
+            createSQLDebugEntry("getUserIdsOfChatpatners", statement.toString().substring(statement.toString().indexOf(":")).trim());
+        }
+        
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+
+	    	GhostNetBean workGhostNet = new GhostNetBean();
+
+	        Integer workId = resultSet.getInt("id");
+	        Integer workSenderid = resultSet.getInt("senderid");
+	        Integer workRecipientId =  resultSet.getInt("recipientid");
+	        String workText = resultSet.getString("text");
+	        Integer workTimestamp =  resultSet.getInt("timestamp");
+	        
+	        MessageBean workMessageBean = new MessageBean();
+	        
+	        workMessageBean.setId(workId);
+	        workMessageBean.setSenderId(workSenderid);
+	        workMessageBean.setRecipientId(workRecipientId);
+	        workMessageBean.setText(workText);
+	        workMessageBean.setTimestamp(workTimestamp);
+
+	        messageResults.add(workMessageBean);
+        	}
+
+        	statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    	
+        for (MessageBean workMessageBean : messageResults) {
+        	
+        	Integer workSenderUserId = workMessageBean.getSenderId();
+        	Integer workRecipientId = workMessageBean.getRecipientId();
+        	
+        	if (!chatPartnersUserId.contains(workSenderUserId) && workSenderUserId != inputUserId) {
+        		chatPartnersUserId.add(workSenderUserId);
+        	}
+        	
+        	if (!chatPartnersUserId.contains(workRecipientId) && workRecipientId != inputUserId) {
+        		chatPartnersUserId.add(workRecipientId);
+        	}
+        }
+    	
+    	return chatPartnersUserId;
+    }
+    
+    
+    public List<MessageBean> getMessagesForChat(Integer inputUserId, Integer inputChatPartnerId) throws ClassNotFoundException {
+    	List<MessageBean> results = new ArrayList<>();
+    	
+    	// Chatpartner abfragen    	
+    	String defaultQuery = "SELECT * FROM messages WHERE (senderid=? AND recipientid =?) OR (senderid=? AND recipientid =?) ";
+
+    	Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        PreparedStatement statement = connection.prepareStatement(defaultQuery);
+        statement = connection.prepareStatement(defaultQuery);
+        
+        statement.setInt(1, inputUserId);
+        statement.setInt(2, inputChatPartnerId);
+        statement.setInt(3, inputChatPartnerId);
+        statement.setInt(4, inputUserId);
+        
+        if (SQL_LOG) {
+            createSQLDebugEntry("getMessagesForChat", statement.toString().substring(statement.toString().indexOf(":")).trim());
+        }
+        
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+
+	    	GhostNetBean workGhostNet = new GhostNetBean();
+
+	        Integer workId = resultSet.getInt("id");
+	        Integer workSenderid = resultSet.getInt("senderid");
+	        Integer workRecipientId =  resultSet.getInt("recipientid");
+	        String workText = resultSet.getString("text");
+	        Integer workTimestamp =  resultSet.getInt("timestamp");
+	        
+	        
+	        MessageBean workMessageBean = new MessageBean();
+	        
+	        workMessageBean.setId(workId);
+	        workMessageBean.setSenderId(workSenderid);
+	        workMessageBean.setRecipientId(workRecipientId);
+	        workMessageBean.setText(workText);
+	        workMessageBean.setTimestamp(workTimestamp);
+
+		    results.add(workMessageBean);
+        	}
+
+        	statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    	
+        results.sort((m1, m2) -> Integer.compare(m1.getTimestamp(), m2.getTimestamp()));
+    	
+        return results;	
+    }
+    
+    public String sendNewMessage(Integer senderUserId, Integer recipientUserId, String text, Integer timestamp) throws ClassNotFoundException {
+    	
+    	String query = "INSERT INTO messages (senderid, recipientid, text, timestamp) VALUES (?,?,?,?)";
+    	
+    	Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement = connection. prepareStatement(query);
+        
+        statement.setInt(1, senderUserId);
+        statement.setInt(2, recipientUserId);
+        statement.setString(3, text);
+        statement.setInt(4, timestamp);
+        
+        if (SQL_LOG) {
+            createSQLDebugEntry("saveNewMessage", statement.toString().substring(statement.toString().indexOf(":")).trim());
+        }
+        
+        statement.executeUpdate();
+        statement.close();
+        
+        }  catch (SQLException e) {
+            e.printStackTrace();
+        }
+    	
+        return "chats.xhtml?faces-redirect=true";
+     }
+    
+    
+    public Integer getLastChatPartnerUserId(Integer inputUserId) throws ClassNotFoundException {
+    	Integer result = 0;
+    	String defaultQuery = "SELECT * FROM messages WHERE (senderid=? OR recipientid =?) ORDER BY timestamp DESC LIMIT 1 ";
+
+    	Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        PreparedStatement statement = connection.prepareStatement(defaultQuery);
+        statement = connection.prepareStatement(defaultQuery);
+        
+        statement.setInt(1, inputUserId);
+        statement.setInt(2, inputUserId);
+        
+        if (SQL_LOG) {
+            createSQLDebugEntry("getChatsForUser", statement.toString().substring(statement.toString().indexOf(":")).trim());
+        }
+        
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+
+	        Integer workRecipientid = resultSet.getInt("recipientid");
+	        result = workRecipientid;
+	    } 
+        
+    	statement.close();
+    } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+    	return result;
+    }
+    
+    
+    public Boolean getChatHasMessages(Integer inputUserId, Integer inputChatPartnerId) throws ClassNotFoundException {
+    	Boolean resultVal = false;
+    	
+    	List<MessageBean> results = new ArrayList<>();
+    	
+    	// Chatpartner abfragen    	
+    	String defaultQuery = "SELECT * FROM messages WHERE (senderid=? AND recipientid =?) OR (senderid=? AND recipientid =?) ";
+
+    	Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        PreparedStatement statement = connection.prepareStatement(defaultQuery);
+        statement = connection.prepareStatement(defaultQuery);
+        
+        statement.setInt(1, inputUserId);
+        statement.setInt(2, inputChatPartnerId);
+        statement.setInt(3, inputChatPartnerId);
+        statement.setInt(4, inputUserId);
+        
+        if (SQL_LOG) {
+            createSQLDebugEntry("getMessagesForChat", statement.toString().substring(statement.toString().indexOf(":")).trim());
+        }
+        
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+
+	    	GhostNetBean workGhostNet = new GhostNetBean();
+
+	        Integer workId = resultSet.getInt("id");
+	        Integer workSenderid = resultSet.getInt("senderid");
+	        Integer workRecipientId =  resultSet.getInt("recipientid");
+	        String workText = resultSet.getString("text");
+	        Integer workTimestamp =  resultSet.getInt("timestamp");
+	        
+	        
+	        MessageBean workMessageBean = new MessageBean();
+	        
+	        workMessageBean.setId(workId);
+	        workMessageBean.setSenderId(workSenderid);
+	        workMessageBean.setRecipientId(workRecipientId);
+	        workMessageBean.setText(workText);
+	        workMessageBean.setTimestamp(workTimestamp);
+
+		    results.add(workMessageBean);
+        	}
+
+        	statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    	
+        results.sort((m1, m2) -> Integer.compare(m1.getTimestamp(), m2.getTimestamp()));
+    	
+    	if (results.size() > 0) {
+    		resultVal = true;
+    	}
+        
+        
+    	return resultVal;
+    }
+    
+    
+    public List<ChatBean> getChatsForUser(Integer inputUserId) throws ClassNotFoundException {
+    	List<ChatBean> results = new ArrayList<>(); 
+    	List<MessageBean> messageResults = new ArrayList<>();
+    	
+    	// Chatpartner abfragen    	
+    	String defaultQuery = "SELECT * FROM messages WHERE senderid=? OR recipientid =? ";
+
+    	Class.forName("com.mysql.cj.jdbc.Driver");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        PreparedStatement statement = connection.prepareStatement(defaultQuery);
+        statement = connection.prepareStatement(defaultQuery);
+        
+        statement.setInt(1, inputUserId);
+        statement.setInt(2, inputUserId);
+        
+        if (SQL_LOG) {
+            createSQLDebugEntry("getChatsForUser", statement.toString().substring(statement.toString().indexOf(":")).trim());
+        }
+        
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+
+	    	GhostNetBean workGhostNet = new GhostNetBean();
+
+	        Integer workId = resultSet.getInt("id");
+	        Integer workSenderid = resultSet.getInt("senderid");
+	        Integer workRecipientId =  resultSet.getInt("recipientid");
+	        String workText = resultSet.getString("text");
+	        Integer workTimestamp =  resultSet.getInt("timestamp");
+	        
+	        MessageBean workMessageBean = new MessageBean();
+	        
+	        workMessageBean.setId(workId);
+	        workMessageBean.setSenderId(workSenderid);
+	        workMessageBean.setRecipientId(workRecipientId);
+	        workMessageBean.setText(workText);
+	        workMessageBean.setTimestamp(workTimestamp);
+
+	        messageResults.add(workMessageBean);
+        	}
+
+        	statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    	
+        
+        ArrayList<Integer> chatPartnersUserId = new ArrayList<>();
+        for (MessageBean workMessageBean : messageResults) {
+        	
+        	Integer workSenderUserId = workMessageBean.getSenderId();
+        	Integer workRecipientId = workMessageBean.getRecipientId();
+        	
+        	if (!chatPartnersUserId.contains(workSenderUserId) && workSenderUserId != inputUserId) {
+        		chatPartnersUserId.add(workSenderUserId);
+        	}
+        	
+        	if (!chatPartnersUserId.contains(workRecipientId) && workRecipientId != inputUserId) {
+        		chatPartnersUserId.add(workRecipientId);
+        	}
+        }
+    	
+        // ChatBean
+        for (Integer chatPartnerUserId : chatPartnersUserId) {
+            List<MessageBean> workMessageBeans = new ArrayList<>();
+ 
+            for (MessageBean workMessageBean : messageResults) {
+            	if ((workMessageBean.getSenderId() == inputUserId) && (workMessageBean.getRecipientId() == chatPartnerUserId)) {
+            		workMessageBeans.add(workMessageBean); 		
+            	} else if ((workMessageBean.getSenderId() == chatPartnerUserId) && (workMessageBean.getRecipientId() == inputUserId)) {
+            		workMessageBeans.add(workMessageBean);
+            	}
+            }
+            
+            Integer counterMessages = workMessageBeans.size();
+            ChatBean workChatBean = new ChatBean(); 
+            
+            if (!counterMessages.equals(0)) {
+            	workChatBean.setHasMessages(true);
+            }
+            
+            workChatBean.setMessages(workMessageBeans);            
+            results.add(workChatBean);
+        }
+        
+    	return results;
     }
 
 
@@ -716,8 +1054,6 @@ public class DataService {
     					   "<tbody>" +
     	                   "</table>";
 
-
-    	//String resultTxt = "Seen: " +  inputFirstReportedLabel + "<br/>" + "by: " + inputUserLabel + "<br/>" + "Status: " + inputStatusLabel + "<br/>" ;
     	return resultTxt;
     }
 
@@ -843,6 +1179,22 @@ public class DataService {
 
     	return resultTxt;
     }
+    
+    public String encodeUnixTimestampHumanReadableForChat(Integer unixTimestamp) {
+        //
+       long unixSeconds = unixTimestamp.longValue();
+       //
+       Date date = new Date(unixSeconds * 1000L);
+       //
+       SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+       //
+       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+       //
+       String resultTxt = sdf.format(date);
+
+       return resultTxt;
+    }
+
 
     public String getUnixTimestampHumanReadableForLog() {
         //

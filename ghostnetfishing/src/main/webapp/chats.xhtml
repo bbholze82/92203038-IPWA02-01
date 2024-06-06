@@ -1,0 +1,126 @@
+<ui:composition template="snippets/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	<ui:define name="header-title">
+		<title>Chat</title>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:panelGroup rendered="#{not loginBean.isLoggedIn}">
+			<div class="container mt-3 mb-3">
+				<div class="alert alert-warning" role="alert">
+					Please <a href="./login.xhtml">Login</a> to get access.
+				</div>
+			</div>
+		</h:panelGroup>
+
+
+		<h:panelGroup rendered="#{loginBean.isLoggedIn}">
+			<div class="container mt-3 mb-3">
+
+				<div class="row">
+
+					<div class="col-12 col-md-3">
+
+						<h2 class="header">Chats</h2>
+
+						<div class="content-wrapper">
+							<div class="d-grid gap-2">
+
+								<ui:repeat
+									value="#{chatBean.getUserIdsOfChatpatners(loginBean.id)}"
+									var="userId">
+
+									<p:commandButton
+										value="#{labelBean.getUserNameLabelById(userId)}"
+										action="#{loginBean.setChatPartnerUserId(userId)}"
+										styleClass="btn btn-primary chat-inactive"
+										rendered="#{loginBean.chatPartnerUserId ne userId}" />
+
+									<p:commandButton
+										value="#{labelBean.getUserNameLabelById(userId)}"
+										action="#{loginBean.setChatPartnerUserId(userId)}"
+										styleClass="btn btn-primary chat-active"
+										rendered="#{loginBean.chatPartnerUserId eq userId}" />
+								</ui:repeat>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="col-12 col-md-9">
+						<h:panelGroup rendered="#{not loginBean.chatPartnerSelected}">
+							<h2 class="header">No chat selected</h2>
+						</h:panelGroup>
+
+						<h:panelGroup rendered="#{loginBean.chatPartnerSelected}">
+							<h2 class="header">You are chatting with
+								#{labelBean.getUserNameLabelById(loginBean.chatPartnerUserId)}</h2>
+						</h:panelGroup>
+
+						<div class="content-wrapper">
+
+							<h:panelGroup
+								rendered="#{not chatBean.getChatHasMessages(loginBean.id, loginBean.chatPartnerUserId)}">
+								<div class="message message-sent">
+									<p>Nothing to see here</p>
+								</div>
+							</h:panelGroup>
+
+
+							<ui:repeat
+								value="#{chatBean.getMessagesForChat(loginBean.id, loginBean.chatPartnerUserId)}"
+								var="message">
+
+								<h:panelGroup
+									rendered="#{message.checkIfMessageIsFromCurrentUser(loginBean.id)}">
+									<div class="message message-sent">
+										<strong>You: </strong> #{message.text}
+										<div class="timestamp">#{message.timestampForChat}</div>
+									</div>
+								</h:panelGroup>
+
+								<h:panelGroup
+									rendered="#{not message.checkIfMessageIsFromCurrentUser(loginBean.id)}">
+									<div class="message message-received">
+										<strong>#{labelBean.getUserNameLabelById(message.senderId)}:
+										</strong> #{message.text}
+										<div class="timestamp">#{message.timestampForChat}</div>
+									</div>
+								</h:panelGroup>
+
+							</ui:repeat>
+						</div>
+
+						<h:panelGroup rendered="#{loginBean.chatPartnerSelected}">
+							<div class="content-wrapper mt-2">
+								<h:form>
+									<div class="input-group mt-3">
+										<p:inputText class="form-control" id="newMessage-input"
+											required="true" placeholder="Type a message" value="#{chatBean.newMessage}" />
+									</div>
+
+									<p:commandButton value="Submit"
+										action="#{chatBean.sendNewMessage(loginBean.id, loginBean.chatPartnerUserId)}"
+										styleClass="btn btn-danger mt-2" />
+								</h:form>
+							</div>
+						</h:panelGroup>
+
+
+
+					</div>
+				</div>
+			</div>
+		</h:panelGroup>
+
+
+
+	</ui:define>
+
+</ui:composition>
