@@ -77,7 +77,7 @@
 					<h:panelGroup rendered="#{loginBean.isLoggedIn}">
 						<li class="nav-item"><h:form>
 								<h:commandLink class="nav-link" value="Logout"
-									action="#{loginBean.logout()}" />
+									action="#{loginBean.logout}" />
 							</h:form></li>
 					</h:panelGroup>
 					<h:panelGroup rendered="#{not loginBean.isLoggedIn}">

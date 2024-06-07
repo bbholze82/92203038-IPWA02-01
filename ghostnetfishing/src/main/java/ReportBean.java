@@ -76,10 +76,7 @@ public class ReportBean implements Serializable {
 	}
 
     public String getAgeOfReport() {
-    	Integer currentUnixTime = dataController.getCurrentUnixTime();
-    	String ageLabel = dataController.getDurationHumanReadable(this.timestamp, currentUnixTime);
-
-    	return ageLabel;
+    	return dataController.getAgeOfReport(this.timestamp);
     }
 
 }

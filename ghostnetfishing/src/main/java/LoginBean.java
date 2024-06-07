@@ -82,9 +82,7 @@ public class LoginBean implements Serializable {
         return loginStatus;
     }
 
-
     public String logout() {
-
     	this.id = null;
         this.role = null;
         this.username = null;
@@ -93,8 +91,11 @@ public class LoginBean implements Serializable {
         this.salt = null;
         this.firstname = null;
         this.lastname = null;
-
-        //
+        this.phonenumber = null;
+        this.adminPrivileges = null;
+        this.languageId = null;
+        this.chatPartnerUserId = null;
+        this.chatPartnerUserIdIsSet = null;
         this.errorMessage = null;
         this.isLoggedIn = null;
         this.adminPrivileges = null;

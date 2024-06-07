@@ -847,6 +847,13 @@ public class DataService {
         }
 
     }
+    
+    public String getAgeOfReport(Integer inputTimeStamp) {
+    	Integer currentUnixTime = getCurrentUnixTime();
+    	String ageLabel = getDurationHumanReadable(inputTimeStamp, currentUnixTime);
+    	
+    	return ageLabel; 
+    }
 
     public void sendNewGhostNetData(Integer inputNewId, String inputLatitude, String inputLongitude, Integer inputSize) throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1023,6 +1030,7 @@ public class DataService {
 
         return lastestId;
     }
+    
 
     public String getDetailsForMapMarker(Integer inputFirstReportedTimeStampLabel, String inputUserNameLabel, String inputStatusLabel, Integer inputLanguageId) {
 

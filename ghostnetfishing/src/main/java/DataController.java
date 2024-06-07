@@ -136,4 +136,8 @@ public class DataController {
     public String encodeUnixTimestampHumanReadableForChat(Integer timestamp) {
     	return dataService.encodeUnixTimestampHumanReadableForChat(timestamp);
     }
+    
+    public String getAgeOfReport(Integer inputTimeStamp) {
+    	return dataService.getAgeOfReport(inputTimeStamp);
+    }
 }
